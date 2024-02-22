@@ -1,8 +1,11 @@
 package com.example.greenplate.views;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Button;
@@ -14,6 +17,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.greenplate.R;
 import com.example.greenplate.viewmodels.AccountCreationViewModel;
+
+import java.util.Objects;
 
 public class AccountCreateActivity extends AppCompatActivity {
 
@@ -67,16 +72,45 @@ public class AccountCreateActivity extends AppCompatActivity {
                 return;
             }
 
+            hideKeyboard();
+
             accountCreateVM.setUser(email, password);
-            boolean success = accountCreateVM.createAccount(registerProgressBar);
-//            if (success) {
-//
-//            }
+            accountCreateVM.createAccount(registerProgressBar, task -> {
+
+                if (task.isSuccessful()) {
+                    for (EditText e : new EditText[] {emailField, passwordField, confirmPasswordField}) {
+                        e.setText("");
+                    }
+                    Toast.makeText(this, "Registration succeeded!", Toast.LENGTH_LONG).show();
+                }
+                else {
+
+                    String error = (Objects.requireNonNull(task.getException())).getLocalizedMessage();
+                    Toast toast = new Toast(this);
+
+                    TextView textView = new TextView(this);
+                    textView.setText(error);
+                    textView.setMaxLines(10); // allow up to 10 lines
+                    textView.setTextSize(30);
+                    textView.setTextColor(Color.parseColor("#FF0000"));
+
+                    toast.setView(textView);
+                    toast.setDuration(Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            });
 
         });
     }
 
-
+    private void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)
+                    getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 
 
 }
