@@ -78,14 +78,16 @@ public class AccountCreateActivity extends AppCompatActivity {
             accountCreateVM.createAccount(registerProgressBar, task -> {
 
                 if (task.isSuccessful()) {
-                    for (EditText e : new EditText[] {emailField, passwordField, confirmPasswordField}) {
+                    for (EditText e
+                            : new EditText[] {emailField, passwordField, confirmPasswordField}) {
                         e.setText("");
                     }
-                    Toast.makeText(this, "Registration succeeded!", Toast.LENGTH_LONG).show();
-                }
-                else {
+                    Toast.makeText(this, "Registration succeeded!",
+                            Toast.LENGTH_LONG).show();
+                } else {
 
-                    String error = (Objects.requireNonNull(task.getException())).getLocalizedMessage();
+                    String error = (Objects.requireNonNull(task.getException())).
+                            getLocalizedMessage();
                     Toast toast = new Toast(this);
 
                     TextView textView = new TextView(this);

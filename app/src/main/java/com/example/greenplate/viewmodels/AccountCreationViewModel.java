@@ -1,7 +1,7 @@
 package com.example.greenplate.viewmodels;
 
-import android.util.Log;
-import android.view.View;
+//import android.util.Log;
+//import android.view.View;
 import android.widget.ProgressBar;
 
 import androidx.lifecycle.ViewModel;
@@ -11,7 +11,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+//import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AccountCreationViewModel extends ViewModel {
 
@@ -19,7 +19,7 @@ public class AccountCreationViewModel extends ViewModel {
     private FirebaseAuth mAuth;
 
     public AccountCreationViewModel() {
-//        this.player = new User(username, email, password);
+        //this.player = new User(username, email, password);
     }
 
     public void setUser(String email, String password) {
