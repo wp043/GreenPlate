@@ -11,14 +11,12 @@ public class SplashScreenActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.splash_screen);
-
-        int SPLASH_DISPLAY_LENGTH = 1000;
-
-        new Handler().postDelayed(() -> {
-            Intent mainIntent = new Intent(SplashScreenActivity.this, AccountCreateActivity.class);
-            SplashScreenActivity.this.startActivity(mainIntent);
-            SplashScreenActivity.this.finish();
-        }, SPLASH_DISPLAY_LENGTH);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(new Intent(SplashScreenActivity.this, AccountCreateActivity.class));
+                finish();
+            }
+        },0);
     }
 }

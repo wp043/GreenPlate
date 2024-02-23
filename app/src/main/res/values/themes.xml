@@ -5,12 +5,9 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.GreenPlate" parent="Base.Theme.GreenPlate" />
-
     <!-- splash screen -->
     <style name="Theme.App.SplashScreen" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/white</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_screen</item>
-        <item name="postSplashScreenTheme">@style/Theme.AppCompat.Light.NoActionBar</item>
     </style>
 </resources>
