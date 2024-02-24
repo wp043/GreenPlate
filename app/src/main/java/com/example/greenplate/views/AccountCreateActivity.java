@@ -42,7 +42,8 @@ public class AccountCreateActivity extends AppCompatActivity {
         backToLoginView = findViewById(R.id.back_to_main);
 
         backToLoginView.setOnClickListener(event -> {
-            startActivity(new Intent(AccountCreateActivity.this, LoginActivity.class));
+            startActivity(new Intent(AccountCreateActivity.this,
+                    LoginActivity.class));
         });
 
         submitFormBtn.setOnClickListener(l -> {
@@ -81,18 +82,22 @@ public class AccountCreateActivity extends AppCompatActivity {
             accountCreateVM.createAccount(task -> {
 
                 if (task.isSuccessful()) {
-                    for (EditText e : new EditText[] {emailField, passwordField, confirmPasswordField}) {
+                    for (EditText e
+                            : new EditText[] {emailField, passwordField, confirmPasswordField}) {
                         e.setText("");
                     }
-                    Toast.makeText(this, "Registration succeeded!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Registration succeeded!",
+                            Toast.LENGTH_LONG).show();
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    startActivity(new Intent(AccountCreateActivity.this, LoginActivity.class));
+                    startActivity(new Intent(AccountCreateActivity.this,
+                            LoginActivity.class));
                 } else {
-                    String error = (Objects.requireNonNull(task.getException())).getLocalizedMessage();
+                    String error = (Objects.requireNonNull(task.getException())).
+                            getLocalizedMessage();
                     Toast toast = new Toast(this);
 
                     TextView textView = new TextView(this);
