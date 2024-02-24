@@ -81,18 +81,9 @@ public class AccountCreateActivity extends AppCompatActivity {
             accountCreateVM.createAccount(task -> {
 
                 if (task.isSuccessful()) {
-                    for (EditText e
-                            : new EditText[] {emailField, passwordField, confirmPasswordField}) {
+                    for (EditText e : new EditText[] {emailField, passwordField, confirmPasswordField}) {
                         e.setText("");
                     }
-<<<<<<< HEAD
-                    Toast.makeText(this, "Registration succeeded!",
-                            Toast.LENGTH_LONG).show();
-                } else {
-
-                    String error = (Objects.requireNonNull(task.getException())).
-                            getLocalizedMessage();
-=======
                     Toast.makeText(this, "Registration succeeded!", Toast.LENGTH_LONG).show();
                     try {
                         Thread.sleep(1000);
@@ -102,7 +93,6 @@ public class AccountCreateActivity extends AppCompatActivity {
                     startActivity(new Intent(AccountCreateActivity.this, LoginActivity.class));
                 } else {
                     String error = (Objects.requireNonNull(task.getException())).getLocalizedMessage();
->>>>>>> 66ecc1540485d8fd33af542a5b030ea8ca59b7f6
                     Toast toast = new Toast(this);
 
                     TextView textView = new TextView(this);

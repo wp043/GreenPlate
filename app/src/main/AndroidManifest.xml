@@ -28,8 +28,6 @@
         <!-- AccountCreateActivity -->
         <activity
             android:name=".views.AccountCreateActivity"
-<<<<<<< HEAD
-=======
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.GreenPlate">
@@ -38,7 +36,6 @@
         <!-- NavBarActivity -->
         <activity
             android:name=".views.NavBarActivity"
->>>>>>> 66ecc1540485d8fd33af542a5b030ea8ca59b7f6
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.GreenPlate">

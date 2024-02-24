@@ -1,12 +1,5 @@
 package com.example.greenplate.viewmodels;
 
-<<<<<<< HEAD
-//import android.util.Log;
-//import android.view.View;
-import android.widget.ProgressBar;
-
-=======
->>>>>>> 66ecc1540485d8fd33af542a5b030ea8ca59b7f6
 import androidx.lifecycle.ViewModel;
 import com.example.greenplate.models.User;
 
@@ -14,11 +7,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-<<<<<<< HEAD
-//import java.util.concurrent.atomic.AtomicBoolean;
-
-=======
->>>>>>> 66ecc1540485d8fd33af542a5b030ea8ca59b7f6
 public class AccountCreationViewModel extends ViewModel {
 
     private User user;
@@ -28,11 +16,7 @@ public class AccountCreationViewModel extends ViewModel {
      * No-arg constructor for VM.
      */
     public AccountCreationViewModel() {
-<<<<<<< HEAD
-        //this.player = new User(username, email, password);
-=======
-    // this.player = new User(username, email, password);
->>>>>>> 66ecc1540485d8fd33af542a5b030ea8ca59b7f6
+        // this.player = new User(username, email, password);
     }
 
     /**

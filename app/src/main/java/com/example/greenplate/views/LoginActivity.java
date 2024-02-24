@@ -113,11 +113,11 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-            signupButton.setOnClickListener(v -> {
-                // Go to register page
-                Intent intent = new Intent(LoginActivity.this, AccountCreateActivity.class);
-                startActivity(intent);
-            });
+        signupButton.setOnClickListener(v -> {
+            // Go to register page
+            Intent intent = new Intent(LoginActivity.this, AccountCreateActivity.class);
+            startActivity(intent);
+        });
 
 
     }

@@ -33,8 +33,8 @@ public class LoginViewModel{
                 .addOnCompleteListener(task -> {
                     status = task.isSuccessful();
                 });
-                //.addOnSuccessListener(authResult -> status = true)
-                //.addOnFailureListener(e -> status = false);
+        //.addOnSuccessListener(authResult -> status = true)
+        //.addOnFailureListener(e -> status = false);
         return status;
     }
 
