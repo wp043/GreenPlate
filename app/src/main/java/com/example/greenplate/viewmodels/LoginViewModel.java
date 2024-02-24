@@ -11,10 +11,5 @@ public class LoginViewModel {
     }
 
     // DO NOT MODIFY METHOD
-    public static synchronized LoginViewModel getInstance() {
-        if (instance == null) {
-            instance = new LoginViewModel();
-        }
-        return instance;
-    }
+
 }
