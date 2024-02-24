@@ -11,7 +11,7 @@ public class SplashScreenActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startActivity(new Intent(SplashScreenActivity.this, AccountCreateActivity.class));
+        startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
         finish();
     }
 }

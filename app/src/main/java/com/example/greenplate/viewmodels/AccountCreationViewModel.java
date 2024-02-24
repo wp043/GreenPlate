@@ -1,9 +1,12 @@
 package com.example.greenplate.viewmodels;
 
+<<<<<<< HEAD
 //import android.util.Log;
 //import android.view.View;
 import android.widget.ProgressBar;
 
+=======
+>>>>>>> 66ecc1540485d8fd33af542a5b030ea8ca59b7f6
 import androidx.lifecycle.ViewModel;
 import com.example.greenplate.models.User;
 
@@ -11,31 +14,45 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+<<<<<<< HEAD
 //import java.util.concurrent.atomic.AtomicBoolean;
 
+=======
+>>>>>>> 66ecc1540485d8fd33af542a5b030ea8ca59b7f6
 public class AccountCreationViewModel extends ViewModel {
 
     private User user;
     private FirebaseAuth mAuth;
 
+    /**
+     * No-arg constructor for VM.
+     */
     public AccountCreationViewModel() {
+<<<<<<< HEAD
         //this.player = new User(username, email, password);
+=======
+    // this.player = new User(username, email, password);
+>>>>>>> 66ecc1540485d8fd33af542a5b030ea8ca59b7f6
     }
 
+    /**
+     * Setter for user.
+     * @param email email of the user
+     * @param password password of the user
+     */
     public void setUser(String email, String password) {
         this.user = new User(email, password);
         mAuth = FirebaseAuth.getInstance();
     }
 
-    public void createAccount(ProgressBar bar, OnCompleteListener<AuthResult> callback) {
-
+    /**
+     * Create account using firebase authorization.
+     * @param callback callback function
+     */
+    public void createAccount(OnCompleteListener<AuthResult> callback) {
         mAuth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword())
                 .addOnCompleteListener(task -> {
                     callback.onComplete(task); // pass result to caller's callback
                 });
-
     }
-
-
-
 }
