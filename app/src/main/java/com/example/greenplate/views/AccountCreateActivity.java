@@ -89,7 +89,7 @@ public class AccountCreateActivity extends AppCompatActivity {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    startActivity(new Intent(AccountCreateActivity.this, NavBarActivity.class));
+                    startActivity(new Intent(AccountCreateActivity.this, LoginActivity.class));
                 } else {
                     String error = (Objects.requireNonNull(task.getException())).getLocalizedMessage();
                     Toast toast = new Toast(this);
