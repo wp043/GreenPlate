@@ -64,6 +64,7 @@ public class AccountCreateActivity extends AppCompatActivity {
 
             if (!password.equals(confirmPassword)) {
                 confirmPasswordField.setError("Passwords don't match");
+                checksPassed = false;
             }
 
             if (!checksPassed) {
