@@ -5,10 +5,14 @@
     android:layout_height="match_parent"
     tools:context=".views.IngredientFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="wendy's indgredient screen" />
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="117dp"
+        android:layout_marginBottom="26dp"
+        android:gravity="center"
+        android:text="INGREDIENT"
+        android:textSize="30sp" />
 
 </FrameLayout>
