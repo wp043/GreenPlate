@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/dummy_item"
+        android:enabled="false"
+        android:visible="false"
+        android:title="" />
+    <item
         android:id="@+id/inputMeals"
         android:icon="@drawable/inputmeal"
         android:title="Input Meal" />

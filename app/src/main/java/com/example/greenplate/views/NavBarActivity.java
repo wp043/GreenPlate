@@ -22,7 +22,7 @@ public class NavBarActivity extends AppCompatActivity {
         navBind = NavigationBarBinding.inflate(getLayoutInflater());
         setContentView(navBind.getRoot());
         // Deselect all items in the BottomNavigationView
-        navBind.bottomNavigationView.setSelectedItemId(-1);
+        navBind.bottomNavigationView.setSelectedItemId(R.id.dummy_item);
         replaceFragment(new HomeFragment());
 
         // Listeners to switch screens
