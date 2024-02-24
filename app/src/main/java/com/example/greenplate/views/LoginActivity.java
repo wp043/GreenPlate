@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Toast.makeText(getApplicationContext(),
-                                                "Successful.",
+                                                "Login successful.",
                                                 Toast.LENGTH_LONG)
                                         .show();
                                 Intent intent = new Intent(LoginActivity.this, NavBarActivity.class);
@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Toast.makeText(getApplicationContext(),
-                                                "Incorrect.",
+                                                "Email or password incorrect.",
                                                 Toast.LENGTH_LONG)
                                         .show();
                             }
