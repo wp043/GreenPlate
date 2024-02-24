@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
+        if (currentUser != null) {
             Toast.makeText(getApplicationContext(),
                             "User already logged in.",
                             Toast.LENGTH_LONG)
@@ -66,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
+
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -76,6 +77,8 @@ public class LoginActivity extends AppCompatActivity {
                                                 "Successful.",
                                                 Toast.LENGTH_LONG)
                                         .show();
+                                Intent intent = new Intent(LoginActivity.this, NavBarActivity.class);
+                                startActivity(intent);
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Toast.makeText(getApplicationContext(),
@@ -86,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
 
-
+            /*
             // Sign in failed
             if (!viewModel.checkUser(email, password)) {
                 Toast.makeText(getApplicationContext(),
@@ -98,19 +101,24 @@ public class LoginActivity extends AppCompatActivity {
 
 
             // Sign in successful
-            Intent intent = new Intent(LoginActivity.this, MainFragment.class);
-            startActivity(intent);
+            //Intent intent = new Intent(LoginActivity.this, HomeFragment.class);
+            //startActivity(intent);
             Toast.makeText(getApplicationContext(),
                             "Sign in successful.",
                             Toast.LENGTH_LONG)
                     .show();
+        */
         });
 
 
-        signupButton.setOnClickListener(v -> {
-            // Go to register page
-            Intent intent = new Intent(LoginActivity.this, AccountCreateActivity.class);
-            startActivity(intent);
-        });
+
+
+            signupButton.setOnClickListener(v -> {
+                // Go to register page
+                Intent intent = new Intent(LoginActivity.this, AccountCreateActivity.class);
+                startActivity(intent);
+            });
+
+
     }
 }

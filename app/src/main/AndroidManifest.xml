@@ -21,16 +21,13 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
 
         <!-- SplashScreenActivity -->
         <activity
             android:name=".views.SplashScreenActivity"
             android:theme="@style/Theme.App.SplashScreen"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <!-- AccountCreateActivity -->
