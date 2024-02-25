@@ -38,7 +38,12 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            viewModel.checkUser(LoginActivity.this, email, password);
+            viewModel.checkUser(LoginActivity.this, email, password, authResult -> {
+                if (authResult.getUser() != null) {
+                    Intent intent = new Intent(LoginActivity.this, NavBarActivity.class);
+                    startActivity(intent);
+                }
+            });
         });
 
         signupButton.setOnClickListener(v -> {

@@ -1,28 +1,24 @@
 package com.example.greenplate.viewmodels;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
-import com.example.greenplate.models.User;
 import com.example.greenplate.views.LoginActivity;
+import com.example.greenplate.views.NavBarActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
-import java.util.concurrent.Executor;
 
 public class LoginViewModel {
     final private FirebaseAuth mAuth;
-    private boolean status;
+    private boolean loggedIn;
 
 
     public LoginViewModel() {
@@ -30,17 +26,14 @@ public class LoginViewModel {
     }
 
 
-    public boolean checkUser(Context context, String email, String password) {
+    public void checkUser(Context context, String email, String password, OnSuccessListener<AuthResult> callback) {
         mAuth.signInWithEmailAndPassword(email, password)
-                //.addOnCompleteListener(task -> {
-                //    status = task.isSuccessful();
-                //});
                 .addOnSuccessListener(authResult -> {
                     Toast.makeText(context,
                                     "Login successful.",
                                     Toast.LENGTH_LONG)
                             .show();
-                    status = true;
+                    callback.onSuccess(authResult);
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(context,
@@ -48,7 +41,6 @@ public class LoginViewModel {
                                     Toast.LENGTH_LONG)
                             .show();
                 });
-        return status;
     }
 
     public boolean isInputDataValid(Context context, String email, String password, EditText emailField, EditText passwordField) {
@@ -62,5 +54,9 @@ public class LoginViewModel {
             error = true;
         }
         return !error;
+    }
+
+    public boolean isLoggedIn() {
+        return loggedIn;
     }
 }
