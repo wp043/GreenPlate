@@ -1,5 +1,6 @@
 package com.example.greenplate.viewmodels;
 
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
@@ -18,7 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.concurrent.Executor;
 
-public class LoginViewModel{
+public class LoginViewModel {
     final private FirebaseAuth mAuth;
     private boolean status;
 
@@ -28,13 +29,24 @@ public class LoginViewModel{
     }
 
 
-    public boolean checkUser(String email, String password) {
+    public boolean checkUser(Context context, String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    status = task.isSuccessful();
+                //.addOnCompleteListener(task -> {
+                //    status = task.isSuccessful();
+                //});
+                .addOnSuccessListener(authResult -> {
+                    Toast.makeText(context,
+                                    "Login successful.",
+                                    Toast.LENGTH_LONG)
+                            .show();
+                    status = true;
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(context,
+                                    "Email or Password is invalid.",
+                                    Toast.LENGTH_LONG)
+                            .show();
                 });
-                //.addOnSuccessListener(authResult -> status = true)
-                //.addOnFailureListener(e -> status = false);
         return status;
     }
 

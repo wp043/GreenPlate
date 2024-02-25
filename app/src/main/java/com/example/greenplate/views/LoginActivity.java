@@ -66,7 +66,11 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
+            viewModel.checkUser(LoginActivity.this, email, password);
 
+            /*
+            // Attempt to write sign in logic within view
+            // Correct functionality
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -89,11 +93,15 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
 
+             */
+
             /*
+            // Attempt to use ViewModel to sign in
+            // Incorrect functionality, have to click button twice to register
             // Sign in failed
-            if (!viewModel.checkUser(email, password)) {
+            if (!viewModel.checkUser(LoginActivity.this, email, password)) {
                 Toast.makeText(getApplicationContext(),
-                                "Incorrect email or password.",
+                                "Email or Password is invalid.",
                                 Toast.LENGTH_LONG)
                         .show();
                 return;
@@ -101,13 +109,13 @@ public class LoginActivity extends AppCompatActivity {
 
 
             // Sign in successful
-            //Intent intent = new Intent(LoginActivity.this, HomeFragment.class);
-            //startActivity(intent);
             Toast.makeText(getApplicationContext(),
-                            "Sign in successful.",
+                            "Login successful.",
                             Toast.LENGTH_LONG)
                     .show();
-        */
+            Intent intent = new Intent(LoginActivity.this, HomeFragment.class);
+            startActivity(intent);
+            */
         });
 
 
