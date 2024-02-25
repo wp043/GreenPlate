@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
             String email = emailEditText.getText().toString();
             String password = passwordEditText.getText().toString();
 
-            if (!viewModel.isInputDataValid(LoginActivity.this, email, password, emailEditText, passwordEditText)) {
+            if (!viewModel.isInputDataValid(email, password, emailEditText, passwordEditText)) {
                 return;
             }
 
