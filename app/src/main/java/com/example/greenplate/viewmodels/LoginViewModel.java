@@ -34,7 +34,7 @@ public class LoginViewModel {
                 });
     }
 
-    public boolean isInputDataValid(Context context, String email, String password, EditText emailField, EditText passwordField) {
+    public boolean isInputDataValid(String email, String password, EditText emailField, EditText passwordField) {
         boolean error = false;
         if (email.trim().isEmpty()) {
             emailField.setError("Email cannot be empty.");
