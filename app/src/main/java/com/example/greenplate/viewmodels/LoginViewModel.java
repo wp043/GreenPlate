@@ -1,41 +1,72 @@
 package com.example.greenplate.viewmodels;
 
-//import android.content.Intent;
-//import android.util.Log;
-//import android.widget.Toast;
-//
-//import androidx.annotation.NonNull;
-//
-//import com.example.greenplate.models.User;
-//import com.example.greenplate.views.LoginActivity;
-//import com.google.android.gms.tasks.OnCompleteListener;
-//import com.google.android.gms.tasks.OnFailureListener;
-//import com.google.android.gms.tasks.OnSuccessListener;
-//import com.google.android.gms.tasks.Task;
-//import com.google.firebase.auth.AuthResult;
+import android.content.Context;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-//import com.google.firebase.auth.FirebaseUser;
-//
-//import java.util.concurrent.Executor;
+
 
 public class LoginViewModel {
     private final FirebaseAuth mAuth;
-    private boolean status;
+    private int remainingAttempts;
 
 
     public LoginViewModel() {
         mAuth = FirebaseAuth.getInstance();
+        remainingAttempts = 5;
     }
 
 
-    public boolean checkUser(String email, String password) {
+    public void checkUser(Context context, String email, String password,
+                          OnSuccessListener<AuthResult> callback) {
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    status = task.isSuccessful();
+                .addOnSuccessListener(authResult -> {
+                    Toast.makeText(context,
+                                    "Login successful.",
+                                    Toast.LENGTH_LONG)
+                            .show();
+                    callback.onSuccess(authResult);
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(context,
+                                    "Email or Password is invalid.",
+                                    Toast.LENGTH_SHORT)
+                            .show();
+                    if (remainingAttempts != 0) {
+                        Toast.makeText(context,
+                                        "Remaining attempts before app exit: " + remainingAttempts,
+                                        Toast.LENGTH_SHORT)
+                                .show();
+                    } else {
+                        System.exit(0);
+                    }
                 });
-        //.addOnSuccessListener(authResult -> status = true)
-        //.addOnFailureListener(e -> status = false);
-        return status;
+
     }
 
+    public boolean isInputDataValid(String email, String password,
+                                    EditText emailField, EditText passwordField) {
+        boolean error = false;
+        if (email.trim().isEmpty()) {
+            emailField.setError("Email cannot be empty.");
+            error = true;
+        }
+        if (password.trim().isEmpty()) {
+            passwordField.setError("Password cannot be empty.");
+            error = true;
+        }
+        return !error;
+    }
+
+    // Return false if no more sign in attempts are remaining
+    public void updateRemainingAttempts() {
+        remainingAttempts--;
+    }
+
+    public int getRemainingAttempts() {
+        return remainingAttempts;
+    }
 }
