@@ -61,9 +61,6 @@ public class LoginViewModel {
             passwordField.setError("Password cannot be empty.");
             error = true;
         }
-        if (error) {
-            return false;
-        }
-        return true;
+        return !error;
     }
 }
