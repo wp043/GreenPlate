@@ -21,14 +21,14 @@ public class NavBarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         navBind = NavigationBarBinding.inflate(getLayoutInflater());
         setContentView(navBind.getRoot());
-        // Deselect all items in the BottomNavigationView
-        navBind.bottomNavigationView.setSelectedItemId(-1);
         replaceFragment(new HomeFragment());
 
         // Listeners to switch screens
         navBind.bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
-            if (itemId == R.id.inputMeals) {
+            if (itemId == R.id.home) {
+                replaceFragment(new HomeFragment());
+            } else if (itemId == R.id.inputMeals) {
                 replaceFragment(new InputMealFragment());
             } else if (itemId == R.id.recipes) {
                 replaceFragment(new RecipeFragment());
