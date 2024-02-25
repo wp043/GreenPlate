@@ -3,6 +3,7 @@ package com.example.greenplate.viewmodels;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -50,4 +51,19 @@ public class LoginViewModel {
         return status;
     }
 
+    public boolean isInputDataValid(Context context, String email, String password, EditText emailField, EditText passwordField) {
+        boolean error = false;
+        if (email.trim().isEmpty()) {
+            emailField.setError("Email cannot be empty.");
+            error = true;
+        }
+        if (password.trim().isEmpty()) {
+            passwordField.setError("Password cannot be empty.");
+            error = true;
+        }
+        if (error) {
+            return false;
+        }
+        return true;
+    }
 }

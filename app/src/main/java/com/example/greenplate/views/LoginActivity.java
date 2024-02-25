@@ -50,34 +50,17 @@ public class LoginActivity extends AppCompatActivity {
             String email = emailEditText.getText().toString();
             String password = passwordEditText.getText().toString();
 
-            if (email.isEmpty()) {
-                Toast.makeText(getApplicationContext(),
-                                "Please enter an email!",
-                                Toast.LENGTH_LONG)
-                        .show();
-                return;
-            }
-
-            if (password.isEmpty()) {
-                Toast.makeText(getApplicationContext(),
-                                "Please enter a password!",
-                                Toast.LENGTH_LONG)
-                        .show();
+            if (!viewModel.isInputDataValid(LoginActivity.this, email, password, emailEditText, passwordEditText)) {
                 return;
             }
 
             viewModel.checkUser(LoginActivity.this, email, password);
         });
 
-
-
-
-            signupButton.setOnClickListener(v -> {
-                // Go to register page
-                Intent intent = new Intent(LoginActivity.this, AccountCreateActivity.class);
-                startActivity(intent);
-            });
-
-
+        signupButton.setOnClickListener(v -> {
+            // Go to register page
+            Intent intent = new Intent(LoginActivity.this, AccountCreateActivity.class);
+            startActivity(intent);
+        });
     }
 }
