@@ -11,10 +11,12 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginViewModel {
     private final FirebaseAuth mAuth;
+    private int remainingAttempts;
 
 
     public LoginViewModel() {
         mAuth = FirebaseAuth.getInstance();
+        remainingAttempts = 5;
     }
 
 
@@ -31,11 +33,18 @@ public class LoginViewModel {
                 .addOnFailureListener(e -> {
                     Toast.makeText(context,
                                     "Email or Password is invalid.",
-                                    Toast.LENGTH_LONG)
+                                    Toast.LENGTH_SHORT)
                             .show();
+                    if (remainingAttempts != 0) {
+                        Toast.makeText(context,
+                                        "Remaining attempts before app exit: " + remainingAttempts,
+                                        Toast.LENGTH_SHORT)
+                                .show();
+                    } else {
+                        System.exit(0);
+                    }
                 });
     }
-
 
     public boolean isInputDataValid(String email, String password,
                                     EditText emailField, EditText passwordField) {
@@ -49,5 +58,14 @@ public class LoginViewModel {
             error = true;
         }
         return !error;
+    }
+
+    // Return false if no more sign in attempts are remaining
+    public void updateRemainingAttempts() {
+        remainingAttempts--;
+    }
+
+    public int getRemainingAttempts() {
+        return remainingAttempts;
     }
 }

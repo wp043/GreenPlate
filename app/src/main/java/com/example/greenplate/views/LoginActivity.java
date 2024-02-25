@@ -45,6 +45,8 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
+
+            viewModel.updateRemainingAttempts();
         });
 
         signupButton.setOnClickListener(v -> {
