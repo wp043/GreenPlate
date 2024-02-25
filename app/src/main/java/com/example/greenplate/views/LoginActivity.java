@@ -29,14 +29,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            Toast.makeText(getApplicationContext(),
-                            "User already logged in.",
-                            Toast.LENGTH_LONG)
-                    .show();
-            mAuth.signOut();
-        }
         setContentView(R.layout.login_screen);
 
         emailEditText = findViewById(R.id.loginEmail);
