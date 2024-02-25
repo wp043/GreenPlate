@@ -18,6 +18,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private Button signupButton;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         signupButton.setOnClickListener(v -> {
-            // Go to register page
+            // Go to create account page
             Intent intent = new Intent(LoginActivity.this, AccountCreateActivity.class);
             startActivity(intent);
         });
