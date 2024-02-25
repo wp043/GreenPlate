@@ -1,16 +1,9 @@
 package com.example.greenplate.viewmodels;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.greenplate.views.LoginActivity;
-import com.example.greenplate.views.NavBarActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,8 +11,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginViewModel {
     final private FirebaseAuth mAuth;
-    private boolean loggedIn;
-
 
     public LoginViewModel() {
         mAuth = FirebaseAuth.getInstance();
@@ -54,9 +45,5 @@ public class LoginViewModel {
             error = true;
         }
         return !error;
-    }
-
-    public boolean isLoggedIn() {
-        return loggedIn;
     }
 }
