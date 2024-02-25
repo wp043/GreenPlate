@@ -13,8 +13,8 @@ import com.example.greenplate.databinding.NavigationBarBinding;
 
 public class NavBarActivity extends AppCompatActivity {
 
-//    ActivityMainBinding bind;
-    NavigationBarBinding navBind;
+    // ActivityMainBinding bind;
+    private NavigationBarBinding navBind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class NavBarActivity extends AppCompatActivity {
     }
 
 
-    private void replaceFragment(Fragment fragment){
+    private void replaceFragment(Fragment fragment)  {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout, fragment);

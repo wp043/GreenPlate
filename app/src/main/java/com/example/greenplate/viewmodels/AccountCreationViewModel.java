@@ -16,7 +16,7 @@ public class AccountCreationViewModel extends ViewModel {
      * No-arg constructor for VM.
      */
     public AccountCreationViewModel() {
-    // this.player = new User(username, email, password);
+        // this.player = new User(username, email, password);
     }
 
     /**

@@ -77,7 +77,8 @@ public class LoginActivity extends AppCompatActivity {
                                                 "Successful.",
                                                 Toast.LENGTH_LONG)
                                         .show();
-                                Intent intent = new Intent(LoginActivity.this, NavBarActivity.class);
+                                Intent intent = new Intent(LoginActivity.this,
+                                        NavBarActivity.class);
                                 startActivity(intent);
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -113,11 +114,11 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-            signupButton.setOnClickListener(v -> {
-                // Go to register page
-                Intent intent = new Intent(LoginActivity.this, AccountCreateActivity.class);
-                startActivity(intent);
-            });
+        signupButton.setOnClickListener(v -> {
+            // Go to register page
+            Intent intent = new Intent(LoginActivity.this, AccountCreateActivity.class);
+            startActivity(intent);
+        });
 
 
     }
