@@ -44,6 +44,7 @@ public class LoginViewModel {
                         System.exit(0);
                     }
                 });
+
     }
 
     public boolean isInputDataValid(String email, String password,

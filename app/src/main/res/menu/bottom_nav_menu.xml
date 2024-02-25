@@ -2,6 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/home"
+        android:icon="@drawable/home"
+        android:title="Home" />
+    <item
         android:id="@+id/inputMeals"
         android:icon="@drawable/inputmeal"
         android:title="Input Meal" />
@@ -16,5 +20,5 @@
     <item
         android:id="@+id/shoppingList"
         android:icon="@drawable/shoppinglist"
-        android:title="Shopping List" />
+        android:title="Shopping" />
 </menu>
