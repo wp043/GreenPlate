@@ -67,55 +67,6 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             viewModel.checkUser(LoginActivity.this, email, password);
-
-            /*
-            // Attempt to write sign in logic within view
-            // Correct functionality
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Toast.makeText(getApplicationContext(),
-                                                "Login successful.",
-                                                Toast.LENGTH_LONG)
-                                        .show();
-                                Intent intent = new Intent(LoginActivity.this, NavBarActivity.class);
-                                startActivity(intent);
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Toast.makeText(getApplicationContext(),
-                                                "Email or password incorrect.",
-                                                Toast.LENGTH_LONG)
-                                        .show();
-                            }
-                        }
-                    });
-
-             */
-
-            /*
-            // Attempt to use ViewModel to sign in
-            // Incorrect functionality, have to click button twice to register
-            // Sign in failed
-            if (!viewModel.checkUser(LoginActivity.this, email, password)) {
-                Toast.makeText(getApplicationContext(),
-                                "Email or Password is invalid.",
-                                Toast.LENGTH_LONG)
-                        .show();
-                return;
-            }
-
-
-            // Sign in successful
-            Toast.makeText(getApplicationContext(),
-                            "Login successful.",
-                            Toast.LENGTH_LONG)
-                    .show();
-            Intent intent = new Intent(LoginActivity.this, HomeFragment.class);
-            startActivity(intent);
-            */
         });
 
 
