@@ -9,10 +9,10 @@
         android:id="@+id/account_register_btn"
         android:layout_width="158dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="34dp"
+        android:layout_marginTop="40dp"
         android:text="Create Account"
-        app:layout_constraintBottom_toTopOf="@+id/progressBar"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/account_confirm_password" />
 
@@ -20,11 +20,11 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="11dp"
+        android:layout_marginStart="1dp"
         android:layout_marginTop="156dp"
         android:layout_marginBottom="26dp"
         android:gravity="center"
-        android:text="Welcome\nRegister today!"
+        android:text="Welcome\nRegister Today!"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/account_create_email"
         app:layout_constraintStart_toStartOf="@+id/account_create_email"
@@ -76,16 +76,5 @@
         android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="176dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="197dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/account_register_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
