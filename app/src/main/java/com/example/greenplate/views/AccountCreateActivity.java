@@ -94,7 +94,7 @@ public class AccountCreateActivity extends AppCompatActivity {
                         throw new RuntimeException(e);
                     }
                     startActivity(new Intent(AccountCreateActivity.this,
-                            LoginActivity.class));
+                            NavBarActivity.class));
                 } else {
                     String error = (Objects.requireNonNull(task.getException())).
                             getLocalizedMessage();
