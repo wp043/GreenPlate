@@ -163,7 +163,7 @@
             app:layout_constraintTop_toBottomOf="@+id/im_calorie_input" />
 
         <TextView
-            android:id="@+id/textView11"
+            android:id="@+id/im_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
