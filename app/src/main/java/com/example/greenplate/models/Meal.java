@@ -24,4 +24,8 @@ public class Meal {
     public void setCalorie(double calorie) {
         this.calorie = calorie;
     }
+
+    public String toString() {
+        return String.format("Meal %s with calorie %.4f", name, calorie);
+    }
 }
