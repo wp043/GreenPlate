@@ -2,12 +2,15 @@ package com.example.greenplate.viewmodels;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 
 import com.example.greenplate.models.Meal;
 import com.example.greenplate.models.GreenPlateStatus;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -16,6 +19,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
 
 
 public class InputMealViewModel extends ViewModel {
@@ -50,6 +58,7 @@ public class InputMealViewModel extends ViewModel {
         }
     }
 
+    // TODO: Add meals of a certain day to a date table
     public GreenPlateStatus addMealToDatabase(Meal meal) {
         if (meal == null) {
             return new GreenPlateStatus(false,
@@ -83,5 +92,176 @@ public class InputMealViewModel extends ViewModel {
         }
         return new GreenPlateStatus(true,
                 String.format("%s added to database successfully", meal));
+    }
+
+    public String getDateToday() {
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
+
+    public void getUserHeight(TextView view) {
+        try {
+            database = FirebaseDatabase.getInstance();
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser == null) {
+                throw new RuntimeException("InputMealViewModel: There's no user signed in.");
+            }
+            myRef = database.getReference("user").child(currentUser.getUid())
+                    .child("information").child("height");
+            myRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if (!task.isSuccessful()) {
+                        Log.e("firebase", "Error getting data", task.getException());
+                    }
+                    else {
+                        Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                        double height = task.getResult().getValue() != null ? task.getResult().getValue(Double.class) : 0;
+                        view.setText("Height: " + String.format("%.1f", height) + " cm");
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.d("Issue", "InputMealViewModel: " + e.getLocalizedMessage());
+        }
+    }
+
+
+    public void getUserWeight(TextView view) {
+        try {
+            database = FirebaseDatabase.getInstance();
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser == null) {
+                throw new RuntimeException("InputMealViewModel: There's no user signed in.");
+            }
+            myRef = database.getReference("user").child(currentUser.getUid())
+                    .child("information").child("weight");
+            myRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if (!task.isSuccessful()) {
+                        Log.e("firebase", "Error getting data", task.getException());
+                    }
+                    else {
+                        Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                        double weight = task.getResult().getValue() != null ? task.getResult().getValue(Double.class) : 0;
+                        view.setText("Weight: " + String.format("%.1f", weight) + " kg");
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.d("Issue", "InputMealViewModel: " + e.getLocalizedMessage());
+        }
+    }
+
+    public void getUserGender(TextView view) {
+        try {
+            database = FirebaseDatabase.getInstance();
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser == null) {
+                throw new RuntimeException("InputMealViewModel: There's no user signed in.");
+            }
+            myRef = database.getReference("user").child(currentUser.getUid())
+                    .child("information").child("gender");
+            myRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if (!task.isSuccessful()) {
+                        Log.e("firebase", "Error getting data", task.getException());
+                    }
+                    else {
+                        Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                        String gender = task.getResult().getValue() != null ? task.getResult().getValue(String.class) : "Unknown";
+                        view.setText("Gender: " + gender);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.d("Issue", "InputMealViewModel: " + e.getLocalizedMessage());
+        }
+    }
+
+    public void getCalorieGoal(TextView view) {
+        try {
+            database = FirebaseDatabase.getInstance();
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser == null) {
+                throw new RuntimeException("InputMealViewModel: There's no user signed in.");
+            }
+            myRef = database.getReference("user").child(currentUser.getUid())
+                    .child("information");
+            Query userInfoQuery = myRef;
+            userInfoQuery.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String gender = dataSnapshot.child("gender").getValue(String.class);
+                    double height = (dataSnapshot.child("height").getValue() != null ? (double) dataSnapshot.child("height").getValue(Long.class) : 0);
+                    double weight = (dataSnapshot.child("weight").getValue() != null ? (double) dataSnapshot.child("weight").getValue(Long.class) : 0);
+                    double age = (dataSnapshot.child("age").getValue() != null ? (double) dataSnapshot.child("age").getValue(Long.class) : 0);
+
+                    // Calculate the sum of height and weight
+                    double bmr;
+                    double amr;
+                    if (gender.equals("Male")) {
+                        bmr = 66.47 + 5.003 * height + 13.75 * weight - 6.755 * age;
+                    } else if (gender.equals("Female")) {
+                        bmr = 655.1 + 1.850 * height + 9.563 * weight - 4.676 * age;
+                    } else {
+                        bmr = 360.785 + 3.4265 * height + 11.6565 * weight - 5.7155 * age;
+                    }
+                    amr = bmr * 1.3;
+                    view.setText("Calorie Goal: " + String.format("%.2f", amr) + " calories");
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Getting Post failed, log a message
+                    Log.w("firebase", "loadPost:onCancelled", databaseError.toException());
+                }
+            });
+
+        } catch (Exception e) {
+            Log.d("Issue", "InputMealViewModel: " + e.getLocalizedMessage());
+        }
+    }
+
+    // TODO: Only add the calories of meals on current date
+    public void getIntakeToday(TextView view) {
+        try {
+            database = FirebaseDatabase.getInstance();
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser == null) {
+                throw new RuntimeException("InputMealViewModel: There's no user signed in.");
+            }
+            myRef = database.getReference("user").child(currentUser.getUid())
+                    .child("meals");
+            Query userInfoQuery = myRef;
+            userInfoQuery.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    long sum = 0;
+                    for (DataSnapshot mealSnapshot: dataSnapshot.getChildren()) {
+                        Long calories = mealSnapshot.child("calories").getValue(Long.class);
+                        sum += calories;
+                    }
+                    view.setText("Total Intake Today: " + sum + " calories");
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Getting Post failed, log a message
+                    Log.w("firebase", "loadPost:onCancelled", databaseError.toException());
+                }
+            });
+
+        } catch (Exception e) {
+            Log.d("Issue", "InputMealViewModel: " + e.getLocalizedMessage());
+        }
     }
 }
