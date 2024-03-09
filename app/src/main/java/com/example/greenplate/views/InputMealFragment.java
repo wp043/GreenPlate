@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -76,6 +77,25 @@ public class InputMealFragment extends Fragment {
         nameEditText = view.findViewById(R.id.im_mealname_input);
         caloriesEditText = view.findViewById(R.id.im_calorie_input);
         submitButton = view.findViewById(R.id.im_submit);
+
+        TextView date = (TextView) view.findViewById(R.id.im_date);
+        TextView height = (TextView) view.findViewById(R.id.im_height_display);
+        TextView weight = (TextView) view.findViewById(R.id.im_weight_display);
+        TextView gender = (TextView) view.findViewById(R.id.im_gender_display);
+        TextView goal = (TextView) view.findViewById(R.id.im_goal_display);
+        TextView intake = (TextView) view.findViewById(R.id.im_daily_intake);
+        String dateText = "Today's Date: ";
+        String heightText = "Height: ";
+        String weightText = "Weight: ";
+        String genderText = "Gender: ";
+        String goalText = "Calorie Goal: ";
+        String intakeText = "Total Intake Today: " + "calories";
+        date.setText(dateText);
+        height.setText(heightText);
+        weight.setText(weightText);
+        gender.setText(genderText);
+        goal.setText(goalText);
+        intake.setText(intakeText);
 
         submitButton.setOnClickListener(v -> {
             Meal currMeal = new Meal(nameEditText.getText().toString(), Double.parseDouble(caloriesEditText.getText().toString()));
