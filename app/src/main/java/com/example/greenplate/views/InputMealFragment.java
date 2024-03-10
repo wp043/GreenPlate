@@ -1,15 +1,17 @@
 package com.example.greenplate.views;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.greenplate.R;
@@ -110,10 +112,25 @@ public class InputMealFragment extends Fragment {
             if (inputMealVM.isInputDataValid(name, calories, nameEditText, caloriesEditText)) {
                 Meal currMeal = new Meal(nameEditText.getText().toString(), Long.parseLong(calories));
                 GreenPlateStatus status = inputMealVM.addMealToDatabase(currMeal);
+                nameEditText.getText().clear();
+                caloriesEditText.getText().clear();
+                hideKeyboardFrom(getContext(), view);
+                Toast.makeText(getContext(),
+                                "Meal added successfully.",
+                                Toast.LENGTH_SHORT)
+                        .show();
                 Log.d("Info", status.toString());
             }
         });
 
         return view;
+    }
+
+    /**
+     * Method for closing the keyboard in fragment.
+     */
+    private void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }
