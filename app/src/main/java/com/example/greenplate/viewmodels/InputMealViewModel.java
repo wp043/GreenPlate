@@ -104,7 +104,7 @@ public class InputMealViewModel extends ViewModel {
         if (calories.trim().isEmpty()) {
             caloriesField.setError("Estimated calorie count cannot be empty.");
             error = true;
-        } else if (Integer.parseInt(calories) == 0 || Integer.parseInt(calories) > 100000) {
+        } else if (Integer.parseInt(calories) > 100000) {
             caloriesField.setError("Estimated calorie count must be a valid number.");
             error = true;
         }
