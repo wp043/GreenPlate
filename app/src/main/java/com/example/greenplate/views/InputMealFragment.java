@@ -88,23 +88,13 @@ public class InputMealFragment extends Fragment {
         TextView intake = (TextView) view.findViewById(R.id.im_daily_intake);
 
         String dateText = "Today's Date: " + inputMealVM.getDateToday();
-//        String heightText = "Height: " + inputMealVM.getUserHeight();
-//        String weightText = "Weight: ";
-//        String genderText = "Gender: ";
-//        String goalText = "Calorie Goal: ";
-//        String intakeText = "Total Intake Today: " + "calories";
+        date.setText(dateText);
+
         inputMealVM.getUserHeight(height);
         inputMealVM.getUserWeight(weight);
         inputMealVM.getUserGender(gender);
         inputMealVM.getCalorieGoal(goal);
         inputMealVM.getIntakeToday(intake);
-
-        date.setText(dateText);
-//        height.setText(heightText);
-//        weight.setText(weightText);
-//        gender.setText(genderText);
-//        goal.setText(goalText);
-//        intake.setText(intakeText);
 
         submitButton.setOnClickListener(v -> {
             String name = nameEditText.getText().toString();
