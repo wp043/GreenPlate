@@ -216,7 +216,8 @@ public class InputMealViewModel extends ViewModel {
             userInfoQuery.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    String gender = dataSnapshot.child("gender").getValue(String.class);
+                    String gender = dataSnapshot.child("gender").getValue() != null
+                            ? dataSnapshot.child("gender").getValue(String.class) : "Unknown";
                     double height = (dataSnapshot.child("height").getValue() != null
                             ? (double) dataSnapshot.child("height").getValue(Long.class) : 0);
                     double weight = (dataSnapshot.child("weight").getValue() != null
