@@ -24,7 +24,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 
 
 public class InputMealViewModel extends ViewModel {
@@ -43,23 +42,23 @@ public class InputMealViewModel extends ViewModel {
             myRef = database.getReference("user").child(currentUser.getUid())
                     .child("meals");
 
-//            Do some testing w/o UI
-//            addMealToDatabase(null);
-//            addMealToDatabase(new Meal(null, 0.));
-//            addMealToDatabase(new Meal("Neg meal", -1.0));
-//            addMealToDatabase(new Meal("    ", 12.0));
-//            GreenPlateStatus s1 = addMealToDatabase(new Meal("Test meal 1", 120.0));
-//            GreenPlateStatus s2 = addMealToDatabase(new Meal("Test meal 1", 150.4));
-//            GreenPlateStatus s3 = addMealToDatabase(new Meal("Test meal 3", 741.23));
-//            Log.d("Info", s1.toString());
-//            Log.d("Info", s2.toString());
-//            Log.d("Info", s3.toString());
+            //Do some testing w/o UI
+            //addMealToDatabase(null);
+            //addMealToDatabase(new Meal(null, 0.));
+            //addMealToDatabase(new Meal("Neg meal", -1.0));
+            //addMealToDatabase(new Meal("    ", 12.0));
+            //GreenPlateStatus s1 = addMealToDatabase(new Meal("Test meal 1", 120.0));
+            //GreenPlateStatus s2 = addMealToDatabase(new Meal("Test meal 1", 150.4));
+            //GreenPlateStatus s3 = addMealToDatabase(new Meal("Test meal 3", 741.23));
+            //Log.d("Info", s1.toString());
+            //Log.d("Info", s2.toString());
+            //Log.d("Info", s3.toString());
         } catch (Exception e) {
             Log.d("Issue", "InputMealViewModel: " + e.getLocalizedMessage());
         }
     }
 
-    // TODO: Add meals of a certain day to a date table
+    // todo: Add meals of a certain day to a date table
     public GreenPlateStatus addMealToDatabase(Meal meal) {
         if (meal == null) {
             return new GreenPlateStatus(false,
@@ -105,7 +104,7 @@ public class InputMealViewModel extends ViewModel {
         if (calories.trim().isEmpty()) {
             caloriesField.setError("Estimated calorie count cannot be empty.");
             error = true;
-        } else if (Integer.parseInt(calories) == 0 || Integer.parseInt(calories) > 100000){
+        } else if (Integer.parseInt(calories) == 0 || Integer.parseInt(calories) > 100000) {
             caloriesField.setError("Estimated calorie count must be a valid number.");
             error = true;
         }
@@ -133,10 +132,10 @@ public class InputMealViewModel extends ViewModel {
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
                     if (!task.isSuccessful()) {
                         Log.e("firebase", "Error getting data", task.getException());
-                    }
-                    else {
+                    } else {
                         Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                        double height = task.getResult().getValue() != null ? task.getResult().getValue(Double.class) : 0;
+                        double height = task.getResult().getValue() != null
+                                ? task.getResult().getValue(Double.class) : 0;
                         view.setText("Height: " + String.format("%.1f", height) + " cm");
                     }
                 }
@@ -162,10 +161,10 @@ public class InputMealViewModel extends ViewModel {
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
                     if (!task.isSuccessful()) {
                         Log.e("firebase", "Error getting data", task.getException());
-                    }
-                    else {
+                    } else {
                         Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                        double weight = task.getResult().getValue() != null ? task.getResult().getValue(Double.class) : 0;
+                        double weight = task.getResult().getValue() != null
+                                ? task.getResult().getValue(Double.class) : 0;
                         view.setText("Weight: " + String.format("%.1f", weight) + " kg");
                     }
                 }
@@ -190,10 +189,10 @@ public class InputMealViewModel extends ViewModel {
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
                     if (!task.isSuccessful()) {
                         Log.e("firebase", "Error getting data", task.getException());
-                    }
-                    else {
+                    } else {
                         Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                        String gender = task.getResult().getValue() != null ? task.getResult().getValue(String.class) : "Unknown";
+                        String gender = task.getResult().getValue() != null
+                                ? task.getResult().getValue(String.class) : "Unknown";
                         view.setText("Gender: " + gender);
                     }
                 }
@@ -218,9 +217,12 @@ public class InputMealViewModel extends ViewModel {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     String gender = dataSnapshot.child("gender").getValue(String.class);
-                    double height = (dataSnapshot.child("height").getValue() != null ? (double) dataSnapshot.child("height").getValue(Long.class) : 0);
-                    double weight = (dataSnapshot.child("weight").getValue() != null ? (double) dataSnapshot.child("weight").getValue(Long.class) : 0);
-                    double age = (dataSnapshot.child("age").getValue() != null ? (double) dataSnapshot.child("age").getValue(Long.class) : 0);
+                    double height = (dataSnapshot.child("height").getValue() != null
+                            ? (double) dataSnapshot.child("height").getValue(Long.class) : 0);
+                    double weight = (dataSnapshot.child("weight").getValue() != null
+                            ? (double) dataSnapshot.child("weight").getValue(Long.class) : 0);
+                    double age = (dataSnapshot.child("age").getValue() != null
+                            ? (double) dataSnapshot.child("age").getValue(Long.class) : 0);
 
                     // Calculate the sum of height and weight
                     double bmr;
@@ -233,7 +235,8 @@ public class InputMealViewModel extends ViewModel {
                         bmr = 360.785 + 3.4265 * height + 11.6565 * weight - 5.7155 * age;
                     }
                     amr = bmr * 1.3;
-                    view.setText("Calorie Goal: " + String.format("%.2f", amr) + " calories");
+                    int goal = (int) Math.round(amr);
+                    view.setText("Calorie Goal: " + goal + " calories");
                 }
 
                 @Override
@@ -248,7 +251,7 @@ public class InputMealViewModel extends ViewModel {
         }
     }
 
-    // TODO: Only add the calories of meals on current date
+    // todo: Only add the calories of meals on current date
     public void getIntakeToday(TextView view) {
         try {
             database = FirebaseDatabase.getInstance();

@@ -100,7 +100,8 @@ public class InputMealFragment extends Fragment {
             String name = nameEditText.getText().toString();
             String calories = caloriesEditText.getText().toString();
             if (inputMealVM.isInputDataValid(name, calories, nameEditText, caloriesEditText)) {
-                Meal currMeal = new Meal(nameEditText.getText().toString(), Long.parseLong(calories));
+                Meal currMeal = new Meal(nameEditText.getText().toString(),
+                        Long.parseLong(calories));
                 GreenPlateStatus status = inputMealVM.addMealToDatabase(currMeal);
                 nameEditText.getText().clear();
                 caloriesEditText.getText().clear();
@@ -116,11 +117,10 @@ public class InputMealFragment extends Fragment {
         return view;
     }
 
-    /**
-     * Method for closing the keyboard in fragment.
-     */
+    // Method for closing the keyboard in fragment.
     private void hideKeyboardFrom(Context context, View view) {
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager)
+                context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }
