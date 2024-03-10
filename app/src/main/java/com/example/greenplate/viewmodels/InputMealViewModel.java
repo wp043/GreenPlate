@@ -2,6 +2,7 @@ package com.example.greenplate.viewmodels;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -92,6 +93,27 @@ public class InputMealViewModel extends ViewModel {
         }
         return new GreenPlateStatus(true,
                 String.format("%s added to database successfully", meal));
+    }
+
+    public boolean isInputDataValid(String name, String calories,
+                                    EditText nameField, EditText caloriesField) {
+        boolean error = false;
+        if (name.trim().isEmpty()) {
+            nameField.setError("Name of meal cannot be empty.");
+            error = true;
+        }
+        if (calories.trim().isEmpty()) {
+            caloriesField.setError("Estimated calorie count cannot be empty.");
+            error = true;
+        } else {
+            try {
+                Integer.parseInt(calories);
+            } catch (Exception e) {
+                caloriesField.setError("Estimated calorie count must be an integer.");
+                error = true;
+            }
+        }
+        return !error;
     }
 
     public String getDateToday() {
@@ -247,8 +269,10 @@ public class InputMealViewModel extends ViewModel {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     long sum = 0;
                     for (DataSnapshot mealSnapshot: dataSnapshot.getChildren()) {
-                        Long calories = mealSnapshot.child("calories").getValue(Long.class);
-                        sum += calories;
+                        if (mealSnapshot.child("calories").getValue() != null) {
+                            Long calories = mealSnapshot.child("calories").getValue(Long.class);
+                            sum += calories;
+                        }
                     }
                     view.setText("Total Intake Today: " + sum + " calories");
                 }

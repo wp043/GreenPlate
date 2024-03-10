@@ -105,9 +105,13 @@ public class InputMealFragment extends Fragment {
 //        intake.setText(intakeText);
 
         submitButton.setOnClickListener(v -> {
-            Meal currMeal = new Meal(nameEditText.getText().toString(), Double.parseDouble(caloriesEditText.getText().toString()));
-            GreenPlateStatus status = inputMealVM.addMealToDatabase(currMeal);
-            Log.d("Info", status.toString());
+            String name = nameEditText.getText().toString();
+            String calories = caloriesEditText.getText().toString();
+            if (inputMealVM.isInputDataValid(name, calories, nameEditText, caloriesEditText)) {
+                Meal currMeal = new Meal(nameEditText.getText().toString(), Long.parseLong(calories));
+                GreenPlateStatus status = inputMealVM.addMealToDatabase(currMeal);
+                Log.d("Info", status.toString());
+            }
         });
 
         return view;
