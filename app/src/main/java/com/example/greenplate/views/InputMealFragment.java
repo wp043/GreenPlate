@@ -1,11 +1,23 @@
-package com.example.greenplate;
+package com.example.greenplate.views;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+
+import com.example.greenplate.R;
+import com.example.greenplate.models.GreenPlateStatus;
+import com.example.greenplate.models.Meal;
+import com.example.greenplate.viewmodels.InputMealViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,13 +30,18 @@ public class InputMealFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private InputMealViewModel inputMealVM;
 
     // Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private EditText nameEditText;
+    private EditText caloriesEditText;
+    private Button submitButton;
 
     public InputMealFragment() {
         // Required empty public constructor
+        inputMealVM = new InputMealViewModel();
     }
 
     /**
@@ -58,6 +75,52 @@ public class InputMealFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_input_meal, container, false);
+        View view = inflater.inflate(R.layout.fragment_input_meal, container, false);
+        nameEditText = view.findViewById(R.id.im_mealname_input);
+        caloriesEditText = view.findViewById(R.id.im_calorie_input);
+        submitButton = view.findViewById(R.id.im_submit);
+
+        TextView date = (TextView) view.findViewById(R.id.im_date);
+        TextView height = (TextView) view.findViewById(R.id.im_height_display);
+        TextView weight = (TextView) view.findViewById(R.id.im_weight_display);
+        TextView gender = (TextView) view.findViewById(R.id.im_gender_display);
+        TextView goal = (TextView) view.findViewById(R.id.im_goal_display);
+        TextView intake = (TextView) view.findViewById(R.id.im_daily_intake);
+
+        String dateText = "Today's Date: " + inputMealVM.getDateToday();
+        date.setText(dateText);
+
+        inputMealVM.getUserHeight(height);
+        inputMealVM.getUserWeight(weight);
+        inputMealVM.getUserGender(gender);
+        inputMealVM.getCalorieGoal(goal);
+        inputMealVM.getIntakeToday(intake);
+
+        submitButton.setOnClickListener(v -> {
+            String name = nameEditText.getText().toString();
+            String calories = caloriesEditText.getText().toString();
+            if (inputMealVM.isInputDataValid(name, calories, nameEditText, caloriesEditText)) {
+                Meal currMeal = new Meal(nameEditText.getText().toString(),
+                        Long.parseLong(calories));
+                GreenPlateStatus status = inputMealVM.addMealToDatabase(currMeal);
+                nameEditText.getText().clear();
+                caloriesEditText.getText().clear();
+                hideKeyboardFrom(getContext(), view);
+                Toast.makeText(getContext(),
+                                "Meal added successfully.",
+                                Toast.LENGTH_SHORT)
+                        .show();
+                Log.d("Info", status.toString());
+            }
+        });
+
+        return view;
+    }
+
+    // Method for closing the keyboard in fragment.
+    private void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager)
+                context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }
