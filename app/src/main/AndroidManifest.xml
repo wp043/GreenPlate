@@ -48,6 +48,9 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.GreenPlate">
         </activity>
+        <activity
+            android:name=".views.PersonalActivity">
+        </activity>
 
 
     </application>

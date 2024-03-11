@@ -11,69 +11,124 @@
         android:layout_above="@id/bottomNavigationView">
 
         <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:gravity="center"
-            android:padding="16dp">
+            android:padding="40dp">
 
-            <TextView
-                android:id="@+id/textViewHeading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Edit Personal Information"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="32dp"/>
-
-            <EditText
-                android:id="@+id/editTextHeight"
+            <!-- Display Current User Information -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter height (cm)"
-                android:inputType="numberDecimal"
-                android:layout_marginBottom="16dp"/>
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="8dp">
 
-            <EditText
-                android:id="@+id/editTextWeight"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter weight (kg)"
-                android:inputType="numberDecimal"
-                android:layout_marginBottom="16dp"/>
-
-            <RadioGroup
-                android:id="@+id/radioGroupGender"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
-
-                <RadioButton
-                    android:id="@+id/radioButtonMale"
+                <TextView
+                    android:id="@+id/currentUserInfoHeading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Male"/>
+                    android:text="Current Information"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp"/>
 
-                <RadioButton
-                    android:id="@+id/radioButtonFemale"
+                <TextView
+                    android:id="@+id/currentHeight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Female"/>
-            </RadioGroup>
+                    android:text="Height: -- cm"
+                    android:layout_marginBottom="8dp"
+                    android:textSize="15sp"
+                    />
 
-            <Button
-                android:id="@+id/buttonSubmit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Submit"/>
-            <Button
-                android:id="@+id/buttonBackToHome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Back to Home Screen"/>
+                <TextView
+                    android:id="@+id/currentWeight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Weight: -- kg"
+                    android:layout_marginBottom="8dp"
+                    android:textSize="15sp"
+                    />
 
+                <TextView
+                    android:id="@+id/currentGender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gender: --"
+                    android:textSize="15sp"
+                    />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/textViewHeading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Edit Personal Information"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp"/>
+
+                <EditText
+                    android:id="@+id/editTextHeight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter height (cm)"
+                    android:inputType="numberDecimal"
+                    android:layout_marginBottom="16dp"/>
+
+                <EditText
+                    android:id="@+id/editTextWeight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter weight (kg)"
+                    android:inputType="numberDecimal"
+                    android:layout_marginBottom="16dp"/>
+
+                <RadioGroup
+                    android:id="@+id/radioGroupGender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+
+                    <RadioButton
+                        android:id="@+id/radioButtonMale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Male"/>
+
+                    <RadioButton
+                        android:id="@+id/radioButtonFemale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Female"/>
+                </RadioGroup>
+
+                <Button
+                    android:id="@+id/buttonSubmit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Submit"
+                    android:layout_marginBottom="3dp"/>
+
+                <Button
+                    android:id="@+id/buttonBackToHome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Back to Home Screen"/>
+
+            </LinearLayout>
         </LinearLayout>
     </FrameLayout>
 
@@ -86,5 +141,3 @@
         app:menu="@menu/bottom_nav_menu"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-

@@ -8,6 +8,7 @@ public class Personal {
     public Personal(String height, String weight, String gender) {
         this.height = height;
         this.weight = weight;
+        this.gender = gender;
     }
 
     public String getHeight() {
