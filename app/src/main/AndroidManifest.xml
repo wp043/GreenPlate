@@ -48,8 +48,13 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.GreenPlate">
         </activity>
+
+        <!-- Personal Information -->
         <activity
-            android:name=".views.PersonalActivity">
+            android:name=".views.PersonalActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.GreenPlate">
         </activity>
 
 
