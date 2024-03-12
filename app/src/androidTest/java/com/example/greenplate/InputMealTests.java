@@ -156,19 +156,31 @@ public class InputMealTests {
     public void testAddValidMeal() throws InterruptedException {
         InputMealViewModel vm = new InputMealViewModel();
 
+        String format = "%s added to database successfully";
+
         Meal meal1 = new Meal("Test meal 1", 50.25);
         GreenPlateStatus status = vm.addMealToDatabase(meal1);
         assertTrue(status.isSuccess());
-        assertEquals(String.format("%s added to database successfully", meal1), status.getMessage());
+        assertEquals(String.format(format, meal1), status.getMessage());
 
-        // Check number of records: should be 0
+        Meal meal2 = new Meal("Test meal 2", 47.251);
+        status = vm.addMealToDatabase(meal2);
+        assertTrue(status.isSuccess());
+        assertEquals(String.format(format, meal2), status.getMessage());
+
+        Meal meal3 = new Meal("Test meal 2", 100.041);
+        status = vm.addMealToDatabase(meal3);
+        assertTrue(status.isSuccess());
+        assertEquals(String.format(format, meal3), status.getMessage());
+
+        // Check number of records: should be 3
         // This is async, so we need a CountDownLatch
         CountDownLatch latch = new CountDownLatch(1);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 long numberOfMeals = dataSnapshot.getChildrenCount();
-                assertEquals(1, numberOfMeals);
+                assertEquals(3, numberOfMeals);
                 // Release the latch to signal completion
                 latch.countDown();
             }

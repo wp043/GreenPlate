@@ -10,8 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.greenplate.R;
 import com.example.greenplate.viewmodels.UserInfoViewModel;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.Navigation;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 public class PersonalActivity extends AppCompatActivity {
@@ -30,15 +30,17 @@ public class PersonalActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.personal_info); //connect to XML file (personal_info.xml)
+        setContentView(R.layout.personal_info);
 
         userInfoVM = new ViewModelProvider(this).get(UserInfoViewModel.class);
+
 
 
         displayHeightField=findViewById(R.id.currentHeight);
         displayWeightField=findViewById(R.id.currentWeight);
         displayGenderField=findViewById(R.id.currentGender);
         editButton=findViewById(R.id.buttonEdit);
+
 
 
         /**
@@ -52,7 +54,6 @@ public class PersonalActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
 
 
         /**
@@ -97,3 +98,17 @@ public class PersonalActivity extends AppCompatActivity {
     }
 
 }
+
+
+        BottomNavigationView btm = findViewById(R.id.bottomNavigationView);
+        btm.setOnNavigationItemSelectedListener(item -> {
+            Intent intent = new Intent(PersonalActivity.this, NavBarActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            int itemId = item.getItemId();
+            intent.putExtra("NAVIGATION_ID", itemId);
+            startActivity(intent);
+            return true;
+        });
+    }
+}
+
