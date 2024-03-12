@@ -12,6 +12,7 @@ import com.example.greenplate.R;
 import com.example.greenplate.viewmodels.UserInfoViewModel;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.Navigation;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 public class PersonalActivity extends AppCompatActivity {
@@ -52,6 +53,17 @@ public class PersonalActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        BottomNavigationView btm = findViewById(R.id.bottomNavigationView);
+        btm.setOnNavigationItemSelectedListener(item -> {
+            Intent intent = new Intent(PersonalActivity.this, NavBarActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            int itemId = item.getItemId();
+            intent.putExtra("NAVIGATION_ID", itemId);
+            startActivity(intent);
+            return true;
+        });
+
 
 
 
