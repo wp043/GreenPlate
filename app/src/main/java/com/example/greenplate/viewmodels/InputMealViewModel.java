@@ -179,6 +179,34 @@ public class InputMealViewModel extends ViewModel {
         }
     }
 
+    public void getUserAge(TextView view) {
+        try {
+            database = FirebaseDatabase.getInstance();
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser == null) {
+                throw new RuntimeException("InputMealViewModel: There's no user signed in.");
+            }
+            myRef = database.getReference("user").child(currentUser.getUid())
+                    .child("information").child("age");
+            myRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if (!task.isSuccessful()) {
+                        Log.e("firebase", "Error getting data", task.getException());
+                    } else {
+                        Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                        int age = task.getResult().getValue() != null
+                                ? task.getResult().getValue(Integer.class) : 0;
+                        view.setText("Age: " + age);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.d("Issue", "InputMealViewModel: " + e.getLocalizedMessage());
+        }
+    }
+
     public void getUserGender(TextView view) {
         try {
             database = FirebaseDatabase.getInstance();
