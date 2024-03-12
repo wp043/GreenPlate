@@ -118,9 +118,7 @@ public class InputMealFragment extends Fragment {
             }
         });
 
-
         caloriesLeftButton.setOnClickListener(v -> {
-
             String goalText = goal.getText().toString();
             String intakeText = intake.getText().toString();
 
@@ -128,23 +126,16 @@ public class InputMealFragment extends Fragment {
             long caloriesIntake = 0;
 
             try {
-                // 从TextView中提取值
                 caloriesGoal = Integer.parseInt(goalText.replaceAll("[^0-9]", ""));
                 caloriesIntake = Long.parseLong(intakeText.replaceAll("[^0-9]", ""));
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
 
-            if (caloriesGoal == 0) {
-                Toast.makeText(getContext(), "Please update your information to get your calorie goal.", Toast.LENGTH_LONG).show();
-                return;
-            }
-
             Intent intent = new Intent(getContext(), CaloriesLeftActivity.class);
             intent.putExtra("caloriesIntake", caloriesIntake);
             intent.putExtra("caloriesGoal", caloriesGoal);
             startActivity(intent);
-
         });
 
         return view;

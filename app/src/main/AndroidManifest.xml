@@ -64,6 +64,13 @@
             android:theme="@style/Theme.GreenPlate">
         </activity>
 
+        <!-- Daily Calories Chart-->
+        <activity
+            android:name=".views.CaloriesLeftActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.GreenPlate">
+        </activity>
 
     </application>
 

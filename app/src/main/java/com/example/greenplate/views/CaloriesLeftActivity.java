@@ -1,31 +1,69 @@
 package com.example.greenplate.views;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+
+import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
+import com.anychart.chart.common.dataentry.DataEntry;
+import com.anychart.chart.common.dataentry.ValueDataEntry;
+import com.anychart.charts.Pie;
+import com.anychart.enums.Align;
+import com.anychart.enums.LegendLayout;
 import com.example.greenplate.R;
-import com.example.greenplate.viewmodels.CaloriesLeftViewModel;
+import com.example.greenplate.viewmodels.InputMealViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CaloriesLeftActivity extends AppCompatActivity {
+    private TextView backToHome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calories_left);
 
-        CaloriesLeftViewModel caloriesLeftViewModel = new ViewModelProvider(this).get(CaloriesLeftViewModel.class);
+        Intent intent = getIntent();
 
-        // 从InputMealFragment获取卡路里摄入量和目标值
-        long caloriesIntake = getIntent().getLongExtra("caloriesIntake", 0);
-        int caloriesGoal = getIntent().getIntExtra("caloriesGoal", 0);
+        long caloriesIntake = intent.getLongExtra("caloriesIntake", 0);
+        int caloriesGoal = intent.getIntExtra("caloriesGoal", 0);
+        if(caloriesGoal < caloriesIntake){
+            caloriesIntake = caloriesGoal;
+        }
+        AnyChartView anyChartView = (AnyChartView) findViewById(R.id.any_chart_view);
+        List<DataEntry> data = new ArrayList<>();
+        data.add(new ValueDataEntry("Calories Consumed", caloriesIntake));
+        data.add(new ValueDataEntry("Calories left", caloriesGoal - caloriesIntake));
 
-        caloriesLeftViewModel.setCaloriesIntake(caloriesIntake);
-        caloriesLeftViewModel.setCaloriesGoal(caloriesGoal);
+        Pie pie = AnyChart.pie();
+        pie.data(data);
 
-        AnyChartView anyChartView = findViewById(R.id.any_chart_view);
-        anyChartView.setChart(caloriesLeftViewModel.createPieChart());
+        pie.title("Calories left today");
+
+        pie.legend()
+                .position("right")
+                .itemsLayout(LegendLayout.VERTICAL)
+                .align(Align.CENTER);
+
+
+        anyChartView.setChart(pie);
+        pie.draw(true);
+
+        backToHome = findViewById(R.id.back_to_home);
+
+        backToHome.setOnClickListener(event -> {
+            startActivity(new Intent(CaloriesLeftActivity.this,
+                    HomeFragment.class));
+        });
+
     }
+
+
 }
