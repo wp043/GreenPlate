@@ -24,37 +24,21 @@ public class PersonalUpdateActivity extends AppCompatActivity {
     private EditText weightField;
     private RadioGroup genderGroup;
     private Button submitButton;
-    private Button backButton;
 
-    private TextView displayHeightField;
-    private TextView displayWeightField;
-    private TextView displayGenderField;
+    private Button cancelButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.personal_info); //connect to XML file (personal_info.xml)
+        setContentView(R.layout.personal_info_edit); //connect to XML file (personal_info_edit.xml)
 
         userInfoVM = new ViewModelProvider(this).get(UserInfoViewModel.class);
         heightField = findViewById(R.id.editTextHeight);
         weightField = findViewById(R.id.editTextWeight);
         genderGroup = findViewById(R.id.radioGroupGender);
         submitButton = findViewById(R.id.buttonSubmit);
-        backButton = findViewById(R.id.buttonBackToHome);
-
-        displayHeightField=findViewById(R.id.currentHeight);
-        displayWeightField=findViewById(R.id.currentWeight);
-        displayGenderField=findViewById(R.id.currentGender);
-
-        // Observe the LiveData from the ViewModel
-        //update the personal displayed gender, height, weight if there's any change in the database
-        userInfoVM.getUserPersonalInfo().observe(this, personal -> {
-            if (personal != null) {
-                displayHeightField.setText(personal.getHeight());
-                displayWeightField.setText(personal.getWeight());
-                displayGenderField.setText(personal.getGender());
-            }
-        });
+        cancelButton = findViewById(R.id.buttonCancel);
 
         submitButton.setOnClickListener(v -> {
             String height = heightField.getText().toString().trim();
@@ -66,20 +50,24 @@ public class PersonalUpdateActivity extends AppCompatActivity {
                 Personal person = new Personal(height, weight, gender);
                 userInfoVM.updatePersonalInformation(person);
                 Toast.makeText(PersonalUpdateActivity.this, "Information updated successfully", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(PersonalUpdateActivity.this, PersonalActivity.class);
+                startActivity(intent);
             } else {
                 Toast.makeText(PersonalUpdateActivity.this, "Please fill in all fields correctly", Toast.LENGTH_SHORT).show();
             }
         });
 
-        backButton.setOnClickListener(v -> finish());
+        /**
+         * Click cancelButton to go back to PersonalActivity
+         */
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PersonalUpdateActivity.this, PersonalActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
-//    private void setSelectedGenderRadioButton(String gender) {
-//        if (gender.equals("Male")) {
-//            ((RadioButton)findViewById(R.id.radioButtonMale)).setChecked(true);
-//        } else if (gender.equals("Female")) {
-//            ((RadioButton)findViewById(R.id.radioButtonFemale)).setChecked(true);
-//        }
-//        // Add more conditions if there are more genders
-//    }
 }

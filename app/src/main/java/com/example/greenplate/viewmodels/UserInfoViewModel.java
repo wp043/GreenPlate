@@ -26,12 +26,21 @@ public class UserInfoViewModel extends ViewModel {
     private DatabaseReference userRef;
     private final MutableLiveData<Personal> userPersonalInfo = new MutableLiveData<>();
 
+    /**
+     * User database structure:
+     * user:
+     *    userID:
+     *         height: 
+     *         weight:
+     *         gender:
+     */
     public UserInfoViewModel() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             userRef = FirebaseDatabase.getInstance().getReference("user")
-                    .child(currentUser.getUid());  //.child("information");
-            fetchPersonalInformation(); //!!这里有问题！！
+                    .child(currentUser.getUid()); 
+            // Fetch the personal information every time PersonalActivity is navigated to
+            fetchPersonalInformation(); 
         } else {
             throw new RuntimeException("UserInfoViewModel: There's no user signed in.");
         }
@@ -43,10 +52,7 @@ public class UserInfoViewModel extends ViewModel {
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Personal personal = dataSnapshot.getValue(Personal.class); //!!这里有问题！！
                 if(dataSnapshot != null) {
-                    //dataSnapshot.getValue() returns a hashmap {weight: 1, height:2, gender:Female}
-                    //Log.d("TAG", dataSnapshot.getValue().getClass().toString());
                     String height = dataSnapshot.child("height").getValue(String.class);
                     String weight = dataSnapshot.child("weight").getValue(String.class);
                     String gender = dataSnapshot.child("gender").getValue(String.class);
