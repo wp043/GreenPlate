@@ -256,28 +256,28 @@ public class InputMealViewModel extends ViewModel {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     String gender = dataSnapshot.child("gender").getValue() != null
                             ? dataSnapshot.child("gender").getValue(String.class) : "Unknown";
-                    String height = (dataSnapshot.child("height").getValue() != null
-                            ? dataSnapshot.child("height").getValue(String.class) : "0");
-                    String weight = (dataSnapshot.child("weight").getValue() != null
-                            ? dataSnapshot.child("weight").getValue(String.class) : "0");
-                    String age = (dataSnapshot.child("age").getValue() != null
-                            ? dataSnapshot.child("age").getValue(String.class) : "0");
+                    double height = (dataSnapshot.child("height").getValue() != null
+                            ? dataSnapshot.child("height").getValue(Double.class) : 0.0);
+                    double weight = (dataSnapshot.child("weight").getValue() != null
+                            ? dataSnapshot.child("weight").getValue(Double.class) : 0.0);
+                    int age = (dataSnapshot.child("age").getValue() != null
+                            ? dataSnapshot.child("age").getValue(Integer.class) : 0);
 
                     // Calculate the sum of height and weight
                     double bmr;
                     double amr;
                     if (gender.equals("Male")) {
-                        bmr = 66.47 + 5.003 * Double.parseDouble(height)
-                                + 13.75 * Double.parseDouble(weight)
-                                - 6.755 * Double.parseDouble(age);
+                        bmr = 66.47 + 5.003 * height
+                                + 13.75 * weight
+                                - 6.755 * age;
                     } else if (gender.equals("Female")) {
-                        bmr = 655.1 + 1.850 * Double.parseDouble(height)
-                                + 9.563 * Double.parseDouble(weight)
-                                - 4.676 * Double.parseDouble(age);
+                        bmr = 655.1 + 1.850 * height
+                                + 9.563 * weight
+                                - 4.676 * age;
                     } else {
-                        bmr = 360.785 + 3.4265 * Double.parseDouble(height)
-                                + 11.6565 * Double.parseDouble(weight)
-                                - 5.7155 * Double.parseDouble(age);
+                        bmr = 360.785 + 3.4265 * height
+                                + 11.6565 * weight
+                                - 5.7155 * age;
                     }
                     amr = bmr * 1.3;
                     int goal = (int) Math.round(amr);
