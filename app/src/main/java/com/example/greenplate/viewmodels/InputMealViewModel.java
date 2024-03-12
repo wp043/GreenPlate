@@ -66,11 +66,11 @@ public class InputMealViewModel extends ViewModel {
         }
         if (meal.getCalorie() < 0.) {
             return new GreenPlateStatus(false,
-                    "Add meal: can't a meal with negative calorie");
+                    "Add meal: can't have a meal with negative calorie");
         }
         if (meal.getName() == null || TextUtils.isEmpty(meal.getName().trim())) {
             return new GreenPlateStatus(false,
-                    "Add meal: can't a meal with null or blank name");
+                    "Add meal: can't have a meal with null or blank name");
         }
         try {
             FirebaseUser currentUser = mAuth.getCurrentUser();
