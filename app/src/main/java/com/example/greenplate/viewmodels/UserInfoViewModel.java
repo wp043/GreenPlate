@@ -100,7 +100,7 @@ public class UserInfoViewModel extends ViewModel {
             }
 
             // String personalKey = userRef.push().getKey();
-           String personalKey=currentUser.getUid(); //use userID as its identifier in database
+            String personalKey=currentUser.getUid(); //use userID as its identifier in database
             if (personalKey == null) {
                 throw new RuntimeException("Failed to generate personal key");
             }

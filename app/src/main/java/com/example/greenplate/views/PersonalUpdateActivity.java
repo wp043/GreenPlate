@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.greenplate.R;
 import com.example.greenplate.models.Personal;
 import com.example.greenplate.viewmodels.UserInfoViewModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class PersonalUpdateActivity extends AppCompatActivity {
     /**
@@ -68,6 +69,14 @@ public class PersonalUpdateActivity extends AppCompatActivity {
             }
         });
 
+        BottomNavigationView btm = findViewById(R.id.bottomNavigationView);
+        btm.setOnNavigationItemSelectedListener(item -> {
+            Intent intent = new Intent(PersonalUpdateActivity.this, NavBarActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            int itemId = item.getItemId();
+            intent.putExtra("NAVIGATION_ID", itemId);
+            startActivity(intent);
+            return true;
+        });
     }
-
 }
