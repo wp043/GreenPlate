@@ -50,7 +50,7 @@ public class PersonalUpdateActivity extends AppCompatActivity {
             String gender = selectedGenderButton == null ? ""
                     : selectedGenderButton.getText().toString();
 
-            if (userInfoVM.validatePersonalInformation(age, height, weight, gender,
+            if (userInfoVM.validatePersonalInformation(age, height, weight,
                     ageField, heightField, weightField, genderGroup)) {
                 Personal person = new Personal(Integer.parseInt(age),
                         Double.parseDouble(height), Double.parseDouble(weight), gender);
