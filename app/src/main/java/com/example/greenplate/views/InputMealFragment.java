@@ -116,15 +116,14 @@ public class InputMealFragment extends Fragment {
         });
 
         // Button Listeners
-        Button dailyCaloriesButton = view.findViewById(R.id.calorie_goal_graph_button);
+        Button dailyCaloriesButton = view.findViewById(R.id.daily_calorie_intake_graph_button);
         Button calorieGoalButton = view.findViewById(R.id.calorie_goal_graph_button);
 
         dailyCaloriesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Replace with anychart implementation!
-//                Intent intent = new Intent(getActivity(), DailyGoalMealInputChartActivity.class);
-//                startActivity(intent);
+                Intent intent = new Intent(getActivity(), MealBreakdownChartActivity.class);
+                startActivity(intent);
             }
         });
         calorieGoalButton.setOnClickListener(new View.OnClickListener() {
