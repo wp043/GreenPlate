@@ -1,5 +1,6 @@
 package com.example.greenplate.views;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -13,6 +14,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
@@ -32,6 +34,19 @@ public class DailyGoalMealInputChartActivity extends AppCompatActivity {
         pieChart = findViewById(R.id.pieChart);
         setupPieChart();
         loadPieChartData();
+
+//        backButton = findViewById(R.id.buttonBackToHome);
+//        backButton.setOnClickListener(v -> finish());
+
+        BottomNavigationView btm = findViewById(R.id.bottomNavigationView);
+        btm.setOnNavigationItemSelectedListener(item -> {
+            Intent intent = new Intent(DailyGoalMealInputChartActivity.this, NavBarActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            int itemId = item.getItemId();
+            intent.putExtra("NAVIGATION_ID", itemId);
+            startActivity(intent);
+            return true;
+        });
     }
 
     private void setupPieChart() {
