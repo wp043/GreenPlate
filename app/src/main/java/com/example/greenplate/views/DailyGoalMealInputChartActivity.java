@@ -128,6 +128,7 @@ public class DailyGoalMealInputChartActivity extends AppCompatActivity {
     }
 
 
+<<<<<<< HEAD
 
 
 //    @Override
@@ -137,4 +138,30 @@ public class DailyGoalMealInputChartActivity extends AppCompatActivity {
 //        return inflater.inflate(R.layout.fragment_daily_goal_meal_input_chart_activity,
 //        container, false);
 //    }
+=======
+        // Assuming you have a method to get meal data. Add your meals here.
+        // For example:
+        entries.add(new PieEntry(500f, "Breakfast"));
+        entries.add(new PieEntry(700f, "Lunch"));
+        entries.add(new PieEntry(400f, "Dinner"));
+        entries.add(new PieEntry(300f, "Snacks"));
+
+        // Add your data fetching and processing logic here.
+
+        PieDataSet dataSet = new PieDataSet(entries, "Meals Today");
+        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        dataSet.setSliceSpace(3f);
+        dataSet.setSelectionShift(5f);
+
+        PieData data = new PieData(dataSet);
+        data.setDrawValues(true);
+        data.setValueFormatter(new PercentFormatter(pieChart));
+        data.setValueTextSize(12f);
+        data.setValueTextColor(Color.BLACK);
+
+
+        pieChart.setData(data);
+        pieChart.invalidate();
+    }
+>>>>>>> main
 }
