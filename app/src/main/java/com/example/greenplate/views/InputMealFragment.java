@@ -1,6 +1,7 @@
 package com.example.greenplate.views;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +39,8 @@ public class InputMealFragment extends Fragment {
     private EditText nameEditText;
     private EditText caloriesEditText;
     private Button submitButton;
+
+    private Button caloriesLeftButton;
 
     public InputMealFragment() {
         // Required empty public constructor
@@ -79,6 +82,7 @@ public class InputMealFragment extends Fragment {
         nameEditText = view.findViewById(R.id.im_mealname_input);
         caloriesEditText = view.findViewById(R.id.im_calorie_input);
         submitButton = view.findViewById(R.id.im_submit);
+        caloriesLeftButton = view.findViewById(R.id.im_calories_left);
 
         TextView date = (TextView) view.findViewById(R.id.im_date);
         TextView height = (TextView) view.findViewById(R.id.im_height_display);
@@ -114,6 +118,35 @@ public class InputMealFragment extends Fragment {
             }
         });
 
+
+        caloriesLeftButton.setOnClickListener(v -> {
+
+            String goalText = goal.getText().toString();
+            String intakeText = intake.getText().toString();
+
+            int caloriesGoal = 0;
+            long caloriesIntake = 0;
+
+            try {
+                // 从TextView中提取值
+                caloriesGoal = Integer.parseInt(goalText.replaceAll("[^0-9]", ""));
+                caloriesIntake = Long.parseLong(intakeText.replaceAll("[^0-9]", ""));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+
+            if (caloriesGoal == 0) {
+                Toast.makeText(getContext(), "Please update your information to get your calorie goal.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            Intent intent = new Intent(getContext(), CaloriesLeftActivity.class);
+            intent.putExtra("caloriesIntake", caloriesIntake);
+            intent.putExtra("caloriesGoal", caloriesGoal);
+            startActivity(intent);
+
+        });
+
         return view;
     }
 
@@ -123,4 +156,6 @@ public class InputMealFragment extends Fragment {
                 context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
+
+
 }
