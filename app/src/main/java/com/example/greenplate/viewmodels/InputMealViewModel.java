@@ -1,5 +1,6 @@
 package com.example.greenplate.viewmodels;
 
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.EditText;
@@ -141,7 +142,8 @@ public class InputMealViewModel extends ViewModel {
                         Log.d("firebase", String.valueOf(task.getResult().getValue()));
                         double height = task.getResult().getValue() != null
                                 ? task.getResult().getValue(Double.class) : 0;
-                        view.setText("Height: " + String.format("%.1f", height) + " cm");
+                        String display = "<b>Height: </b>" + String.format("%.1f", height) + " cm";
+                        view.setText(Html.fromHtml(display));
                     }
                 }
             });
@@ -170,7 +172,8 @@ public class InputMealViewModel extends ViewModel {
                         Log.d("firebase", String.valueOf(task.getResult().getValue()));
                         double weight = task.getResult().getValue() != null
                                 ? task.getResult().getValue(Double.class) : 0;
-                        view.setText("Weight: " + String.format("%.1f", weight) + " kg");
+                        String display = "<b>Weight: </b>" + String.format("%.1f", weight) + " kg";
+                        view.setText(Html.fromHtml(display));
                     }
                 }
             });
@@ -198,7 +201,8 @@ public class InputMealViewModel extends ViewModel {
                         Log.d("firebase", String.valueOf(task.getResult().getValue()));
                         int age = task.getResult().getValue() != null
                                 ? task.getResult().getValue(Integer.class) : 0;
-                        view.setText("Age: " + age);
+                        String display = "<b>Age: </b>" + age;
+                        view.setText(Html.fromHtml(display));
                     }
                 }
             });
@@ -226,7 +230,8 @@ public class InputMealViewModel extends ViewModel {
                         Log.d("firebase", String.valueOf(task.getResult().getValue()));
                         String gender = task.getResult().getValue() != null
                                 ? task.getResult().getValue(String.class) : "Unknown";
-                        view.setText("Gender: " + gender);
+                        String display = "<b>Gender: </b>" + gender;
+                        view.setText(Html.fromHtml(display));
                     }
                 }
             });
@@ -270,7 +275,8 @@ public class InputMealViewModel extends ViewModel {
                     }
                     amr = bmr * 1.3;
                     int goal = (int) Math.round(amr);
-                    view.setText("Calorie Goal: " + goal + " calories");
+                    String display = "<b>Calorie Goal: </b>" + goal + " calories";
+                    view.setText(Html.fromHtml(display));
                 }
 
                 @Override
@@ -312,7 +318,8 @@ public class InputMealViewModel extends ViewModel {
                             sum += calories;
                         }
                     }
-                    view.setText("Total Intake Today: " + sum + " calories");
+                    String display = "<b>Total Intake Today: </b>" + sum + " calories";
+                    view.setText(Html.fromHtml(display));
                 }
 
                 @Override
