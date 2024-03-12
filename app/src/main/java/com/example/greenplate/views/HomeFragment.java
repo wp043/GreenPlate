@@ -63,6 +63,16 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        // Testing code for MP Charts
+        Button chartButton = view.findViewById(R.id.toMPChart);
+        chartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), DailyGoalMealInputChartActivity.class);
+                startActivity(intent);
+            }
+        });
         return view;
     }
 }
