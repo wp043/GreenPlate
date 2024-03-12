@@ -78,13 +78,4 @@ public class DailyGoalMealInputChartActivity extends AppCompatActivity {
         pieChart.setData(data);
         pieChart.invalidate();
     }
-
-
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_daily_goal_meal_input_chart_activity,
-//        container, false);
-//    }
 }

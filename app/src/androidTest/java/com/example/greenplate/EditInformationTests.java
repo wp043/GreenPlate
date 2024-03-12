@@ -33,13 +33,13 @@ public class EditInformationTests {
 
     private static final String TEST_EMAIL = "test_account@test.com";
     private static final String TEST_PASSWORD = "password";
-    private static final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private static final FirebaseAuth A1 = FirebaseAuth.getInstance();
     private static DatabaseReference ref;
 
     @BeforeClass
     public static void setUp() {
         final CountDownLatch latch = new CountDownLatch(1);
-        mAuth.signInWithEmailAndPassword(TEST_EMAIL, TEST_PASSWORD)
+        A1.signInWithEmailAndPassword(TEST_EMAIL, TEST_PASSWORD)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> signInTask) {
@@ -58,14 +58,14 @@ public class EditInformationTests {
             e.printStackTrace();
         }
         ref = FirebaseDatabase.getInstance()
-                .getReference(String.format("user/%s/meals", mAuth.getCurrentUser().getUid()));
+                .getReference(String.format("user/%s/meals", A1.getCurrentUser().getUid()));
     }
 
     @Before
     public void clearDB() {
         // Remove all records for the user
         ref.removeValue()
-                .addOnSuccessListener(e -> {})
+                .addOnSuccessListener(e -> { })
                 .addOnFailureListener(e -> {
                     throw new RuntimeException("Clear DB: " + e.getMessage());
                 });
@@ -82,19 +82,19 @@ public class EditInformationTests {
     @Test
     public void testAddInfoWithInvalidHeight() throws InterruptedException {
         UserInfoViewModel vm = new UserInfoViewModel();
-        GreenPlateStatus status = vm.updatePersonalInformation(new Personal(null,
+        GreenPlateStatus status = vm.updatePersonalInformation(new Personal("18", null,
                 "60", "female"));
         assertFalse(status.isSuccess());
         assertEquals("Edit Personal Info: can't a personal info with null or blank height",
                 status.getMessage());
 
-        status = vm.updatePersonalInformation(new Personal("", "60",
+        status = vm.updatePersonalInformation(new Personal("18", "", "60",
                 "female"));
         assertFalse(status.isSuccess());
         assertEquals("Edit Personal Info: can't a personal info with null or blank height",
                 status.getMessage());
 
-        status = vm.updatePersonalInformation(new Personal("    ", "60",
+        status = vm.updatePersonalInformation(new Personal("18", "    ", "60",
                 "female"));
         assertFalse(status.isSuccess());
         assertEquals("Edit Personal Info: can't a personal info with null or blank height",

@@ -3,7 +3,6 @@ package com.example.greenplate.viewmodels;
 
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.EditText;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -39,7 +38,7 @@ public class UserInfoViewModel extends ViewModel {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             userRef = FirebaseDatabase.getInstance().getReference("user")
-                    .child(currentUser.getUid()); 
+                    .child(currentUser.getUid()).child("information");
             // Fetch the personal information every time PersonalActivity is navigated to
             fetchPersonalInformation(); 
         } else {
@@ -48,17 +47,15 @@ public class UserInfoViewModel extends ViewModel {
     }
 
     private void fetchPersonalInformation() {
-        //this func is called anytime new data is added to the database
-        // Fetch the personal information from Firebase and post the value to userPersonalInfo LiveData
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot != null) {
+                if (dataSnapshot != null) {
                     String age = dataSnapshot.child("age").getValue(String.class);
                     String height = dataSnapshot.child("height").getValue(String.class);
                     String weight = dataSnapshot.child("weight").getValue(String.class);
                     String gender = dataSnapshot.child("gender").getValue(String.class);
-                    Personal personal = new Personal(age, height, weight,gender);
+                    Personal personal = new Personal(age, height, weight, gender);
                     userPersonalInfo.postValue(personal);
                 }
             }
@@ -80,9 +77,7 @@ public class UserInfoViewModel extends ViewModel {
             return new GreenPlateStatus(false,
                     "Edit personal information: can't add null information");
         }
-        if (personal != null) {
-            userRef.setValue(personal);
-        }
+        userRef.setValue(personal);
         if (personal.getAge() == null || TextUtils.isEmpty(personal.getAge().trim())) {
             return new GreenPlateStatus(false,
                     "Edit personal information: can't have null age");
@@ -105,8 +100,8 @@ public class UserInfoViewModel extends ViewModel {
                 throw new RuntimeException("Signed-in user can't be found");
             }
 
-            // String personalKey = userRef.push().getKey();
-            String personalKey=currentUser.getUid(); //use userID as its identifier in database
+            String personalKey = userRef.push().getKey();
+            // String personalKey = currentUser.getUid(); //use userID as its identifier in database
             if (personalKey == null) {
                 throw new RuntimeException("Failed to generate personal key");
             }

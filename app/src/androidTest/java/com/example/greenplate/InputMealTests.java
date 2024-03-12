@@ -20,7 +20,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.junit.Before;
@@ -36,13 +35,13 @@ public class InputMealTests {
 
     private static final String TEST_EMAIL = "test_account@test.com";
     private static final String TEST_PASSWORD = "password";
-    private static final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private static final FirebaseAuth A1 = FirebaseAuth.getInstance();
     private static DatabaseReference ref;
 
     @BeforeClass
     public static void setUp() {
         final CountDownLatch latch = new CountDownLatch(1);
-        mAuth.signInWithEmailAndPassword(TEST_EMAIL, TEST_PASSWORD)
+        A1.signInWithEmailAndPassword(TEST_EMAIL, TEST_PASSWORD)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> signInTask) {
@@ -61,14 +60,14 @@ public class InputMealTests {
             e.printStackTrace();
         }
         ref = FirebaseDatabase.getInstance()
-                .getReference(String.format("user/%s/meals", mAuth.getCurrentUser().getUid()));
+                .getReference(String.format("user/%s/meals", A1.getCurrentUser().getUid()));
     }
 
     @Before
     public void clearDB() {
         // Remove all records for the user
         ref.removeValue()
-                .addOnSuccessListener(e -> {})
+                .addOnSuccessListener(e -> { })
                 .addOnFailureListener(e -> {
                     throw new RuntimeException("Clear DB: " + e.getMessage());
                 });
@@ -76,7 +75,7 @@ public class InputMealTests {
 
     @Test
     public void testLogin() {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = A1.getCurrentUser();
         assertNotNull(currentUser);
     }
 
