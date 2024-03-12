@@ -25,6 +25,18 @@ import java.util.List;
 public class CaloriesLeftActivity extends AppCompatActivity {
     private TextView backToHome;
 
+    private static CaloriesLeftActivity caloriesLeftActivity;
+
+    private CaloriesLeftActivity(){
+        caloriesLeftActivity = new CaloriesLeftActivity();
+    }
+
+    public static CaloriesLeftActivity getCaloriesLeftActivity(){
+        if(caloriesLeftActivity == null){
+            caloriesLeftActivity = new CaloriesLeftActivity();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
