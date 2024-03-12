@@ -39,8 +39,6 @@ public class InputMealViewModel extends ViewModel {
             if (currentUser == null) {
                 throw new RuntimeException("InputMealViewModel: There's no user signed in.");
             }
-            myRef = database.getReference("user").child(currentUser.getUid())
-                    .child("meals");
 
             //Do some testing w/o UI
             //addMealToDatabase(null);
@@ -77,6 +75,13 @@ public class InputMealViewModel extends ViewModel {
             if (currentUser == null) {
                 throw new RuntimeException("Signed-in user can't be found");
             }
+
+            DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+            Date date = new Date();
+            String currDate = dateFormat.format(date);
+
+            myRef = database.getReference("user").child(currentUser.getUid())
+                    .child("meals").child(currDate);
 
             String mealKey = myRef.push().getKey();
             if (mealKey == null) {
@@ -261,8 +266,13 @@ public class InputMealViewModel extends ViewModel {
             if (currentUser == null) {
                 throw new RuntimeException("InputMealViewModel: There's no user signed in.");
             }
+
+            DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+            Date date = new Date();
+            String currDate = dateFormat.format(date);
+
             myRef = database.getReference("user").child(currentUser.getUid())
-                    .child("meals");
+                    .child("meals").child(currDate);
             Query userInfoQuery = myRef;
             userInfoQuery.addValueEventListener(new ValueEventListener() {
                 @Override
