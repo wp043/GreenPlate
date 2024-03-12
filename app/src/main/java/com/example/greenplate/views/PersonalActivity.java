@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.greenplate.R;
 import com.example.greenplate.models.Personal;
 import com.example.greenplate.viewmodels.UserInfoViewModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class PersonalActivity extends AppCompatActivity {
     private UserInfoViewModel userInfoVM;
@@ -30,7 +31,7 @@ public class PersonalActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.personal_info); //connect to XML file (personal_info.xml)
+        setContentView(R.layout.personal_info);
 
         userInfoVM = new ViewModelProvider(this).get(UserInfoViewModel.class);
         heightField = findViewById(R.id.editTextHeight);
@@ -39,12 +40,10 @@ public class PersonalActivity extends AppCompatActivity {
         submitButton = findViewById(R.id.buttonSubmit);
         backButton = findViewById(R.id.buttonBackToHome);
 
-        displayHeightField=findViewById(R.id.currentHeight);
-        displayWeightField=findViewById(R.id.currentWeight);
-        displayGenderField=findViewById(R.id.currentGender);
+        displayHeightField = findViewById(R.id.currentHeight);
+        displayWeightField = findViewById(R.id.currentWeight);
+        displayGenderField = findViewById(R.id.currentGender);
 
-        // Observe the LiveData from the ViewModel
-        //update the personal displayed gender, height, weight if there's any change in the database
         userInfoVM.getUserPersonalInfo().observe(this, personal -> {
             if (personal != null) {
                 displayHeightField.setText(personal.getHeight());
@@ -69,8 +68,18 @@ public class PersonalActivity extends AppCompatActivity {
         });
 
         backButton.setOnClickListener(v -> finish());
-    }
 
+        BottomNavigationView btm = findViewById(R.id.bottomNavigationView);
+        btm.setOnNavigationItemSelectedListener(item -> {
+            Intent intent = new Intent(PersonalActivity.this, NavBarActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            int itemId = item.getItemId();
+            intent.putExtra("NAVIGATION_ID", itemId);
+            startActivity(intent);
+            return true;
+        });
+    }
+}
 //    private void setSelectedGenderRadioButton(String gender) {
 //        if (gender.equals("Male")) {
 //            ((RadioButton)findViewById(R.id.radioButtonMale)).setChecked(true);
@@ -79,4 +88,3 @@ public class PersonalActivity extends AppCompatActivity {
 //        }
 //        // Add more conditions if there are more genders
 //    }
-}
