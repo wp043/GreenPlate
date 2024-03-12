@@ -2,17 +2,20 @@ package com.example.greenplate.views;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.greenplate.R;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.LimitLine;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -22,7 +25,7 @@ import java.util.ArrayList;
 public class DailyGoalMealInputChartActivity extends AppCompatActivity {
 
     // Chart
-    private PieChart pieChart;
+    private BarChart goalChart;
 
 
 
@@ -31,9 +34,8 @@ public class DailyGoalMealInputChartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_daily_goal_meal_input_chart_activity);
 
-        pieChart = findViewById(R.id.pieChart);
-        setupPieChart();
-        loadPieChartData();
+        goalChart = findViewById(R.id.goalChart);
+//        setupPieChart();
 
 //        backButton = findViewById(R.id.buttonBackToHome);
 //        backButton.setOnClickListener(v -> finish());
@@ -47,52 +49,85 @@ public class DailyGoalMealInputChartActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         });
+
+        // Your caloric data
+        float dailyGoal = 2000f; // Daily calorie goal
+        float caloriesConsumed = 2000f; // Example calories consumed
+        float caloriesRemaining = Math.max(dailyGoal - caloriesConsumed, 0); // Remaining calories or zero
+
+        // Bar entries
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(0, caloriesConsumed));
+        if (caloriesConsumed < dailyGoal) {
+            entries.add(new BarEntry(1, caloriesRemaining));
+        }
+
+        // BarDataSet setup
+        BarDataSet barDataSet = new BarDataSet(entries, "");
+        barDataSet.setColors(new int[] {ColorTemplate.getHoloBlue(), Color.GREEN});
+        barDataSet.setValueTextSize(16f);
+        barDataSet.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return String.format("%.0f cal", value);
+            }
+        });
+
+        // BarData setup
+        BarData barData = new BarData(barDataSet);
+        barData.setBarWidth(0.9f);
+        goalChart.setData(barData);
+
+        // Chart general settings
+        goalChart.getDescription().setEnabled(false);
+        goalChart.getAxisRight().setEnabled(false);
+        goalChart.setExtraBottomOffset(100f); // Adjust as needed
+
+
+        // YAxis setup
+        YAxis leftAxis = goalChart.getAxisLeft();
+        leftAxis.setAxisMinimum(0f); // Start at zero
+
+        // Adjust the axis maximum value to be greater than or equal to the goal or the highest value
+        float axisMaximum = Math.max(caloriesConsumed, dailyGoal);
+        axisMaximum += axisMaximum * 0.1; // Add 10% to the maximum for some spacing
+        leftAxis.setAxisMaximum(axisMaximum);
+
+        // LimitLine for the daily goal
+        LimitLine limitLine = new LimitLine(dailyGoal);
+        limitLine.setLineWidth(4f);
+        limitLine.enableDashedLine(10f, 10f, 0f);
+        limitLine.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+        limitLine.setTextSize(12f);
+        limitLine.setTypeface(Typeface.DEFAULT_BOLD);
+        limitLine.setLineColor(Color.RED);
+        leftAxis.addLimitLine(limitLine);
+        leftAxis.setDrawLimitLinesBehindData(false);
+
+        // XAxis setup
+        XAxis xAxis = goalChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setGranularity(1f);
+        xAxis.setLabelCount(entries.size());
+        xAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                if (value == 0) return "Consumed";
+                else if (value == 1) return "Remaining";
+                return "";
+            }
+        });
+
+        // Refresh the chart
+        goalChart.invalidate();
     }
 
     private void setupPieChart() {
-        pieChart.setDrawHoleEnabled(true);
-        pieChart.setUsePercentValues(true);
-        pieChart.setEntryLabelTextSize(12);
-        pieChart.setEntryLabelColor(Color.BLACK);
-        pieChart.setCenterText("Today's Meal Breakdown");
-        pieChart.setCenterTextSize(24);
-        pieChart.getDescription().setEnabled(false);
 
-        Legend l = pieChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
-        l.setDrawInside(false);
-        l.setEnabled(true);
     }
 
-    private void loadPieChartData() {
-        ArrayList<PieEntry> entries = new ArrayList<>();
 
-        // Assuming you have a method to get meal data. Add your meals here.
-        // For example:
-        entries.add(new PieEntry(500f, "Breakfast"));
-        entries.add(new PieEntry(700f, "Lunch"));
-        entries.add(new PieEntry(400f, "Dinner"));
-        entries.add(new PieEntry(300f, "Snacks"));
-
-        // Add your data fetching and processing logic here.
-
-        PieDataSet dataSet = new PieDataSet(entries, "Meals Today");
-        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-        dataSet.setSliceSpace(3f);
-        dataSet.setSelectionShift(5f);
-
-        PieData data = new PieData(dataSet);
-        data.setDrawValues(true);
-        data.setValueFormatter(new PercentFormatter(pieChart));
-        data.setValueTextSize(12f);
-        data.setValueTextColor(Color.BLACK);
-
-
-        pieChart.setData(data);
-        pieChart.invalidate();
-    }
 
 
 //    @Override

@@ -1,6 +1,7 @@
 package com.example.greenplate.views;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -111,6 +112,26 @@ public class InputMealFragment extends Fragment {
                                 Toast.LENGTH_SHORT)
                         .show();
                 Log.d("Info", status.toString());
+            }
+        });
+
+        // Button Listeners
+        Button dailyCaloriesButton = view.findViewById(R.id.calorie_goal_graph_button);
+        Button calorieGoalButton = view.findViewById(R.id.calorie_goal_graph_button);
+
+        dailyCaloriesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Replace with anychart implementation!
+//                Intent intent = new Intent(getActivity(), DailyGoalMealInputChartActivity.class);
+//                startActivity(intent);
+            }
+        });
+        calorieGoalButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), DailyGoalMealInputChartActivity.class);
+                startActivity(intent);
             }
         });
 
