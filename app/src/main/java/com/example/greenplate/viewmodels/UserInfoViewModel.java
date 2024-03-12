@@ -38,7 +38,7 @@ public class UserInfoViewModel extends ViewModel {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             userRef = FirebaseDatabase.getInstance().getReference("user")
-                    .child(currentUser.getUid()); 
+                    .child(currentUser.getUid()).child("information");
             // Fetch the personal information every time PersonalActivity is navigated to
             fetchPersonalInformation(); 
         } else {
@@ -100,8 +100,8 @@ public class UserInfoViewModel extends ViewModel {
                 throw new RuntimeException("Signed-in user can't be found");
             }
 
-            // String personalKey = userRef.push().getKey();
-            String personalKey = currentUser.getUid(); //use userID as its identifier in database
+            String personalKey = userRef.push().getKey();
+            // String personalKey = currentUser.getUid(); //use userID as its identifier in database
             if (personalKey == null) {
                 throw new RuntimeException("Failed to generate personal key");
             }
