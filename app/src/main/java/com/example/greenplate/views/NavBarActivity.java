@@ -1,5 +1,6 @@
 package com.example.greenplate.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,6 +47,19 @@ public class NavBarActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout, fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleNavigationIntent(intent);
+    }
+
+    private void handleNavigationIntent(Intent intent) {
+        if (intent.hasExtra("NAVIGATION_ID")) {
+            int navigationId = intent.getIntExtra("NAVIGATION_ID", R.id.home);
+            navBind.bottomNavigationView.setSelectedItemId(navigationId);
+        }
     }
 
 }
