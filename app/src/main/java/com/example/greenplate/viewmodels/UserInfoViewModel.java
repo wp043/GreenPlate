@@ -100,25 +100,17 @@ public class UserInfoViewModel extends ViewModel {
             return new GreenPlateStatus(false,
                     "Edit personal information: can't have negative age");
         }
-        if (personal.getHeight() < 0.) {
+        if (personal.getHeight() <= 0.) {
             return new GreenPlateStatus(false,
                     "Edit personal information: can't have negative height");
         }
-        if (personal.getWeight() < 0.) {
+        if (personal.getWeight() <= 0.) {
             return new GreenPlateStatus(false,
                     "Edit personal information: can't have negative weight");
         }
         if (personal.getGender() == null || TextUtils.isEmpty(personal.getGender().trim())) {
             return new GreenPlateStatus(false,
                     "Edit personal information: can't have null gender");
-        }
-        if (Double.parseDouble(personal.getHeight()) == 0) {
-            return new GreenPlateStatus(false,
-                    "Edit personal information: height cannot be 0");
-        }
-        if (Double.parseDouble(personal.getWeight()) == 0) {
-            return new GreenPlateStatus(false,
-                    "Edit personal information: weight cannot be 0");
         }
         try {
             FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -131,14 +123,9 @@ public class UserInfoViewModel extends ViewModel {
             if (personalKey == null) {
                 throw new RuntimeException("Failed to generate personal key");
             }
-
-            int age = Integer.parseInt(personal.getAge());
-            double height = Double.parseDouble(personal.getHeight());
-            double weight = Double.parseDouble(personal.getWeight());
-
-            userRef.child(personalKey).child("age").setValue(age);
-            userRef.child(personalKey).child("height").setValue(height);
-            userRef.child(personalKey).child("weight").setValue(weight);
+            userRef.child(personalKey).child("age").setValue(personal.getAge());
+            userRef.child(personalKey).child("height").setValue(personal.getAge());
+            userRef.child(personalKey).child("weight").setValue(personal.getAge());
             userRef.child(personalKey).child("gender").setValue(personal.getGender());
             Log.d("Success", String.format("Added %s to the db", personal));
 
