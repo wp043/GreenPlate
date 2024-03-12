@@ -41,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:hint="Enter age"
-                    android:inputType="numberDecimal" />
+                    android:inputType="number" />
 
                 <EditText
                     android:id="@+id/editTextHeight"
