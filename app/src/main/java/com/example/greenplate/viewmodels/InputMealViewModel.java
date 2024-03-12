@@ -66,11 +66,11 @@ public class InputMealViewModel extends ViewModel {
         }
         if (meal.getCalorie() < 0.) {
             return new GreenPlateStatus(false,
-                    "Add meal: can't a meal with negative calorie");
+                    "Add meal: can't have a meal with negative calorie");
         }
         if (meal.getName() == null || TextUtils.isEmpty(meal.getName().trim())) {
             return new GreenPlateStatus(false,
-                    "Add meal: can't a meal with null or blank name");
+                    "Add meal: can't have a meal with null or blank name");
         }
         try {
             FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -134,9 +134,9 @@ public class InputMealViewModel extends ViewModel {
                         Log.e("firebase", "Error getting data", task.getException());
                     } else {
                         Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                        double height = task.getResult().getValue() != null
-                                ? task.getResult().getValue(Double.class) : 0;
-                        view.setText("Height: " + String.format("%.1f", height) + " cm");
+                        String height = task.getResult().getValue() != null
+                                ? task.getResult().getValue(String.class) : "0";
+                        view.setText("Height: " + height + " cm");
                     }
                 }
             });
@@ -163,9 +163,9 @@ public class InputMealViewModel extends ViewModel {
                         Log.e("firebase", "Error getting data", task.getException());
                     } else {
                         Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                        double weight = task.getResult().getValue() != null
-                                ? task.getResult().getValue(Double.class) : 0;
-                        view.setText("Weight: " + String.format("%.1f", weight) + " kg");
+                        String weight = task.getResult().getValue() != null
+                                ? task.getResult().getValue(String.class) : "0";
+                        view.setText("Weight: " + weight + " kg");
                     }
                 }
             });
@@ -218,22 +218,28 @@ public class InputMealViewModel extends ViewModel {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     String gender = dataSnapshot.child("gender").getValue() != null
                             ? dataSnapshot.child("gender").getValue(String.class) : "Unknown";
-                    double height = (dataSnapshot.child("height").getValue() != null
-                            ? (double) dataSnapshot.child("height").getValue(Long.class) : 0);
-                    double weight = (dataSnapshot.child("weight").getValue() != null
-                            ? (double) dataSnapshot.child("weight").getValue(Long.class) : 0);
-                    double age = (dataSnapshot.child("age").getValue() != null
-                            ? (double) dataSnapshot.child("age").getValue(Long.class) : 0);
+                    String height = (dataSnapshot.child("height").getValue() != null
+                            ? dataSnapshot.child("height").getValue(String.class) : "0");
+                    String weight = (dataSnapshot.child("weight").getValue() != null
+                            ? dataSnapshot.child("weight").getValue(String.class) : "0");
+                    String age = (dataSnapshot.child("age").getValue() != null
+                            ? dataSnapshot.child("age").getValue(String.class) : "0");
 
                     // Calculate the sum of height and weight
                     double bmr;
                     double amr;
                     if (gender.equals("Male")) {
-                        bmr = 66.47 + 5.003 * height + 13.75 * weight - 6.755 * age;
+                        bmr = 66.47 + 5.003 * Double.parseDouble(height)
+                                + 13.75 * Double.parseDouble(weight)
+                                - 6.755 * Double.parseDouble(age);
                     } else if (gender.equals("Female")) {
-                        bmr = 655.1 + 1.850 * height + 9.563 * weight - 4.676 * age;
+                        bmr = 655.1 + 1.850 * Double.parseDouble(height)
+                                + 9.563 * Double.parseDouble(weight)
+                                - 4.676 * Double.parseDouble(age);
                     } else {
-                        bmr = 360.785 + 3.4265 * height + 11.6565 * weight - 5.7155 * age;
+                        bmr = 360.785 + 3.4265 * Double.parseDouble(height)
+                                + 11.6565 * Double.parseDouble(weight)
+                                - 5.7155 * Double.parseDouble(age);
                     }
                     amr = bmr * 1.3;
                     int goal = (int) Math.round(amr);
