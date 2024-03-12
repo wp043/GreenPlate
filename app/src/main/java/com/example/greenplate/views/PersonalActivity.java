@@ -42,6 +42,13 @@ public class PersonalActivity extends AppCompatActivity {
         displayGenderField = findViewById(R.id.currentGender);
         editButton = findViewById(R.id.buttonEdit);
 
+        /*
+        display height, weight, gender on the screen by getting the data from the database
+         */
+        userInfoVM.getUserAge(displayAgeField);
+        userInfoVM.getUserHeight(displayHeightField);
+        userInfoVM.getUserWeight(displayWeightField);
+        userInfoVM.getUserGender(displayGenderField);
 
 
         /*
@@ -65,18 +72,6 @@ public class PersonalActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         });
-
-        /*
-        display height, weight, gender on the screen by getting the data from the database
-         */
-        userInfoVM.getUserPersonalInfo().observe(this, personal -> {
-            if (personal != null) {
-                displayAgeField.setText(textSetter(personal.getAge(), "age"));
-                displayHeightField.setText(textSetter(personal.getHeight(), "height"));
-                displayWeightField.setText(textSetter(personal.getWeight(), "weight"));
-                displayGenderField.setText(textSetter(personal.getGender(), "gender"));
-            }
-        });
     }
     /*
      * private method to set the text for the TextView
@@ -84,35 +79,35 @@ public class PersonalActivity extends AppCompatActivity {
      * @param type: age, height, weight, gender
      * @return String
      */
-    private String textSetter(String txt, String type) {
-        String frontTxt = "";
-        String endTxt = "";
-        switch (type) {
-        case "age":
-            frontTxt = "Age: ";
-            endTxt = "";
-            break;
-        case "height":
-            frontTxt = "Height: ";
-            endTxt = "cm";
-            break;
-        case "weight":
-            frontTxt = "Weight: ";
-            endTxt = "kg";
-            break;
-        case "gender":
-            frontTxt = "Gender: ";
-            break;
-        default:
-            break;
-        }
-        if (txt == null) {
-            return frontTxt + "N/A";
-        } else {
-            return frontTxt + txt + endTxt;
-        }
-
-    }
+//    private String textSetter(String txt, String type) {
+//        String frontTxt = "";
+//        String endTxt = "";
+//        switch (type) {
+//        case "age":
+//            frontTxt = "Age: ";
+//            endTxt = "";
+//            break;
+//        case "height":
+//            frontTxt = "Height: ";
+//            endTxt = "cm";
+//            break;
+//        case "weight":
+//            frontTxt = "Weight: ";
+//            endTxt = "kg";
+//            break;
+//        case "gender":
+//            frontTxt = "Gender: ";
+//            break;
+//        default:
+//            break;
+//        }
+//        if (txt == null) {
+//            return frontTxt + "N/A";
+//        } else {
+//            return frontTxt + txt + endTxt;
+//        }
+//
+//    }
 
 }
 
