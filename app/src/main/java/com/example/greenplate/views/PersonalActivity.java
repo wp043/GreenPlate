@@ -19,6 +19,7 @@ public class PersonalActivity extends AppCompatActivity {
      * For displaying personal information
      */
     private UserInfoViewModel userInfoVM;
+    private TextView displayAgeField;
 
     private TextView displayHeightField;
     private TextView displayWeightField;
@@ -35,7 +36,7 @@ public class PersonalActivity extends AppCompatActivity {
         userInfoVM = new ViewModelProvider(this).get(UserInfoViewModel.class);
 
 
-
+        displayAgeField = findViewById(R.id.currentAge);
         displayHeightField = findViewById(R.id.currentHeight);
         displayWeightField = findViewById(R.id.currentWeight);
         displayGenderField = findViewById(R.id.currentGender);
@@ -70,6 +71,7 @@ public class PersonalActivity extends AppCompatActivity {
          */
         userInfoVM.getUserPersonalInfo().observe(this, personal -> {
             if (personal != null) {
+                displayAgeField.setText(textSetter(personal.getAge(), "age"));
                 displayHeightField.setText(textSetter(personal.getHeight(), "height"));
                 displayWeightField.setText(textSetter(personal.getWeight(), "weight"));
                 displayGenderField.setText(textSetter(personal.getGender(), "gender"));
@@ -79,13 +81,17 @@ public class PersonalActivity extends AppCompatActivity {
     /*
      * private method to set the text for the TextView
      * @param txt
-     * @param type: height, weight, gender
+     * @param type: age, height, weight, gender
      * @return String
      */
     private String textSetter(String txt, String type) {
         String frontTxt = "";
         String endTxt = "";
         switch (type) {
+        case "age":
+            frontTxt = "Age: ";
+            endTxt = "";
+            break;
         case "height":
             frontTxt = "Height: ";
             endTxt = "cm";

@@ -30,6 +30,7 @@ public class UserInfoViewModel extends ViewModel {
      * User database structure:
      * user:
      *    userID:
+     *         age:
      *         height: 
      *         weight:
      *         gender:
@@ -53,10 +54,11 @@ public class UserInfoViewModel extends ViewModel {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot != null) {
+                    String age = dataSnapshot.child("age").getValue(String.class);
                     String height = dataSnapshot.child("height").getValue(String.class);
                     String weight = dataSnapshot.child("weight").getValue(String.class);
                     String gender = dataSnapshot.child("gender").getValue(String.class);
-                    Personal personal = new Personal(height, weight,gender);
+                    Personal personal = new Personal(age, height, weight,gender);
                     userPersonalInfo.postValue(personal);
                 }
             }
@@ -81,6 +83,10 @@ public class UserInfoViewModel extends ViewModel {
         if (personal != null) {
             userRef.setValue(personal);
         }
+        if (personal.getAge() == null || TextUtils.isEmpty(personal.getAge().trim())) {
+            return new GreenPlateStatus(false,
+                    "Edit personal information: can't have null age");
+        }
         if (personal.getHeight() == null || TextUtils.isEmpty(personal.getHeight().trim())) {
             return new GreenPlateStatus(false,
                     "Edit personal information: can't have null height");
@@ -104,6 +110,7 @@ public class UserInfoViewModel extends ViewModel {
             if (personalKey == null) {
                 throw new RuntimeException("Failed to generate personal key");
             }
+            userRef.child(personalKey).child("age").setValue(personal.getAge());
             userRef.child(personalKey).child("height").setValue(personal.getHeight());
             userRef.child(personalKey).child("weight").setValue(personal.getWeight());
             userRef.child(personalKey).child("gender").setValue(personal.getGender());
@@ -118,8 +125,9 @@ public class UserInfoViewModel extends ViewModel {
         return new GreenPlateStatus(true,
                 String.format("%s added to database successfully", personal));
     }
-    public boolean validatePersonalInformation(String height, String weight, String gender) {
-        return !TextUtils.isEmpty(height) && !TextUtils.isEmpty(weight)
-                && !TextUtils.isEmpty(gender);
+    public boolean validatePersonalInformation(String age, String height, String weight,
+                                               String gender) {
+        return !TextUtils.isEmpty(age) && !TextUtils.isEmpty(height)
+                && !TextUtils.isEmpty(weight) && !TextUtils.isEmpty(gender);
     }
 }

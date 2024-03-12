@@ -48,6 +48,13 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/currentAge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:text="Age:: --"
+                android:textSize="15sp" />
+            <TextView
                 android:id="@+id/currentHeight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

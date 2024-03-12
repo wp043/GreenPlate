@@ -12,7 +12,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="793dp"
+            android:layout_height="740dp"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="40dp">
@@ -34,6 +34,14 @@
                     android:text="Edit Personal Information"
                     android:textSize="20sp"
                     android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editTextAge"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Enter age"
+                    android:inputType="numberDecimal" />
 
                 <EditText
                     android:id="@+id/editTextHeight"

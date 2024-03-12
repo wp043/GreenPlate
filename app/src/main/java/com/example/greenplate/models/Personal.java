@@ -1,16 +1,24 @@
 package com.example.greenplate.models;
 
 public class Personal {
+    private String age;
     private String height;
     private String weight;
     private String gender;
 
-    public Personal(String height, String weight, String gender) {
+    public Personal(String age, String height, String weight, String gender) {
+        this.age = age;
         this.height = height;
         this.weight = weight;
         this.gender = gender;
     }
 
+    public String getAge() {
+        return this.age;
+    }
+    public void setAge(String age) {
+        this.age = age;
+    }
     public String getHeight() {
         return this.height;
     }
