@@ -56,10 +56,10 @@ public class DailyGoalMealInputChartActivity extends AppCompatActivity {
 
         // Assuming you have a method to get meal data. Add your meals here.
         // For example:
-         entries.add(new PieEntry(500f, "Breakfast"));
-         entries.add(new PieEntry(700f, "Lunch"));
-         entries.add(new PieEntry(400f, "Dinner"));
-         entries.add(new PieEntry(300f, "Snacks"));
+        entries.add(new PieEntry(500f, "Breakfast"));
+        entries.add(new PieEntry(700f, "Lunch"));
+        entries.add(new PieEntry(400f, "Dinner"));
+        entries.add(new PieEntry(300f, "Snacks"));
 
         // Add your data fetching and processing logic here.
 
@@ -84,6 +84,7 @@ public class DailyGoalMealInputChartActivity extends AppCompatActivity {
 //    public View onCreateView(LayoutInflater inflater, ViewGroup container,
 //                             Bundle savedInstanceState) {
 //        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_daily_goal_meal_input_chart_activity, container, false);
+//        return inflater.inflate(R.layout.fragment_daily_goal_meal_input_chart_activity,
+//        container, false);
 //    }
 }
