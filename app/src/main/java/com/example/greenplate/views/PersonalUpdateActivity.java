@@ -50,8 +50,10 @@ public class PersonalUpdateActivity extends AppCompatActivity {
             String gender = selectedGenderButton == null ? ""
                     : selectedGenderButton.getText().toString();
 
-            if (userInfoVM.validatePersonalInformation(age, height, weight, gender)) {
-                Personal person = new Personal(age, height, weight, gender);
+            if (userInfoVM.validatePersonalInformation(age, height, weight,
+                    ageField, heightField, weightField, genderGroup)) {
+                Personal person = new Personal(Integer.parseInt(age),
+                        Double.parseDouble(height), Double.parseDouble(weight), gender);
                 userInfoVM.updatePersonalInformation(person);
                 Toast.makeText(PersonalUpdateActivity.this,
                         "Information updated successfully", Toast.LENGTH_SHORT).show();

@@ -72,6 +72,14 @@
             android:theme="@style/Theme.GreenPlate">
         </activity>
 
+        <!-- MealBreakdownChartActivity -->
+        <activity
+            android:name=".views.MealBreakdownChartActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.GreenPlate">
+        </activity>
+
     </application>
 
 </manifest>
