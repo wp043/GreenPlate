@@ -121,7 +121,7 @@ public class InputMealFragment extends Fragment {
             }
         });
 
-<<<<<<< HEAD
+
         caloriesLeftButton.setOnClickListener(v -> {
             String goalText = goal.getText().toString();
             String intakeText = intake.getText().toString();
@@ -140,25 +140,25 @@ public class InputMealFragment extends Fragment {
             intent.putExtra("caloriesIntake", caloriesIntake);
             intent.putExtra("caloriesGoal", caloriesGoal);
             startActivity(intent);
-=======
-        // Button Listeners
-        Button mealBreakdownButton = view.findViewById(R.id.meal_breakdown_graph_button);
-        Button calorieGoalButton = view.findViewById(R.id.calorie_goal_graph_button);
 
-        mealBreakdownButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MealBreakdownChartActivity.class);
-                startActivity(intent);
-            }
+
         });
-        calorieGoalButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Second Chart
-            }
->>>>>>> main
-        });
+
+            Button mealBreakdownButton = view.findViewById(R.id.meal_breakdown_graph_button);
+            Button calorieGoalButton = view.findViewById(R.id.calorie_goal_graph_button);
+
+            mealBreakdownButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), MealBreakdownChartActivity.class);
+                    startActivity(intent);
+                }
+            });
+            calorieGoalButton.setOnClickListener(new View.OnClickListener() {
+                                                     @Override
+                                                     public void onClick(View v) {
+                                                         // Second Chart
+                                                     }
 
         return view;
     }
