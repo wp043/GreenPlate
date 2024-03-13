@@ -124,20 +124,10 @@ public class UserInfoViewModel extends ViewModel {
                     "Edit personal information: can't have null gender");
         }
         try {
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-            if (currentUser == null) {
-                throw new RuntimeException("Signed-in user can't be found");
-            }
-
-            String personalKey = userRef.push().getKey();
-            // String personalKey = currentUser.getUid(); //use userID as its identifier in database
-            if (personalKey == null) {
-                throw new RuntimeException("Failed to generate personal key");
-            }
-            userRef.child(personalKey).child("age").setValue(personal.getAge());
-            userRef.child(personalKey).child("height").setValue(personal.getHeight());
-            userRef.child(personalKey).child("weight").setValue(personal.getWeight());
-            userRef.child(personalKey).child("gender").setValue(personal.getGender());
+            userRef.child("age").setValue(personal.getAge());
+            userRef.child("height").setValue(personal.getHeight());
+            userRef.child("weight").setValue(personal.getWeight());
+            userRef.child("gender").setValue(personal.getGender());
             Log.d("Success", String.format("Added %s to the db", personal));
 
         } catch (Exception e) {
