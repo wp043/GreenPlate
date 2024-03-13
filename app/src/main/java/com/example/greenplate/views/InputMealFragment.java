@@ -145,7 +145,7 @@ public class InputMealFragment extends Fragment {
 
         // Button Listeners
         Button mealBreakdownButton = view.findViewById(R.id.meal_breakdown_graph_button);
-        Button calorieGoalButton = view.findViewById(R.id.calorie_goal_graph_button);
+//        Button calorieGoalButton = view.findViewById(R.id.calorie_goal_graph_button);
 
         mealBreakdownButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,12 +154,12 @@ public class InputMealFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        calorieGoalButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Second Chart
-            }
-        });
+//        calorieGoalButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Second Chart
+//            }
+//        });
         return view;
     }
 
