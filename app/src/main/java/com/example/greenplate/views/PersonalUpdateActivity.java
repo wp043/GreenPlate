@@ -34,7 +34,7 @@ public class PersonalUpdateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.personal_info_edit); //connect to XML file (personal_info_edit.xml)
 
-        userInfoVM = new ViewModelProvider(this).get(UserInfoViewModel.class);
+        userInfoVM = UserInfoViewModel.getInstance();
         ageField = findViewById(R.id.editTextAge);
         heightField = findViewById(R.id.editTextHeight);
         weightField = findViewById(R.id.editTextWeight);
