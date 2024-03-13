@@ -19,9 +19,14 @@ public class NavBarActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle extras = getIntent().getExtras();
         navBind = NavigationBarBinding.inflate(getLayoutInflater());
         setContentView(navBind.getRoot());
-        replaceFragment(new HomeFragment());
+        if (extras != null && extras.getString("Fragment") != null && extras.getString("Fragment").equals("Input Meal")) {
+            replaceFragment(new InputMealFragment());
+        } else {
+            replaceFragment(new HomeFragment());
+        }
 
         // Listeners to switch screens
         navBind.bottomNavigationView.setOnItemSelectedListener(item -> {
