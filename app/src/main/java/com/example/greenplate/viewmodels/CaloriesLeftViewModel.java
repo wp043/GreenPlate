@@ -102,7 +102,8 @@ public class CaloriesLeftViewModel extends ViewModel {
                     }
 
                     List<PieEntry> pieEntries = new ArrayList<>();
-                    pieEntries.add(new PieEntry((caloriesGoal - totalCalories < 0 ? 0 : caloriesGoal - totalCalories), "Calories Left"));
+                    pieEntries.add(new PieEntry((caloriesGoal - totalCalories < 0
+                            ? 0 : caloriesGoal - totalCalories), "Calories Left"));
                     pieEntries.add(new PieEntry(totalCalories, "Consumed"));
 
                     // Update the LiveData with the new list

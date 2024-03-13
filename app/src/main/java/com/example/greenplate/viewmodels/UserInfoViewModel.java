@@ -1,14 +1,11 @@
-
 package com.example.greenplate.viewmodels;
 
-import android.content.Context;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -30,8 +27,6 @@ import com.google.firebase.database.ValueEventListener;
 
 public class UserInfoViewModel extends ViewModel {
     private static volatile UserInfoViewModel instance;
-    private FirebaseDatabase database;
-    private FirebaseAuth mAuth;
     private DatabaseReference userRef;
     private final MutableLiveData<Personal> userPersonalInfo = new MutableLiveData<>();
 
