@@ -131,7 +131,7 @@ public class InputMealTests {
         InputMealViewModel vm = new InputMealViewModel();
         GreenPlateStatus status = vm.addMealToDatabase(new Meal("Invalid", -50.));
         assertFalse(status.isSuccess());
-        assertEquals("Add meal: can't a meal with negative calorie", status.getMessage());
+        assertEquals("Add meal: can't have a meal with negative calorie", status.getMessage());
 
         // Check number of records: should be 0
         // This is async, so we need a CountDownLatch
