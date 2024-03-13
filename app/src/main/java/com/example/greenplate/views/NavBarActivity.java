@@ -22,7 +22,8 @@ public class NavBarActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         navBind = NavigationBarBinding.inflate(getLayoutInflater());
         setContentView(navBind.getRoot());
-        if (extras != null && extras.getString("Fragment") != null && extras.getString("Fragment").equals("Input Meal")) {
+        if (extras != null && extras.getString("Fragment") != null
+                && extras.getString("Fragment").equals("Input Meal")) {
             replaceFragment(new InputMealFragment());
         } else {
             replaceFragment(new HomeFragment());

@@ -7,7 +7,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import com.example.greenplate.R;
 import com.example.greenplate.viewmodels.UserInfoViewModel;
 

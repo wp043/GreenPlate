@@ -1,10 +1,8 @@
 package com.example.greenplate.viewmodels;
 
 import android.util.Log;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -14,13 +12,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.github.mikephil.charting.data.PieEntry;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 
@@ -59,14 +55,18 @@ public class CaloriesLeftViewModel extends ViewModel {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     final long caloriesGoal;
-                    String gender = dataSnapshot.child("information").child("gender").getValue() != null
-                            ? dataSnapshot.child("information").child("gender").getValue(String.class) : "Unknown";
-                    double height = (dataSnapshot.child("information").child("height").getValue() != null
-                            ? dataSnapshot.child("information").child("height").getValue(Double.class) : 0.0);
-                    double weight = (dataSnapshot.child("information").child("weight").getValue() != null
-                            ? dataSnapshot.child("information").child("weight").getValue(Double.class) : 0.0);
+                    String gender = dataSnapshot.child("information").child("gender")
+                            .getValue() != null ? dataSnapshot.child("information").child("gender")
+                            .getValue(String.class) : "Unknown";
+                    double height = (dataSnapshot.child("information").child("height")
+                            .getValue() != null ? dataSnapshot.child("information").child("height")
+                            .getValue(Double.class) : 0.0);
+                    double weight = (dataSnapshot.child("information").child("weight")
+                            .getValue() != null ? dataSnapshot.child("information").child("weight")
+                            .getValue(Double.class) : 0.0);
                     int age = (dataSnapshot.child("information").child("age").getValue() != null
-                            ? dataSnapshot.child("information").child("age").getValue(Integer.class) : 0);
+                            ? dataSnapshot.child("information").child("age")
+                            .getValue(Integer.class) : 0);
 
                     // Calculate the sum of height and weight
                     double bmr;
@@ -91,7 +91,8 @@ public class CaloriesLeftViewModel extends ViewModel {
                     // Get today's date in the format used in the database
                     String formattedDate = new SimpleDateFormat("MM-dd-yyyy",
                             Locale.getDefault()).format(new Date());
-                    for (DataSnapshot mealSnapshot : dataSnapshot.child("meals").child(formattedDate).getChildren()) {
+                    for (DataSnapshot mealSnapshot : dataSnapshot.child("meals")
+                            .child(formattedDate).getChildren()) {
                         String mealName = mealSnapshot.child("name").getValue(String.class);
                         Long calories = mealSnapshot.child("calories").getValue(Long.class);
                         if (mealName != null && calories != null) {

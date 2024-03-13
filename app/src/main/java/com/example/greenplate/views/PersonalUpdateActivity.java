@@ -9,7 +9,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import com.example.greenplate.R;
 import com.example.greenplate.models.Personal;
 import com.example.greenplate.viewmodels.UserInfoViewModel;
