@@ -2,12 +2,9 @@ package com.example.greenplate.views;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
 
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
@@ -17,7 +14,6 @@ import com.anychart.charts.Pie;
 import com.anychart.enums.Align;
 import com.anychart.enums.LegendLayout;
 import com.example.greenplate.R;
-import com.example.greenplate.viewmodels.InputMealViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +56,7 @@ public class CaloriesLeftActivity extends AppCompatActivity {
 
         backToHome.setOnClickListener(event -> {
             startActivity(new Intent(CaloriesLeftActivity.this,
-                    HomeFragment.class));
+                    InputMealFragment.class));
         });
 
     }
