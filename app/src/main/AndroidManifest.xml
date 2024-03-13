@@ -64,13 +64,6 @@
             android:theme="@style/Theme.GreenPlate">
         </activity>
 
-        <!-- DailyGoalMealInputChartActivity -->
-        <activity
-            android:name=".views.DailyGoalMealInputChartActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.GreenPlate">
-        </activity>
 
         <!-- MealBreakdownChartActivity -->
         <activity
