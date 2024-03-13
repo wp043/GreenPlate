@@ -32,6 +32,7 @@ public class InputMealViewModel extends ViewModel {
     private FirebaseAuth mAuth;
     private DatabaseReference myRef;
 
+
     public InputMealViewModel() {
         try {
             database = FirebaseDatabase.getInstance();
@@ -241,6 +242,7 @@ public class InputMealViewModel extends ViewModel {
     }
 
     public void getCalorieGoal(TextView view) {
+
         try {
             database = FirebaseDatabase.getInstance();
             mAuth = FirebaseAuth.getInstance();
@@ -281,8 +283,10 @@ public class InputMealViewModel extends ViewModel {
                     }
                     amr = bmr * 1.3;
                     int goal = (int) Math.round(amr);
+
                     String display = "<b>Calorie Goal: </b>" + goal + " calories";
                     view.setText(Html.fromHtml(display));
+
                 }
 
                 @Override
@@ -339,4 +343,5 @@ public class InputMealViewModel extends ViewModel {
             Log.d("Issue", "InputMealViewModel: " + e.getLocalizedMessage());
         }
     }
+
 }

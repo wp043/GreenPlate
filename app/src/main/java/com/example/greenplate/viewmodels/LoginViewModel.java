@@ -69,4 +69,15 @@ public class LoginViewModel {
     public int getRemainingAttempts() {
         return remainingAttempts;
     }
+
+    public boolean isInputDataValidForTest(String email, String password) {
+        boolean error = false;
+        if (email.trim().isEmpty()) {
+            error = true;
+        }
+        if (password.trim().isEmpty()) {
+            error = true;
+        }
+        return !error;
+    }
 }

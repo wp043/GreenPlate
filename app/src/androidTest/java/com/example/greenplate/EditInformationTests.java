@@ -89,6 +89,12 @@ public class EditInformationTests {
         assertFalse(status.isSuccess());
         assertEquals("Edit personal information: can't have negative height",
                 status.getMessage());
+
+        status = vm.updatePersonalInformation(new Personal(18, 0,
+                60, "female"));
+        assertFalse(status.isSuccess());
+        assertEquals("Edit personal information: can't have zero height",
+                status.getMessage());
     }
 
     @Test
@@ -117,6 +123,18 @@ public class EditInformationTests {
         assertFalse(status.isSuccess());
         assertEquals("Edit personal information: can't have negative weight",
                 status.getMessage());
+
+        status = vm.updatePersonalInformation(new Personal(18, 10,
+                -5, "female"));
+        assertFalse(status.isSuccess());
+        assertEquals("Edit personal information: can't have negative weight",
+                status.getMessage());
+
+        status = vm.updatePersonalInformation(new Personal(18, 10,
+                0, "female"));
+        assertFalse(status.isSuccess());
+        assertEquals("Edit personal information: can't have zero weight",
+                status.getMessage());
     }
     @Test
     public void testAddInfoWithInvalidGender() throws InterruptedException {
@@ -125,6 +143,11 @@ public class EditInformationTests {
                 10, null));
         assertFalse(status.isSuccess());
         assertEquals("Edit personal information: can't have null gender",
+                status.getMessage());
+        status = vm.updatePersonalInformation(new Personal(18, 10,
+                10, ""));
+        assertFalse(status.isSuccess());
+        assertEquals("Edit personal information: can't have empty gender",
                 status.getMessage());
 
     }

@@ -41,6 +41,8 @@ public class InputMealFragment extends Fragment {
     private EditText caloriesEditText;
     private Button submitButton;
 
+    private Button caloriesLeftButton;
+
     public InputMealFragment() {
         // Required empty public constructor
         inputMealVM = new InputMealViewModel();
@@ -81,6 +83,7 @@ public class InputMealFragment extends Fragment {
         nameEditText = view.findViewById(R.id.im_mealname_input);
         caloriesEditText = view.findViewById(R.id.im_calorie_input);
         submitButton = view.findViewById(R.id.im_submit);
+        caloriesLeftButton = view.findViewById(R.id.daily_calorie_intake_graph_button);
 
         TextView date = (TextView) view.findViewById(R.id.im_date);
         TextView height = (TextView) view.findViewById(R.id.im_height_display);
@@ -118,6 +121,28 @@ public class InputMealFragment extends Fragment {
             }
         });
 
+
+        caloriesLeftButton.setOnClickListener(v -> {
+            String goalText = goal.getText().toString();
+            String intakeText = intake.getText().toString();
+
+            int caloriesGoal = 0;
+            long caloriesIntake = 0;
+
+            try {
+                caloriesGoal = Integer.parseInt(goalText.replaceAll("[^0-9]", ""));
+                caloriesIntake = Long.parseLong(intakeText.replaceAll("[^0-9]", ""));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+
+            Intent intent = new Intent(getContext(), CaloriesLeftActivity.class);
+            intent.putExtra("caloriesIntake", caloriesIntake);
+            intent.putExtra("caloriesGoal", caloriesGoal);
+            startActivity(intent);
+
+        });
+
         // Button Listeners
         Button mealBreakdownButton = view.findViewById(R.id.meal_breakdown_graph_button);
         Button calorieGoalButton = view.findViewById(R.id.calorie_goal_graph_button);
@@ -135,7 +160,6 @@ public class InputMealFragment extends Fragment {
                 // Second Chart
             }
         });
-
         return view;
     }
 
@@ -145,4 +169,6 @@ public class InputMealFragment extends Fragment {
                 context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
+
+
 }
