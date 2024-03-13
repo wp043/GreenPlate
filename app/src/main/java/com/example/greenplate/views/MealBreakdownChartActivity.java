@@ -41,7 +41,8 @@ public class MealBreakdownChartActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         });
-        MealBreakdownViewModel viewModel = new ViewModelProvider(this).get(MealBreakdownViewModel.class);
+        MealBreakdownViewModel viewModel = new ViewModelProvider(this)
+                .get(MealBreakdownViewModel.class);
 
         // Observe the LiveData for pie chart entries
         viewModel.getPieChartEntries().observe(this, pieEntries -> {

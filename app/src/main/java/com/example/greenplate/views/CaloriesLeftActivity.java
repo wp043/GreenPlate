@@ -30,7 +30,7 @@ public class CaloriesLeftActivity extends AppCompatActivity {
 
         long caloriesIntake = intent.getLongExtra("caloriesIntake", 0);
         int caloriesGoal = intent.getIntExtra("caloriesGoal", 0);
-        if(caloriesGoal < caloriesIntake){
+        if (caloriesGoal < caloriesIntake) {
             caloriesIntake = caloriesGoal;
         }
         AnyChartView anyChartView = (AnyChartView) findViewById(R.id.any_chart_view);

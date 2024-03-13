@@ -69,7 +69,8 @@ public class MealBreakdownViewModel extends ViewModel {
             String userId = currentUser.getUid();
 
             // Get today's date in the format used in the database
-            String formattedDate = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
+            String formattedDate = new SimpleDateFormat("MM-dd-yyyy",
+                    Locale.getDefault()).format(new Date());
 
             DatabaseReference mealsRefToday = myRef.child(formattedDate);
             mealsRefToday.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -93,7 +94,8 @@ public class MealBreakdownViewModel extends ViewModel {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.w("MealBreakdownViewModel", "loadMeals:onCancelled", databaseError.toException());
+                    Log.w("MealBreakdownViewModel", "loadMeals:onCancelled",
+                            databaseError.toException());
                 }
             });
         }
@@ -139,10 +141,6 @@ public class MealBreakdownViewModel extends ViewModel {
     }
 
 
-    public interface DataCallback {
-        void onDataReceived(long data);
-    }
-
     public void getIntakeToday(DataCallback callback) {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -161,6 +159,9 @@ public class MealBreakdownViewModel extends ViewModel {
                 callback.onDataReceived(0); // Or handle error differently
             }
         });
+    }
+    public interface DataCallback {
+        void onDataReceived(long data);
     }
 
 }
