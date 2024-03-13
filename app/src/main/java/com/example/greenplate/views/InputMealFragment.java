@@ -1,6 +1,7 @@
 package com.example.greenplate.views;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -114,6 +115,24 @@ public class InputMealFragment extends Fragment {
                                 Toast.LENGTH_SHORT)
                         .show();
                 Log.d("Info", status.toString());
+            }
+        });
+
+        // Button Listeners
+        Button mealBreakdownButton = view.findViewById(R.id.meal_breakdown_graph_button);
+        Button calorieGoalButton = view.findViewById(R.id.calorie_goal_graph_button);
+
+        mealBreakdownButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MealBreakdownChartActivity.class);
+                startActivity(intent);
+            }
+        });
+        calorieGoalButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Second Chart
             }
         });
 
