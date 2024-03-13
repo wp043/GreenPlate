@@ -156,22 +156,24 @@
             android:id="@+id/im_submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:text="Submit"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.103"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/im_calorie_input" />
 
         <Button
-            android:id="@+id/im_calories_left"
+            android:id="@+id/daily_calorie_intake_graph_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Calories left today"
+            android:layout_marginTop="4dp"
+            android:text="Daily Calories"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.493"
+            app:layout_constraintHorizontal_bias="0.456"
             app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="295dp"
-            app:layout_constraintTop_toBottomOf="@+id/im_daily_intake"/>
+            app:layout_constraintTop_toBottomOf="@+id/im_calorie_input" />
+
 
         <TextView
             android:id="@+id/im_date"

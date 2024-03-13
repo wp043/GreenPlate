@@ -27,14 +27,13 @@ public class CaloriesLeftActivity extends AppCompatActivity {
 
     private static CaloriesLeftActivity caloriesLeftActivity;
 
-    private CaloriesLeftActivity(){
-        caloriesLeftActivity = new CaloriesLeftActivity();
-    }
+    private CaloriesLeftActivity(){}
 
     public static CaloriesLeftActivity getCaloriesLeftActivity(){
         if(caloriesLeftActivity == null){
             caloriesLeftActivity = new CaloriesLeftActivity();
         }
+        return caloriesLeftActivity;
     }
 
     @Override
