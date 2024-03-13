@@ -8,7 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.example.greenplate.models.GreenPlateStatus;
+import com.example.greenplate.models.Meal;
 import com.example.greenplate.models.Personal;
+import com.example.greenplate.viewmodels.InputMealViewModel;
 import com.example.greenplate.viewmodels.UserInfoViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -58,7 +60,7 @@ public class EditInformationTests {
             e.printStackTrace();
         }
         ref = FirebaseDatabase.getInstance()
-                .getReference(String.format("user/%s/meals", A1.getCurrentUser().getUid()));
+                .getReference(String.format("user/%s/information", A1.getCurrentUser().getUid()));
     }
 
     @Before
@@ -76,49 +78,24 @@ public class EditInformationTests {
         UserInfoViewModel vm = new UserInfoViewModel();
         GreenPlateStatus status = vm.updatePersonalInformation(null);
         assertFalse(status.isSuccess());
-        assertEquals("Edit Personal Info: can't add a null info", status.getMessage());
+        assertEquals("Edit personal information: can't add null information",
+                status.getMessage());
     }
 
     @Test
     public void testAddInfoWithInvalidHeight() throws InterruptedException {
         UserInfoViewModel vm = new UserInfoViewModel();
-        GreenPlateStatus status = vm.updatePersonalInformation(new Personal("18", null,
-                "60", "female"));
+        GreenPlateStatus status = vm.updatePersonalInformation(new Personal(18, -3,
+                60, "female"));
         assertFalse(status.isSuccess());
-        assertEquals("Edit Personal Info: can't a personal info with null or blank height",
+        assertEquals("Edit personal information: can't have negative height",
                 status.getMessage());
 
-        status = vm.updatePersonalInformation(new Personal("18", "", "60",
-                "female"));
+        status = vm.updatePersonalInformation(new Personal(18, -100000000,
+                60, "female"));
         assertFalse(status.isSuccess());
-        assertEquals("Edit Personal Info: can't a personal info with null or blank height",
+        assertEquals("Edit personal information: can't have negative height",
                 status.getMessage());
-
-        status = vm.updatePersonalInformation(new Personal("18", "    ", "60",
-                "female"));
-        assertFalse(status.isSuccess());
-        assertEquals("Edit Personal Info: can't a personal info with null or blank height",
-                status.getMessage());
-
-        // Check number of records: should be 0
-        // This is async, so we need a CountDownLatch
-        CountDownLatch latch = new CountDownLatch(1);
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                long number = dataSnapshot.getChildrenCount();
-                assertEquals(0, number);
-                // Release the latch to signal completion
-                latch.countDown();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                throw new AssertionError("Error when connecting with DB.");
-            }
-        });
-
-        assertTrue("Latch was not released", latch.await(10, TimeUnit.SECONDS));
     }
 
     @Test
@@ -127,8 +104,5 @@ public class EditInformationTests {
     @Test
     public void testAddInfoWithInvalidGender() throws InterruptedException {
 
-    }
-    @Test
-    public void testAddValidHeight() throws InterruptedException {
     }
 }
