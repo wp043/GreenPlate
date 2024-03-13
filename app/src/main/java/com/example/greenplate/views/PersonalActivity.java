@@ -26,6 +26,7 @@ public class PersonalActivity extends AppCompatActivity {
     private TextView displayGenderField;
 
     private Button editButton;
+    private Button backButton;
 
 
     @Override
@@ -41,6 +42,7 @@ public class PersonalActivity extends AppCompatActivity {
         displayWeightField = findViewById(R.id.currentWeight);
         displayGenderField = findViewById(R.id.currentGender);
         editButton = findViewById(R.id.buttonEdit);
+        backButton = findViewById(R.id.back);
 
         /*
         display height, weight, gender on the screen by getting the data from the database
@@ -59,6 +61,13 @@ public class PersonalActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(PersonalActivity.this, PersonalUpdateActivity.class);
+                startActivity(intent);
+            }
+        });
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PersonalActivity.this, HomeFragment.class);
                 startActivity(intent);
             }
         });
