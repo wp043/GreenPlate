@@ -40,16 +40,30 @@ public class LoginTests {
     }
 
     @Test
-    public void testIsInputDataValidForTest() {
+    public void testEmptyEmail() {
         // Test with valid input
         assertTrue(viewModel.isInputDataValidForTest("test@example.com", "password123"));
 
         // Test with empty email
         assertFalse(viewModel.isInputDataValidForTest("", "password123"));
 
-        // Test with empty password
+    }
+    @Test
+    public void testEmptyPassword() {
+        // Test with valid input
+        assertTrue(viewModel.isInputDataValidForTest("test@example.com", "password123"));
+
+
+
         assertFalse(viewModel.isInputDataValidForTest("test@example.com", ""));
     }
+    @Test
+    public void testInvalidPassword() {
+        // Test with valid input
+        assertTrue(viewModel.isInputDataValidForTest("test@example.com", "password123"));
+        assertFalse(viewModel.isInputDataValidForTest("test@example.com", "123"));
+    }
+
 
 
 
