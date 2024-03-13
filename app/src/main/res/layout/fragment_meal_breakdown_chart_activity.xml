@@ -33,6 +33,18 @@
             app:labelVisibilityMode="labeled"
             app:menu="@menu/bottom_nav_menu"/>
 
+        <TextView
+            android:id="@+id/back_to_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:text="Back"
+            android:textColor="#808080"
+            android:textSize="15sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
