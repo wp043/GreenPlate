@@ -56,7 +56,7 @@ public class CaloriesLeftActivity extends AppCompatActivity {
 
         backToHome.setOnClickListener(event -> {
             startActivity(new Intent(CaloriesLeftActivity.this,
-                    InputMealFragment.class));
+                    HomeFragment.class));
         });
 
     }

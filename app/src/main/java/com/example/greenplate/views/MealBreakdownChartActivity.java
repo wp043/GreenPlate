@@ -66,7 +66,7 @@ public class MealBreakdownChartActivity extends AppCompatActivity {
 
         backToHome.setOnClickListener(event -> {
             startActivity(new Intent(MealBreakdownChartActivity.this,
-                    InputMealFragment.class));
+                    HomeFragment.class));
         });
     }
 
