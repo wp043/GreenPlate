@@ -99,9 +99,27 @@ public class EditInformationTests {
 
     @Test
     public void testAddInfoWithInvalidWeight() throws InterruptedException {
+        UserInfoViewModel vm = new UserInfoViewModel();
+        GreenPlateStatus status = vm.updatePersonalInformation(new Personal(18, 10,
+                -5, "female"));
+        assertFalse(status.isSuccess());
+        assertEquals("Edit personal information: can't have negative weight",
+                status.getMessage());
+
+        status = vm.updatePersonalInformation(new Personal(18, 10,
+                0, "female"));
+        assertFalse(status.isSuccess());
+        assertEquals("Edit personal information: can't have zero weight",
+                status.getMessage());
     }
     @Test
     public void testAddInfoWithInvalidGender() throws InterruptedException {
+        UserInfoViewModel vm = new UserInfoViewModel();
+        GreenPlateStatus status = vm.updatePersonalInformation(new Personal(18, 10,
+                10, ""));
+        assertFalse(status.isSuccess());
+        assertEquals("Edit personal information: can't have empty gender",
+                status.getMessage());
 
     }
 }
