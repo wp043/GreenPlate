@@ -112,7 +112,7 @@ public class UserInfoViewModel extends ViewModel {
         }
         if (personal.getWeight() == 0.) {
             return new GreenPlateStatus(false,
-                    "Edit personal information: can't have zereo weight");
+                    "Edit personal information: can't have zero weight");
         }
         if (personal.getGender() == null || TextUtils.isEmpty(personal.getGender().trim())) {
             return new GreenPlateStatus(false,

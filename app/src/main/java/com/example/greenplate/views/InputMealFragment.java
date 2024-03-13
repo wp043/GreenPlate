@@ -83,7 +83,7 @@ public class InputMealFragment extends Fragment {
         nameEditText = view.findViewById(R.id.im_mealname_input);
         caloriesEditText = view.findViewById(R.id.im_calorie_input);
         submitButton = view.findViewById(R.id.im_submit);
-        caloriesLeftButton = view.findViewById(R.id.daily_calorie_intake_graph_button);
+//        caloriesLeftButton = view.findViewById(R.id.daily_calorie_intake_graph_button);
 
         TextView date = (TextView) view.findViewById(R.id.im_date);
         TextView height = (TextView) view.findViewById(R.id.im_height_display);

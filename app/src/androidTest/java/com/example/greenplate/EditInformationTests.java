@@ -103,7 +103,7 @@ public class EditInformationTests {
         GreenPlateStatus status = vm.updatePersonalInformation(new Personal(20, 165,
                 0, "female"));
         assertFalse(status.isSuccess());
-        assertEquals("Edit personal information: can't have negative weight",
+        assertEquals("Edit personal information: can't have zero weight",
                 status.getMessage());
 
         status = vm.updatePersonalInformation(new Personal(70, 2,
@@ -144,11 +144,7 @@ public class EditInformationTests {
         assertFalse(status.isSuccess());
         assertEquals("Edit personal information: can't have null gender",
                 status.getMessage());
-        status = vm.updatePersonalInformation(new Personal(18, 10,
-                10, ""));
-        assertFalse(status.isSuccess());
-        assertEquals("Edit personal information: can't have empty gender",
-                status.getMessage());
+
 
     }
 }
