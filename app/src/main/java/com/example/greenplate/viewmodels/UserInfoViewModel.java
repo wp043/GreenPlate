@@ -122,8 +122,8 @@ public class UserInfoViewModel extends ViewModel {
                 throw new RuntimeException("Failed to generate personal key");
             }
             userRef.child(personalKey).child("age").setValue(personal.getAge());
-            userRef.child(personalKey).child("height").setValue(personal.getAge());
-            userRef.child(personalKey).child("weight").setValue(personal.getAge());
+            userRef.child(personalKey).child("height").setValue(personal.getHeight());
+            userRef.child(personalKey).child("weight").setValue(personal.getWeight());
             userRef.child(personalKey).child("gender").setValue(personal.getGender());
             Log.d("Success", String.format("Added %s to the db", personal));
 
