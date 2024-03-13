@@ -3,6 +3,7 @@ package com.example.greenplate.viewmodels;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -18,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.List;
 
 
 public class CaloriesLeftViewModel extends ViewModel {
@@ -25,7 +27,6 @@ public class CaloriesLeftViewModel extends ViewModel {
     private FirebaseAuth mAuth;
     private DatabaseReference myRef;
     private MutableLiveData<List<PieEntry>> pieChartEntries = new MutableLiveData<>();
-    private InputMealViewModel inputMealVM = new InputMealViewModel();
 
     // Constructor and other methods...
 
