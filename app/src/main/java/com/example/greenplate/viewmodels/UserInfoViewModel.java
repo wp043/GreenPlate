@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 
 
 public class UserInfoViewModel extends ViewModel {
+    private static volatile UserInfoViewModel instance;
     private FirebaseDatabase database;
     private FirebaseAuth mAuth;
     private DatabaseReference userRef;
@@ -41,16 +42,26 @@ public class UserInfoViewModel extends ViewModel {
      *         weight:
      *         gender:
      */
-    public UserInfoViewModel() {
+    private UserInfoViewModel() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             userRef = FirebaseDatabase.getInstance().getReference("user")
                     .child(currentUser.getUid()).child("information");
             // Fetch the personal information every time PersonalActivity is navigated to
-            fetchPersonalInformation(); 
+            fetchPersonalInformation();
         } else {
             throw new RuntimeException("UserInfoViewModel: There's no user signed in.");
         }
+    }
+    public static UserInfoViewModel getInstance() {
+        if (instance == null) {
+            synchronized (UserInfoViewModel.class) {
+                if (instance == null) {
+                    instance = new UserInfoViewModel();
+                }
+            }
+        }
+        return instance;
     }
 
     private void fetchPersonalInformation() {
@@ -112,7 +123,7 @@ public class UserInfoViewModel extends ViewModel {
         }
         if (personal.getWeight() == 0.) {
             return new GreenPlateStatus(false,
-                    "Edit personal information: can't have zereo weight");
+                    "Edit personal information: can't have zero weight");
         }
         if (personal.getGender() == null || TextUtils.isEmpty(personal.getGender().trim())) {
             return new GreenPlateStatus(false,

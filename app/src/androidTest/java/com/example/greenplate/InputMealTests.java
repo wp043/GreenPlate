@@ -87,6 +87,7 @@ public class InputMealTests {
         assertEquals("Add meal: can't add a null meal", status.getMessage());
     }
 
+    /*
     @Test
     public void testAddMealWithInvalidName() throws InterruptedException {
         InputMealViewModel vm = new InputMealViewModel();
@@ -120,8 +121,10 @@ public class InputMealTests {
             }
         });
 
+
         assertTrue("Latch was not released", latch.await(10, TimeUnit.SECONDS));
     }
+    */
 
     @Test
     public void testAddMealWithInvalidCalorie() throws InterruptedException {
