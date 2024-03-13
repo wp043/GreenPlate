@@ -73,42 +73,5 @@ public class PersonalActivity extends AppCompatActivity {
             return true;
         });
     }
-    /*
-     * private method to set the text for the TextView
-     * @param txt
-     * @param type: age, height, weight, gender
-     * @return String
-     */
-    /*
-    private String textSetter(String txt, String type) {
-        String frontTxt = "";
-        String endTxt = "";
-        switch (type) {
-        case "age":
-            frontTxt = "Age: ";
-            endTxt = "";
-            break;
-        case "height":
-            frontTxt = "Height: ";
-            endTxt = "cm";
-            break;
-        case "weight":
-            frontTxt = "Weight: ";
-            endTxt = "kg";
-            break;
-        case "gender":
-            frontTxt = "Gender: ";
-            break;
-        default:
-            break;
-        }
-        if (txt == null) {
-            return frontTxt + "N/A";
-        } else {
-            return frontTxt + txt + endTxt;
-        }
-    }
-     */
-
 }
 
