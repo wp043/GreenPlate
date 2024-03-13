@@ -68,7 +68,7 @@ public class EditInformationTests {
 
     @Test
     public void testAddNullInfo() {
-        UserInfoViewModel vm = new UserInfoViewModel();
+        UserInfoViewModel vm = UserInfoViewModel.getInstance();
         GreenPlateStatus status = vm.updatePersonalInformation(null);
         assertFalse(status.isSuccess());
         assertEquals("Edit personal information: can't add null information",
@@ -77,7 +77,7 @@ public class EditInformationTests {
 
     @Test
     public void testAddInfoWithInvalidHeight() throws InterruptedException {
-        UserInfoViewModel vm = new UserInfoViewModel();
+        UserInfoViewModel vm = UserInfoViewModel.getInstance();
         GreenPlateStatus status = vm.updatePersonalInformation(new Personal(18, -3,
                 60, "female"));
         assertFalse(status.isSuccess());
@@ -99,7 +99,7 @@ public class EditInformationTests {
 
     @Test
     public void testAddInfoWithInvalidWeight() throws InterruptedException {
-        UserInfoViewModel vm = new UserInfoViewModel();
+        UserInfoViewModel vm = UserInfoViewModel.getInstance();
         GreenPlateStatus status = vm.updatePersonalInformation(new Personal(20, 165,
                 0, "female"));
         assertFalse(status.isSuccess());
@@ -138,13 +138,17 @@ public class EditInformationTests {
     }
     @Test
     public void testAddInfoWithInvalidGender() throws InterruptedException {
-        UserInfoViewModel vm = new UserInfoViewModel();
+        UserInfoViewModel vm = UserInfoViewModel.getInstance();
         GreenPlateStatus status = vm.updatePersonalInformation(new Personal(20, 165,
                 10, null));
         assertFalse(status.isSuccess());
         assertEquals("Edit personal information: can't have null gender",
                 status.getMessage());
-
+        status = vm.updatePersonalInformation(new Personal(18, 10,
+                10, ""));
+        assertFalse(status.isSuccess());
+        assertEquals("Edit personal information: can't have null gender",
+                status.getMessage());
 
     }
 }
