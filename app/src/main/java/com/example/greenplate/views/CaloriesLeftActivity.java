@@ -25,13 +25,17 @@ import java.util.List;
 public class CaloriesLeftActivity extends AppCompatActivity {
     private TextView backToHome;
 
-    private static CaloriesLeftActivity caloriesLeftActivity;
+    private volatile static CaloriesLeftActivity caloriesLeftActivity;
 
     private CaloriesLeftActivity(){}
 
     public static CaloriesLeftActivity getCaloriesLeftActivity(){
         if(caloriesLeftActivity == null){
-            caloriesLeftActivity = new CaloriesLeftActivity();
+            synchronized (CaloriesLeftActivity.class){
+                if(caloriesLeftActivity == null){
+                    caloriesLeftActivity = new CaloriesLeftActivity();
+                }
+            }
         }
         return caloriesLeftActivity;
     }
