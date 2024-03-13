@@ -141,8 +141,8 @@ public class InputMealFragment extends Fragment {
             intent.putExtra("caloriesGoal", caloriesGoal);
             startActivity(intent);
 
-
         });
+
         // Button Listeners
         Button mealBreakdownButton = view.findViewById(R.id.meal_breakdown_graph_button);
         Button calorieGoalButton = view.findViewById(R.id.calorie_goal_graph_button);
@@ -159,7 +159,7 @@ public class InputMealFragment extends Fragment {
             public void onClick(View v) {
                 // Second Chart
             }
-
+        });
         return view;
     }
 
