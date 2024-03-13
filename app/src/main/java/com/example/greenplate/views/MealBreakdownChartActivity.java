@@ -44,7 +44,8 @@ public class MealBreakdownChartActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         });
-        MealBreakdownViewModel viewModel = new ViewModelProvider(this).get(MealBreakdownViewModel.class);
+        MealBreakdownViewModel viewModel = new ViewModelProvider(this)
+                .get(MealBreakdownViewModel.class);
 
         // Observe the LiveData for pie chart entries
         viewModel.getPieChartEntries().observe(this, pieEntries -> {
@@ -111,12 +112,4 @@ public class MealBreakdownChartActivity extends AppCompatActivity {
         pieChart.setData(data);
         pieChart.invalidate();
     }
-
-
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_daily_goal_meal_input_chart_activity, container, false);
-//    }
 }

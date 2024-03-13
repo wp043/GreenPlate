@@ -2,12 +2,9 @@ package com.example.greenplate.views;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
 
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
@@ -17,7 +14,6 @@ import com.anychart.charts.Pie;
 import com.anychart.enums.Align;
 import com.anychart.enums.LegendLayout;
 import com.example.greenplate.R;
-import com.example.greenplate.viewmodels.InputMealViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +30,7 @@ public class CaloriesLeftActivity extends AppCompatActivity {
 
         long caloriesIntake = intent.getLongExtra("caloriesIntake", 0);
         int caloriesGoal = intent.getIntExtra("caloriesGoal", 0);
-        if(caloriesGoal < caloriesIntake){
+        if (caloriesGoal < caloriesIntake) {
             caloriesIntake = caloriesGoal;
         }
         AnyChartView anyChartView = (AnyChartView) findViewById(R.id.any_chart_view);
