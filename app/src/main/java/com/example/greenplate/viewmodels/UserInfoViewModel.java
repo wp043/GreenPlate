@@ -1,14 +1,12 @@
 
 package com.example.greenplate.viewmodels;
 
-import android.content.Context;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
