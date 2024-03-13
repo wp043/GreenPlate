@@ -33,8 +33,7 @@ public class PersonalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.personal_info);
 
-        userInfoVM = new ViewModelProvider(this).get(UserInfoViewModel.class);
-
+        userInfoVM = UserInfoViewModel.getInstance();
 
         displayAgeField = findViewById(R.id.currentAge);
         displayHeightField = findViewById(R.id.currentHeight);
