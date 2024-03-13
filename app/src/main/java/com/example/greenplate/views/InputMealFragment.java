@@ -3,6 +3,7 @@ package com.example.greenplate.views;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,15 +85,17 @@ public class InputMealFragment extends Fragment {
         TextView date = (TextView) view.findViewById(R.id.im_date);
         TextView height = (TextView) view.findViewById(R.id.im_height_display);
         TextView weight = (TextView) view.findViewById(R.id.im_weight_display);
+        TextView age = (TextView) view.findViewById(R.id.im_age_display);
         TextView gender = (TextView) view.findViewById(R.id.im_gender_display);
         TextView goal = (TextView) view.findViewById(R.id.im_goal_display);
         TextView intake = (TextView) view.findViewById(R.id.im_daily_intake);
 
-        String dateText = "Today's Date: " + inputMealVM.getDateToday();
-        date.setText(dateText);
+        String dateText = "<b>Today's Date: </b>" + inputMealVM.getDateToday();
+        date.setText(Html.fromHtml(dateText));
 
         inputMealVM.getUserHeight(height);
         inputMealVM.getUserWeight(weight);
+        inputMealVM.getUserAge(age);
         inputMealVM.getUserGender(gender);
         inputMealVM.getCalorieGoal(goal);
         inputMealVM.getIntakeToday(intake);

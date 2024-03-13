@@ -1,5 +1,6 @@
 package com.example.greenplate.viewmodels;
 
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.EditText;
@@ -39,8 +40,6 @@ public class InputMealViewModel extends ViewModel {
             if (currentUser == null) {
                 throw new RuntimeException("InputMealViewModel: There's no user signed in.");
             }
-            myRef = database.getReference("user").child(currentUser.getUid())
-                    .child("meals");
 
             //Do some testing w/o UI
             //addMealToDatabase(null);
@@ -77,6 +76,13 @@ public class InputMealViewModel extends ViewModel {
             if (currentUser == null) {
                 throw new RuntimeException("Signed-in user can't be found");
             }
+
+            DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+            Date date = new Date();
+            String currDate = dateFormat.format(date);
+
+            myRef = database.getReference("user").child(currentUser.getUid())
+                    .child("meals").child(currDate);
 
             String mealKey = myRef.push().getKey();
             if (mealKey == null) {
@@ -134,9 +140,10 @@ public class InputMealViewModel extends ViewModel {
                         Log.e("firebase", "Error getting data", task.getException());
                     } else {
                         Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                        String height = task.getResult().getValue() != null
-                                ? task.getResult().getValue(String.class) : "0";
-                        view.setText("Height: " + height + " cm");
+                        double height = task.getResult().getValue() != null
+                                ? task.getResult().getValue(Double.class) : 0;
+                        String display = "<b>Height: </b>" + String.format("%.1f", height) + " cm";
+                        view.setText(Html.fromHtml(display));
                     }
                 }
             });
@@ -163,9 +170,39 @@ public class InputMealViewModel extends ViewModel {
                         Log.e("firebase", "Error getting data", task.getException());
                     } else {
                         Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                        String weight = task.getResult().getValue() != null
-                                ? task.getResult().getValue(String.class) : "0";
-                        view.setText("Weight: " + weight + " kg");
+                        double weight = task.getResult().getValue() != null
+                                ? task.getResult().getValue(Double.class) : 0;
+                        String display = "<b>Weight: </b>" + String.format("%.1f", weight) + " kg";
+                        view.setText(Html.fromHtml(display));
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.d("Issue", "InputMealViewModel: " + e.getLocalizedMessage());
+        }
+    }
+
+    public void getUserAge(TextView view) {
+        try {
+            database = FirebaseDatabase.getInstance();
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser == null) {
+                throw new RuntimeException("InputMealViewModel: There's no user signed in.");
+            }
+            myRef = database.getReference("user").child(currentUser.getUid())
+                    .child("information").child("age");
+            myRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if (!task.isSuccessful()) {
+                        Log.e("firebase", "Error getting data", task.getException());
+                    } else {
+                        Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                        int age = task.getResult().getValue() != null
+                                ? task.getResult().getValue(Integer.class) : 0;
+                        String display = "<b>Age: </b>" + age;
+                        view.setText(Html.fromHtml(display));
                     }
                 }
             });
@@ -193,7 +230,8 @@ public class InputMealViewModel extends ViewModel {
                         Log.d("firebase", String.valueOf(task.getResult().getValue()));
                         String gender = task.getResult().getValue() != null
                                 ? task.getResult().getValue(String.class) : "Unknown";
-                        view.setText("Gender: " + gender);
+                        String display = "<b>Gender: </b>" + gender;
+                        view.setText(Html.fromHtml(display));
                     }
                 }
             });
@@ -218,32 +256,33 @@ public class InputMealViewModel extends ViewModel {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     String gender = dataSnapshot.child("gender").getValue() != null
                             ? dataSnapshot.child("gender").getValue(String.class) : "Unknown";
-                    String height = (dataSnapshot.child("height").getValue() != null
-                            ? dataSnapshot.child("height").getValue(String.class) : "0");
-                    String weight = (dataSnapshot.child("weight").getValue() != null
-                            ? dataSnapshot.child("weight").getValue(String.class) : "0");
-                    String age = (dataSnapshot.child("age").getValue() != null
-                            ? dataSnapshot.child("age").getValue(String.class) : "0");
+                    double height = (dataSnapshot.child("height").getValue() != null
+                            ? dataSnapshot.child("height").getValue(Double.class) : 0.0);
+                    double weight = (dataSnapshot.child("weight").getValue() != null
+                            ? dataSnapshot.child("weight").getValue(Double.class) : 0.0);
+                    int age = (dataSnapshot.child("age").getValue() != null
+                            ? dataSnapshot.child("age").getValue(Integer.class) : 0);
 
                     // Calculate the sum of height and weight
                     double bmr;
                     double amr;
                     if (gender.equals("Male")) {
-                        bmr = 66.47 + 5.003 * Double.parseDouble(height)
-                                + 13.75 * Double.parseDouble(weight)
-                                - 6.755 * Double.parseDouble(age);
+                        bmr = 66.47 + 5.003 * height
+                                + 13.75 * weight
+                                - 6.755 * age;
                     } else if (gender.equals("Female")) {
-                        bmr = 655.1 + 1.850 * Double.parseDouble(height)
-                                + 9.563 * Double.parseDouble(weight)
-                                - 4.676 * Double.parseDouble(age);
+                        bmr = 655.1 + 1.850 * height
+                                + 9.563 * weight
+                                - 4.676 * age;
                     } else {
-                        bmr = 360.785 + 3.4265 * Double.parseDouble(height)
-                                + 11.6565 * Double.parseDouble(weight)
-                                - 5.7155 * Double.parseDouble(age);
+                        bmr = 360.785 + 3.4265 * height
+                                + 11.6565 * weight
+                                - 5.7155 * age;
                     }
                     amr = bmr * 1.3;
                     int goal = (int) Math.round(amr);
-                    view.setText("Calorie Goal: " + goal + " calories");
+                    String display = "<b>Calorie Goal: </b>" + goal + " calories";
+                    view.setText(Html.fromHtml(display));
                 }
 
                 @Override
@@ -267,8 +306,13 @@ public class InputMealViewModel extends ViewModel {
             if (currentUser == null) {
                 throw new RuntimeException("InputMealViewModel: There's no user signed in.");
             }
+
+            DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+            Date date = new Date();
+            String currDate = dateFormat.format(date);
+
             myRef = database.getReference("user").child(currentUser.getUid())
-                    .child("meals");
+                    .child("meals").child(currDate);
             Query userInfoQuery = myRef;
             userInfoQuery.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -280,7 +324,8 @@ public class InputMealViewModel extends ViewModel {
                             sum += calories;
                         }
                     }
-                    view.setText("Total Intake Today: " + sum + " calories");
+                    String display = "<b>Total Intake Today: </b>" + sum + " calories";
+                    view.setText(Html.fromHtml(display));
                 }
 
                 @Override
