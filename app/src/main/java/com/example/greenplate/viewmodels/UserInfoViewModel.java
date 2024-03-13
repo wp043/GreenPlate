@@ -98,13 +98,21 @@ public class UserInfoViewModel extends ViewModel {
             return new GreenPlateStatus(false,
                     "Edit personal information: can't have negative age");
         }
-        if (personal.getHeight() <= 0.) {
+        if (personal.getHeight() < 0.) {
             return new GreenPlateStatus(false,
                     "Edit personal information: can't have negative height");
         }
-        if (personal.getWeight() <= 0.) {
+        if (personal.getHeight() <= 0.) {
+            return new GreenPlateStatus(false,
+                    "Edit personal information: can't have zero height");
+        }
+        if (personal.getWeight() < 0.) {
             return new GreenPlateStatus(false,
                     "Edit personal information: can't have negative weight");
+        }
+        if (personal.getWeight() == 0.) {
+            return new GreenPlateStatus(false,
+                    "Edit personal information: can't have zereo weight");
         }
         if (personal.getGender() == null || TextUtils.isEmpty(personal.getGender().trim())) {
             return new GreenPlateStatus(false,

@@ -89,6 +89,12 @@ public class EditInformationTests {
         assertFalse(status.isSuccess());
         assertEquals("Edit personal information: can't have negative height",
                 status.getMessage());
+
+        status = vm.updatePersonalInformation(new Personal(18, 0,
+                60, "female"));
+        assertFalse(status.isSuccess());
+        assertEquals("Edit personal information: can't have zero height",
+                status.getMessage());
     }
 
     @Test
