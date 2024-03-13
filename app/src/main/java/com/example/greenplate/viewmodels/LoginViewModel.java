@@ -78,8 +78,8 @@ public class LoginViewModel {
         if (password.trim().isEmpty()) {
             error = true;
         }
-        if (password.length()<6){
-            error=true;
+        if (password.length() < 6) {
+            error = true;
         }
         return !error;
     }
