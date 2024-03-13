@@ -32,8 +32,6 @@
             android:text="Height: --"
             android:textAlignment="center"
             android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/im_age_display"
             app:layout_constraintTop_toBottomOf="@+id/im_age_display" />
 
@@ -41,24 +39,24 @@
             android:id="@+id/im_weight_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="200dp"
+            android:layout_marginTop="0dp"
             android:text="Weight: --"
             android:textAlignment="center"
             android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.515"
-            app:layout_constraintStart_toEndOf="@+id/im_height_display"
+            app:layout_constraintStart_toStartOf="@+id/im_height_display"
             app:layout_constraintTop_toTopOf="@+id/im_height_display" />
 
         <TextView
             android:id="@+id/im_gender_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="200dp"
+            android:layout_marginTop="0dp"
             android:text="Gender: --"
             android:textAlignment="center"
             android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.776"
-            app:layout_constraintStart_toEndOf="@+id/im_age_display"
+            app:layout_constraintStart_toStartOf="@+id/im_age_display"
             app:layout_constraintTop_toTopOf="@+id/im_age_display" />
 
         <TextView
@@ -69,8 +67,6 @@
             android:text="Calorie Goal: --"
             android:textAlignment="center"
             android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/im_height_display"
             app:layout_constraintTop_toBottomOf="@+id/im_height_display" />
 
@@ -82,8 +78,6 @@
             android:text="Total Intake Today: -- calories"
             android:textAlignment="center"
             android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/im_goal_display"
             app:layout_constraintTop_toBottomOf="@+id/im_goal_display" />
 
@@ -186,14 +180,14 @@
 
         <TextView
             android:id="@+id/im_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="236dp"
+            android:layout_height="29dp"
+            android:layout_marginTop="16dp"
             android:text="Today's Date: --"
             android:textSize="20sp"
-            android:layout_gravity="center_horizontal"
-            app:layout_constraintStart_toStartOf="@+id/im_height_display"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.08"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textHeader" />
 
 

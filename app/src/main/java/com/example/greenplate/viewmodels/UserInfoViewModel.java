@@ -1,14 +1,12 @@
 
 package com.example.greenplate.viewmodels;
 
-import android.content.Context;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -100,11 +98,11 @@ public class UserInfoViewModel extends ViewModel {
             return new GreenPlateStatus(false,
                     "Edit personal information: can't have negative age");
         }
-        if (personal.getHeight() < 0.) {
+        if (personal.getHeight() <= 0.) {
             return new GreenPlateStatus(false,
                     "Edit personal information: can't have negative height");
         }
-        if (personal.getWeight() < 0.) {
+        if (personal.getWeight() <= 0.) {
             return new GreenPlateStatus(false,
                     "Edit personal information: can't have negative weight");
         }
@@ -139,7 +137,7 @@ public class UserInfoViewModel extends ViewModel {
                 String.format("%s added to database successfully", personal));
     }
     public boolean validatePersonalInformation(String age, String height, String weight,
-                                               String gender, EditText ageField,
+                                               EditText ageField,
                                                EditText heightField, EditText weightField,
                                                RadioGroup genderField) {
         boolean valid = true;
