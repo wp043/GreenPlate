@@ -58,7 +58,6 @@ public class InputMealViewModel extends ViewModel {
         }
     }
 
-    // todo: Add meals of a certain day to a date table
     public GreenPlateStatus addMealToDatabase(Meal meal) {
         if (meal == null) {
             return new GreenPlateStatus(false,
@@ -301,7 +300,6 @@ public class InputMealViewModel extends ViewModel {
         }
     }
 
-    // todo: Only add the calories of meals on current date
     public void getIntakeToday(TextView view) {
         try {
             database = FirebaseDatabase.getInstance();
