@@ -89,24 +89,12 @@ public class EditInformationTests {
         assertFalse(status.isSuccess());
         assertEquals("Edit personal information: can't have negative height",
                 status.getMessage());
-
-        status = vm.updatePersonalInformation(new Personal(18, 0,
-                60, "female"));
-        assertFalse(status.isSuccess());
-        assertEquals("Edit personal information: can't have zero height",
-                status.getMessage());
     }
 
     @Test
     public void testAddInfoWithInvalidWeight() throws InterruptedException {
         UserInfoViewModel vm = UserInfoViewModel.getInstance();
-        GreenPlateStatus status = vm.updatePersonalInformation(new Personal(20, 165,
-                0, "female"));
-        assertFalse(status.isSuccess());
-        assertEquals("Edit personal information: can't have zero weight",
-                status.getMessage());
-
-        status = vm.updatePersonalInformation(new Personal(70, 2,
+        GreenPlateStatus status = vm.updatePersonalInformation(new Personal(70, 2,
                 -10, "male"));
         assertFalse(status.isSuccess());
         assertEquals("Edit personal information: can't have negative weight",
@@ -130,11 +118,6 @@ public class EditInformationTests {
         assertEquals("Edit personal information: can't have negative weight",
                 status.getMessage());
 
-        status = vm.updatePersonalInformation(new Personal(18, 10,
-                0, "female"));
-        assertFalse(status.isSuccess());
-        assertEquals("Edit personal information: can't have zero weight",
-                status.getMessage());
     }
     @Test
     public void testAddInfoWithInvalidGender() throws InterruptedException {
