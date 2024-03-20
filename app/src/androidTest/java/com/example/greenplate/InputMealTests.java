@@ -20,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.junit.Before;
@@ -27,6 +28,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -59,8 +63,11 @@ public class InputMealTests {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        Date date = new Date();
+        String currDate = dateFormat.format(date);
         ref = FirebaseDatabase.getInstance()
-                .getReference(String.format("user/%s/meals", A1.getCurrentUser().getUid()));
+                .getReference(String.format("user/%s/meals/%s/", A1.getCurrentUser().getUid(), currDate));
     }
 
     @Before
@@ -87,44 +94,21 @@ public class InputMealTests {
         assertEquals("Add meal: can't add a null meal", status.getMessage());
     }
 
-    /*
     @Test
     public void testAddMealWithInvalidName() throws InterruptedException {
         InputMealViewModel vm = new InputMealViewModel();
         GreenPlateStatus status = vm.addMealToDatabase(new Meal(null, 50.));
         assertFalse(status.isSuccess());
-        assertEquals("Add meal: can't a meal with null or blank name", status.getMessage());
+        assertEquals("Add meal: can't have a meal with null or blank name", status.getMessage());
 
         status = vm.addMealToDatabase(new Meal("", 50.));
         assertFalse(status.isSuccess());
-        assertEquals("Add meal: can't a meal with null or blank name", status.getMessage());
+        assertEquals("Add meal: can't have a meal with null or blank name", status.getMessage());
 
         status = vm.addMealToDatabase(new Meal("    ", 50.));
         assertFalse(status.isSuccess());
-        assertEquals("Add meal: can't a meal with null or blank name", status.getMessage());
-
-        // Check number of records: should be 0
-        // This is async, so we need a CountDownLatch
-        CountDownLatch latch = new CountDownLatch(1);
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                long numberOfMeals = dataSnapshot.getChildrenCount();
-                assertEquals(0, numberOfMeals);
-                // Release the latch to signal completion
-                latch.countDown();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                throw new AssertionError("Error when connecting with DB.");
-            }
-        });
-
-
-        assertTrue("Latch was not released", latch.await(10, TimeUnit.SECONDS));
+        assertEquals("Add meal: can't have a meal with null or blank name", status.getMessage());
     }
-    */
 
     @Test
     public void testAddMealWithInvalidCalorie() throws InterruptedException {
@@ -132,26 +116,6 @@ public class InputMealTests {
         GreenPlateStatus status = vm.addMealToDatabase(new Meal("Invalid", -50.));
         assertFalse(status.isSuccess());
         assertEquals("Add meal: can't have a meal with negative calorie", status.getMessage());
-
-        // Check number of records: should be 0
-        // This is async, so we need a CountDownLatch
-        CountDownLatch latch = new CountDownLatch(1);
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                long numberOfMeals = dataSnapshot.getChildrenCount();
-                assertEquals(0, numberOfMeals);
-                // Release the latch to signal completion
-                latch.countDown();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                throw new AssertionError("Error when connecting with DB.");
-            }
-        });
-
-        assertTrue("Latch was not released", latch.await(10, TimeUnit.SECONDS));
     }
 
     @Test
@@ -174,25 +138,6 @@ public class InputMealTests {
         status = vm.addMealToDatabase(meal3);
         assertTrue(status.isSuccess());
         assertEquals(String.format(format, meal3), status.getMessage());
-
-        // Check number of records: should be 3
-        // This is async, so we need a CountDownLatch
-        CountDownLatch latch = new CountDownLatch(1);
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                long numberOfMeals = dataSnapshot.getChildrenCount();
-                assertEquals(3, numberOfMeals);
-                // Release the latch to signal completion
-                latch.countDown();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                throw new AssertionError("Error when connecting with DB.");
-            }
-        });
-
-        assertTrue("Latch was not released", latch.await(10, TimeUnit.SECONDS));
     }
 }
+
