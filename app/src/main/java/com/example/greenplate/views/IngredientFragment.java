@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import com.example.greenplate.R;
+import com.example.greenplate.viewmodels.IngredientViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,9 +25,10 @@ public class IngredientFragment extends Fragment {
     // Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private IngredientViewModel ingredientVM;
 
     public IngredientFragment() {
-        // Required empty public constructor
+        ingredientVM = new IngredientViewModel();
     }
 
     /**
