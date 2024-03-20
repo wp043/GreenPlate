@@ -85,7 +85,12 @@ public class PantryManager implements Manager {
             }
         });
     }
-    
+
+    /**
+     * Add an ingredient to the database.
+     * @param ingredient - the ingredient to add
+     * @return the status of the operation
+     */
     public GreenPlateStatus addIngredient(Ingredient ingredient) {
         try {
             String ingredientKey = myRef.push().getKey();
@@ -107,6 +112,11 @@ public class PantryManager implements Manager {
                 String.format("%s added to database successfully", ingredient));
     }
 
+    /**
+     * Check whether the input ingredient is duplicate.
+     * @param ingredient - the ingredient to check
+     * @param listener - the listener to update
+     */
     public void isIngredientDuplicate(Ingredient ingredient, OnDuplicateCheckListener listener) {
         retrieve(items -> {
             boolean isDuplicate = false;
@@ -120,7 +130,13 @@ public class PantryManager implements Manager {
         });
     }
 
-    public void updateIngredientMultiplicity(Ingredient ingredient, OnMultiplicityUpdateListener listener) {
+    /**
+     * Update the multiplicity of the input ingredient.
+     * @param ingredient - the ingredient to update
+     * @param listener - the listener to update
+     */
+    public void updateIngredientMultiplicity(Ingredient ingredient,
+                                             OnMultiplicityUpdateListener listener) {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         String formattedDate = sdf.format(ingredient.getExpirationDate());
 
@@ -132,16 +148,19 @@ public class PantryManager implements Manager {
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     String name = childSnapshot.child("name").getValue(String.class);
                     double calories = childSnapshot.child("calories").getValue(Double.class);
-                    String expirationDateString = childSnapshot.child("expirationDate").getValue(String.class);
+                    String expirationDateString = childSnapshot.child("expirationDate")
+                            .getValue(String.class);
 
                     if (calories == ingredient.getCalories()
                             && name.equals(ingredient.getName())
                             && expirationDateString.equals(formattedDate)) {
                         String key = childSnapshot.getKey();
-                        myRef.child(key).child("multiplicity").setValue(ingredient.getMultiplicity())
+                        myRef.child(key).child("multiplicity")
+                                .setValue(ingredient.getMultiplicity())
                                 .addOnSuccessListener(e -> listener.onMultiplicityUpdateSuccess(
                                         new GreenPlateStatus(true,
-                                                String.format("Successful update %s.", ingredient))))
+                                                String.format("Successful update %s.",
+                                                        ingredient))))
                                 .addOnFailureListener(e -> listener.onMultiplicityUpdateFailure(
                                         new GreenPlateStatus(false, e.getMessage()
                                         )));
@@ -166,6 +185,11 @@ public class PantryManager implements Manager {
         });
     }
 
+    /**
+     * Remove the input ingredient from the db.
+     * @param ingredient - the ingredient to remove
+     * @param listener - the listener to update
+     */
     public void removeIngredient(Ingredient ingredient, OnIngredientRemoveListener listener) {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         String formattedDate = sdf.format(ingredient.getExpirationDate());
@@ -178,7 +202,8 @@ public class PantryManager implements Manager {
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     String name = childSnapshot.child("name").getValue(String.class);
                     double calories = childSnapshot.child("calories").getValue(Double.class);
-                    String expirationDateString = childSnapshot.child("expirationDate").getValue(String.class);
+                    String expirationDateString = childSnapshot.child("expirationDate")
+                            .getValue(String.class);
 
                     if (calories == ingredient.getCalories()
                             && name.equals(ingredient.getName())
@@ -187,7 +212,8 @@ public class PantryManager implements Manager {
                         myRef.child(key).removeValue()
                             .addOnSuccessListener(e -> listener.onIngredientRemoveSuccess(
                                             new GreenPlateStatus(true,
-                                                    String.format("Successfully removed %s", ingredient))
+                                                    String.format("Successfully removed %s",
+                                                            ingredient))
                                     )
                             ).addOnFailureListener(e ->
                                     listener.onIngredientRemoveFailure(
