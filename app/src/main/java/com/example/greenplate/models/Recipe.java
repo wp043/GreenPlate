@@ -135,4 +135,13 @@ public class Recipe extends RetrievableItem {
                 String.format("Failed to remove \"%s\" from instructions of a recipe,"
                         + "as it's not found.", instruction));
     }
+
+
+    /**
+     * Getter for ingredient map.
+     * @return a map containing ingredients and their multiplicities of the recipe
+     */
+    public Map<Ingredient, Integer> getAvailableIngredients() {
+        return ingredients;
+    }
 }
