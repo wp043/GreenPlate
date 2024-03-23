@@ -41,24 +41,11 @@ public class InputMealViewModel extends ViewModel {
             if (currentUser == null) {
                 throw new RuntimeException("InputMealViewModel: There's no user signed in.");
             }
-
-            //Do some testing w/o UI
-            //addMealToDatabase(null);
-            //addMealToDatabase(new Meal(null, 0.));
-            //addMealToDatabase(new Meal("Neg meal", -1.0));
-            //addMealToDatabase(new Meal("    ", 12.0));
-            //GreenPlateStatus s1 = addMealToDatabase(new Meal("Test meal 1", 120.0));
-            //GreenPlateStatus s2 = addMealToDatabase(new Meal("Test meal 1", 150.4));
-            //GreenPlateStatus s3 = addMealToDatabase(new Meal("Test meal 3", 741.23));
-            //Log.d("Info", s1.toString());
-            //Log.d("Info", s2.toString());
-            //Log.d("Info", s3.toString());
         } catch (Exception e) {
             Log.d("Issue", "InputMealViewModel: " + e.getLocalizedMessage());
         }
     }
 
-    // todo: Add meals of a certain day to a date table
     public GreenPlateStatus addMealToDatabase(Meal meal) {
         if (meal == null) {
             return new GreenPlateStatus(false,
@@ -301,7 +288,6 @@ public class InputMealViewModel extends ViewModel {
         }
     }
 
-    // todo: Only add the calories of meals on current date
     public void getIntakeToday(TextView view) {
         try {
             database = FirebaseDatabase.getInstance();

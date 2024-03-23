@@ -7,7 +7,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import com.example.greenplate.R;
 import com.example.greenplate.viewmodels.UserInfoViewModel;
 
@@ -34,8 +33,7 @@ public class PersonalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.personal_info);
 
-        userInfoVM = new ViewModelProvider(this).get(UserInfoViewModel.class);
-
+        userInfoVM = UserInfoViewModel.getInstance();
 
         displayAgeField = findViewById(R.id.currentAge);
         displayHeightField = findViewById(R.id.currentHeight);

@@ -1,4 +1,3 @@
-
 package com.example.greenplate.viewmodels;
 
 import android.text.Html;
@@ -28,8 +27,6 @@ import com.google.firebase.database.ValueEventListener;
 
 public class UserInfoViewModel extends ViewModel {
     private static volatile UserInfoViewModel instance;
-    private FirebaseDatabase database;
-    private FirebaseAuth mAuth;
     private DatabaseReference userRef;
     private final MutableLiveData<Personal> userPersonalInfo = new MutableLiveData<>();
 
@@ -38,7 +35,7 @@ public class UserInfoViewModel extends ViewModel {
      * user:
      *    userID:
      *         age:
-     *         height: 
+     *         height:
      *         weight:
      *         gender:
      */
@@ -64,6 +61,7 @@ public class UserInfoViewModel extends ViewModel {
         return instance;
     }
 
+
     private void fetchPersonalInformation() {
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -85,7 +83,6 @@ public class UserInfoViewModel extends ViewModel {
                     userPersonalInfo.postValue(personal);
                 }
             }
-
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -113,37 +110,19 @@ public class UserInfoViewModel extends ViewModel {
             return new GreenPlateStatus(false,
                     "Edit personal information: can't have negative height");
         }
-        if (personal.getHeight() <= 0.) {
-            return new GreenPlateStatus(false,
-                    "Edit personal information: can't have zero height");
-        }
         if (personal.getWeight() < 0.) {
             return new GreenPlateStatus(false,
                     "Edit personal information: can't have negative weight");
-        }
-        if (personal.getWeight() == 0.) {
-            return new GreenPlateStatus(false,
-                    "Edit personal information: can't have zero weight");
         }
         if (personal.getGender() == null || TextUtils.isEmpty(personal.getGender().trim())) {
             return new GreenPlateStatus(false,
                     "Edit personal information: can't have null gender");
         }
         try {
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-            if (currentUser == null) {
-                throw new RuntimeException("Signed-in user can't be found");
-            }
-
-            String personalKey = userRef.push().getKey();
-            // String personalKey = currentUser.getUid(); //use userID as its identifier in database
-            if (personalKey == null) {
-                throw new RuntimeException("Failed to generate personal key");
-            }
-            userRef.child(personalKey).child("age").setValue(personal.getAge());
-            userRef.child(personalKey).child("height").setValue(personal.getHeight());
-            userRef.child(personalKey).child("weight").setValue(personal.getWeight());
-            userRef.child(personalKey).child("gender").setValue(personal.getGender());
+            userRef.child("age").setValue(personal.getAge());
+            userRef.child("height").setValue(personal.getHeight());
+            userRef.child("weight").setValue(personal.getWeight());
+            userRef.child("gender").setValue(personal.getGender());
             Log.d("Success", String.format("Added %s to the db", personal));
 
         } catch (Exception e) {
@@ -177,17 +156,11 @@ public class UserInfoViewModel extends ViewModel {
         }
         return valid;
     }
+
     public void getUserHeight(TextView view) {
         try {
-            database = FirebaseDatabase.getInstance();
-            mAuth = FirebaseAuth.getInstance();
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-            if (currentUser == null) {
-                throw new RuntimeException("UserInfoViewModel: There's no user signed in.");
-            }
-            userRef = database.getReference("user").child(currentUser.getUid())
-                    .child("information").child("height");
-            userRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            DatabaseReference heightRef = userRef.child("height");
+            heightRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
                     if (!task.isSuccessful()) {
@@ -208,15 +181,8 @@ public class UserInfoViewModel extends ViewModel {
 
     public void getUserWeight(TextView view) {
         try {
-            database = FirebaseDatabase.getInstance();
-            mAuth = FirebaseAuth.getInstance();
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-            if (currentUser == null) {
-                throw new RuntimeException("UserInfoViewModel: There's no user signed in.");
-            }
-            userRef = database.getReference("user").child(currentUser.getUid())
-                    .child("information").child("weight");
-            userRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            DatabaseReference weightRef = userRef.child("weight");
+            weightRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
                     if (!task.isSuccessful()) {
@@ -237,15 +203,8 @@ public class UserInfoViewModel extends ViewModel {
 
     public void getUserAge(TextView view) {
         try {
-            database = FirebaseDatabase.getInstance();
-            mAuth = FirebaseAuth.getInstance();
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-            if (currentUser == null) {
-                throw new RuntimeException("UserInfoViewModel: There's no user signed in.");
-            }
-            userRef = database.getReference("user").child(currentUser.getUid())
-                    .child("information").child("age");
-            userRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            DatabaseReference ageRef = userRef.child("age");
+            ageRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
                     if (!task.isSuccessful()) {
@@ -265,15 +224,8 @@ public class UserInfoViewModel extends ViewModel {
     }
     public void getUserGender(TextView view) {
         try {
-            database = FirebaseDatabase.getInstance();
-            mAuth = FirebaseAuth.getInstance();
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-            if (currentUser == null) {
-                throw new RuntimeException("UserInfoViewModel: There's no user signed in.");
-            }
-            userRef = database.getReference("user").child(currentUser.getUid())
-                    .child("information").child("gender");
-            userRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            DatabaseReference genderRef = userRef.child("gender");
+            genderRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
                     if (!task.isSuccessful()) {
