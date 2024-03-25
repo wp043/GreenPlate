@@ -25,7 +25,7 @@ public class IngredientViewModel extends ViewModel {
         // Set the year, month, and day
         calendar.set(Calendar.YEAR, 2024);
         calendar.set(Calendar.MONTH, Calendar.MARCH);
-        calendar.set(Calendar.DAY_OF_MONTH, 19);
+        calendar.set(Calendar.DAY_OF_MONTH, 21);
 
         // Set the hour, minute, second, and millisecond to zero
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -33,23 +33,22 @@ public class IngredientViewModel extends ViewModel {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
-        // Get the Date object from the Calendar
-        Date date = calendar.getTime();
-
         Ingredient newIngredient = new Ingredient(
                 "Test Ingredient 2",
                 125,
                 2,
-                date
+                calendar.getTime()
         );
         Ingredient updatedIngredient = new Ingredient(
-                "Test Ingredient 2",
+                "Test Ingredient",
                 125,
                 3,
-                date
+                calendar.getTime()
         );
-        updateIngredient(newIngredient);
-        removeIngredient(newIngredient);
+        addIngredient(newIngredient);
+        addIngredient(updatedIngredient);
+        updateIngredient(updatedIngredient);
+        removeIngredient(updatedIngredient);
      */
 
     /**
