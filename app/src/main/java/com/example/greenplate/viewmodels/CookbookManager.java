@@ -37,28 +37,12 @@ public class CookbookManager implements Manager {
             mAuth = FirebaseAuth.getInstance();
             currentUser = mAuth.getCurrentUser();
             if (currentUser == null) {
-                throw new RuntimeException("PantryManager: There's no user signed in.");
+                throw new RuntimeException("CookbookManager: There's no user signed in.");
             }
             myRef = database.getReference();
         } catch (Exception e) {
-            Log.d("Issue", "PantryManager: " + e.getLocalizedMessage());
+            Log.d("Issue", "CookbookManager: " + e.getLocalizedMessage());
         }
-
-        // Add test recipe
-        Map<Ingredient, Integer> ingredients = new HashMap<>();
-        ingredients.put(new Ingredient("Bun"), 2);
-        ingredients.put(new Ingredient("Hamburger Patty"), 1);
-        List<String> instructions = new ArrayList<>();
-        instructions.add("Grill hamburger patty.");
-        instructions.add("Put hamburger patty between buns.");
-        Recipe recipe1 = new Recipe("Hamburger", ingredients, instructions);
-        addRecipe(recipe1);
-        isRecipeDuplicate(recipe1, new OnDuplicateCheckListener() {
-            @Override
-            public void onDuplicateCheckCompleted(boolean isDuplicate) {
-                Log.d("Check isRecipeDuplicate()", "" + isDuplicate);
-            }
-        });
     }
 
     @Override
@@ -142,7 +126,7 @@ public class CookbookManager implements Manager {
             }
 
         } catch (Exception e) {
-            Log.d("Failure", "PantryManager failure due to: " + e.getLocalizedMessage());
+            Log.d("Failure", "CookbookManager failure due to: " + e.getLocalizedMessage());
             return new GreenPlateStatus(false, "Add meal: " + e.getLocalizedMessage());
         }
         return new GreenPlateStatus(true,
@@ -158,7 +142,6 @@ public class CookbookManager implements Manager {
         retrieve(items -> {
             boolean isDuplicate = false;
             for (RetrievableItem item : items) {
-                //Log.d("isRecipeDuplicate", "Retrieved: "+item.getName());
                 if (item.equals(recipe)) {
                     isDuplicate = true;
                     break;
