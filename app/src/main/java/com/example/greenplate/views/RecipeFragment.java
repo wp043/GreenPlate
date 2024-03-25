@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
 import com.example.greenplate.models.Recipe;
+import com.example.greenplate.viewmodels.RecipeViewModel;
 import com.example.greenplate.viewmodels.RecipesAdapter;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class RecipeFragment extends Fragment {
     // Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private RecipeViewModel recipeViewModel;
 
     public RecipeFragment() {
         // Required empty public constructor
@@ -77,6 +79,7 @@ public class RecipeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        recipeViewModel = new RecipeViewModel();
         RecyclerView rvRecipes = (RecyclerView) view.findViewById(R.id.rvRecipes);
 
         ArrayList<Recipe> recipes = new ArrayList<>();
