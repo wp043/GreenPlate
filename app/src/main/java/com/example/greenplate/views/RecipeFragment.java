@@ -82,6 +82,7 @@ public class RecipeFragment extends Fragment {
         recipeViewModel = new RecipeViewModel();
         RecyclerView rvRecipes = (RecyclerView) view.findViewById(R.id.rvRecipes);
 
+        // Demo recipe list
         ArrayList<Recipe> recipes = new ArrayList<>();
         Recipe recipe1 = new Recipe("Hamburger");
         Recipe recipe2 = new Recipe("Fries");
@@ -104,6 +105,7 @@ public class RecipeFragment extends Fragment {
         recipes.add(recipe9);
         recipes.add(recipe10);
 
+        // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
         RecipesAdapter adapter = new RecipesAdapter(recipes);
         rvRecipes.setAdapter(adapter);
         rvRecipes.setLayoutManager(new LinearLayoutManager(view.getContext()));
