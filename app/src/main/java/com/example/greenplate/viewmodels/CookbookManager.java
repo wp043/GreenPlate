@@ -16,10 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,11 +39,26 @@ public class CookbookManager implements Manager {
             if (currentUser == null) {
                 throw new RuntimeException("PantryManager: There's no user signed in.");
             }
-            myRef = database.getReference("user").child(currentUser.getUid())
-                    .child("pantries");
+            myRef = database.getReference();
         } catch (Exception e) {
             Log.d("Issue", "PantryManager: " + e.getLocalizedMessage());
         }
+
+        // Add test recipe
+        Map<Ingredient, Integer> ingredients = new HashMap<>();
+        ingredients.put(new Ingredient("Bun"), 2);
+        ingredients.put(new Ingredient("Hamburger Patty"), 1);
+        List<String> instructions = new ArrayList<>();
+        instructions.add("Grill hamburger patty.");
+        instructions.add("Put hamburger patty between buns.");
+        Recipe recipe1 = new Recipe("Hamburger", ingredients, instructions);
+        addRecipe(recipe1);
+        isRecipeDuplicate(recipe1, new OnDuplicateCheckListener() {
+            @Override
+            public void onDuplicateCheckCompleted(boolean isDuplicate) {
+                Log.d("Check isRecipeDuplicate()", "" + isDuplicate);
+            }
+        });
     }
 
     @Override
@@ -55,15 +67,15 @@ public class CookbookManager implements Manager {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                DataSnapshot cookbookSnapshot = dataSnapshot.child("Cookbook");
+                for (DataSnapshot recipeSnapshot : cookbookSnapshot.getChildren()) {
                     try {
                         // Query name of recipe from database
-                        String name = childSnapshot.child("name")
-                                .getValue(String.class);
+                        String name = recipeSnapshot.getKey();
 
                         // Query ingredients of recipe from database
                         Map<Ingredient, Integer> ingredients = new HashMap<>();
-                        DataSnapshot ingredientsSnapshot = childSnapshot.child("ingredients");
+                        DataSnapshot ingredientsSnapshot = recipeSnapshot.child("ingredients");
                         for (DataSnapshot ingredientSnapshot: ingredientsSnapshot.getChildren()) {
                             String ingredientName = ingredientSnapshot.child("name")
                                     .getValue(String.class);
@@ -74,7 +86,7 @@ public class CookbookManager implements Manager {
 
                         // Query instructions of recipe from database
                         List<String> instructions = new ArrayList<>();
-                        DataSnapshot instructionsSnapshot = childSnapshot.child("instructions");
+                        DataSnapshot instructionsSnapshot = recipeSnapshot.child("instructions");
                         for (DataSnapshot instructionSnapshot: instructionsSnapshot.getChildren()) {
                             String instruction = instructionSnapshot.getValue(String.class);
                             instructions.add(instruction);
@@ -105,16 +117,10 @@ public class CookbookManager implements Manager {
      */
     public GreenPlateStatus addRecipe(Recipe recipe) {
         try {
-            DatabaseReference cookbookRef = myRef.child("Cookbook");
-            String recipeKey = cookbookRef.push().getKey();
-            if (recipeKey == null) {
-                throw new RuntimeException("Failed to generate recipe key");
-            }
-            // Add name of recipe to database
-            cookbookRef.child(recipeKey).child("name").setValue(recipe.getName());
+            DatabaseReference recipeRef = myRef.child("Cookbook").child(recipe.getName());
 
             // Add ingredients of recipe to database
-            DatabaseReference ingredientsRef = cookbookRef.child(recipeKey).child("ingredients");
+            DatabaseReference ingredientsRef = recipeRef.child("ingredients");
             for (Map.Entry<Ingredient, Integer> ingredient: recipe.getIngredients().entrySet()) {
                 String ingredientKey = ingredientsRef.push().getKey();
                 if (ingredientKey == null) {
@@ -126,7 +132,7 @@ public class CookbookManager implements Manager {
                         .setValue((int) ingredient.getValue());
             }
 
-            DatabaseReference instructionsRef = cookbookRef.child(recipeKey).child("instructions");
+            DatabaseReference instructionsRef = recipeRef.child("instructions");
             for (String instruction: recipe.getInstructions()) {
                 String instructionKey = instructionsRef.push().getKey();
                 if (instructionKey == null) {
@@ -152,6 +158,7 @@ public class CookbookManager implements Manager {
         retrieve(items -> {
             boolean isDuplicate = false;
             for (RetrievableItem item : items) {
+                //Log.d("isRecipeDuplicate", "Retrieved: "+item.getName());
                 if (item.equals(recipe)) {
                     isDuplicate = true;
                     break;
