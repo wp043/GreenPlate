@@ -5,9 +5,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
+import com.example.greenplate.models.Recipe;
+import com.example.greenplate.viewmodels.RecipeViewModel;
+import com.example.greenplate.viewmodels.RecipesAdapter;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,6 +33,7 @@ public class RecipeFragment extends Fragment {
     // Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private RecipeViewModel recipeViewModel;
 
     public RecipeFragment() {
         // Required empty public constructor
@@ -59,7 +69,45 @@ public class RecipeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_recipe, container, false);
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_recipe, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        recipeViewModel = new RecipeViewModel();
+        RecyclerView rvRecipes = (RecyclerView) view.findViewById(R.id.rvRecipes);
+
+        // Demo recipe list
+        ArrayList<Recipe> recipes = new ArrayList<>();
+        Recipe recipe1 = new Recipe("Hamburger");
+        Recipe recipe2 = new Recipe("Fries");
+        Recipe recipe3 = new Recipe("Hot Dog");
+        Recipe recipe4 = new Recipe("Steak");
+        Recipe recipe5 = new Recipe("Pasta");
+        Recipe recipe6 = new Recipe("Soup");
+        Recipe recipe7 = new Recipe("Salad");
+        Recipe recipe8 = new Recipe("Cookie");
+        Recipe recipe9 = new Recipe("Taco");
+        Recipe recipe10 = new Recipe("Dumplings");
+        recipes.add(recipe1);
+        recipes.add(recipe2);
+        recipes.add(recipe3);
+        recipes.add(recipe4);
+        recipes.add(recipe5);
+        recipes.add(recipe6);
+        recipes.add(recipe7);
+        recipes.add(recipe8);
+        recipes.add(recipe9);
+        recipes.add(recipe10);
+
+        // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
+        RecipesAdapter adapter = new RecipesAdapter(recipes);
+        rvRecipes.setAdapter(adapter);
+        rvRecipes.setLayoutManager(new LinearLayoutManager(view.getContext()));
     }
 }
