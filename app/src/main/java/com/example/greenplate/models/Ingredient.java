@@ -21,6 +21,14 @@ public class Ingredient extends RetrievableItem {
     }
 
     /**
+     * 1-arg constructor for an ingredient
+     * @param name - name of the ingredient
+     */
+    public Ingredient(String name) {
+        this(name, 0, 1, null);
+    }
+
+    /**
      * Getter for expiration date.
      * @return the expiration date of the ingredient
      */
