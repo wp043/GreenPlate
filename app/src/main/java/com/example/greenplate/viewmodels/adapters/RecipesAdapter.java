@@ -58,9 +58,9 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView nameTextView;
-        public TextView availabilityTextView;
-        public Button viewButton;
+        private TextView nameTextView;
+        private TextView availabilityTextView;
+        private Button viewButton;
 
         public ViewHolder(View itemView) {
             super(itemView);

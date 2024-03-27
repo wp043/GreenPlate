@@ -35,6 +35,7 @@ public class Recipe extends RetrievableItem {
     /**
      * Add an ingredient to the ingredients map.
      * @param ingredient - the ingredient to add
+     * @param multiplicity - the multiplicity to update
      * @return whether the operation succeeds
      */
     public GreenPlateStatus addIngredient(Ingredient ingredient, int multiplicity) {

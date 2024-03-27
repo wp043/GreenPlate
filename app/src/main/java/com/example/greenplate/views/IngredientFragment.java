@@ -19,7 +19,6 @@ import com.example.greenplate.viewmodels.adapters.IngredientsAdapter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -80,7 +79,7 @@ public class IngredientFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        recipeViewModel = new RecipeViewModel();
+        ingredientVM = new IngredientViewModel();
         RecyclerView rvRecipes = (RecyclerView) view.findViewById(R.id.rvIngredients);
 
         try {

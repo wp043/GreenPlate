@@ -1,11 +1,10 @@
 package com.example.greenplate.viewmodels.adapters;
 
 import android.content.Context;
-import android.text.Html;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +18,7 @@ import java.util.List;
 
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.ViewHolder> {
     private List<Ingredient> recipeList;
+    private int selectedPosition = RecyclerView.NO_POSITION;
 
     public IngredientsAdapter(List<Ingredient> recipes) {
         recipeList = recipes;
@@ -46,22 +46,40 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         // Set item views based on your views and data model
         TextView nameTextView = holder.nameTextView;
         TextView infoTextView = holder.infoTextView;
-
         nameTextView.setText(ingredient.getName());
+
         String info = String.format("Calorie: %.0f, count: %d, expirate date: ",
                 ingredient.getCalories(), ingredient.getMultiplicity());
-
         if (ingredient.getExpirationDate().equals(new Date(Long.MAX_VALUE))) {
             info += "forever away";
-        }
-        else {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/DD/yyyy");
+        } else {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
             info += sdf.format(ingredient.getExpirationDate());
             if (ingredient.getExpirationDate().before(new Date())) {
                 info += " \u26A0\uFE0F";
             }
         }
         infoTextView.setText(info);
+
+        holder.itemView.setOnClickListener(v -> {
+            int clickedPosition = holder.getAdapterPosition();
+            if (clickedPosition != RecyclerView.NO_POSITION) {
+                if (selectedPosition != clickedPosition) {
+                    if (selectedPosition != RecyclerView.NO_POSITION) {
+                        notifyItemChanged(selectedPosition);
+                    }
+                    selectedPosition = clickedPosition;
+                    notifyItemChanged(selectedPosition);
+                }
+            }
+        });
+
+        // Set the text color based on the selection status
+        if (holder.getAdapterPosition() == selectedPosition) {
+            holder.nameTextView.setTextColor(Color.RED);
+        } else {
+            holder.nameTextView.setTextColor(Color.BLACK);
+        }
     }
 
     // Returns the total count of items in the list
@@ -71,10 +89,17 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView nameTextView;
-        public TextView infoTextView;
+        private TextView nameTextView;
+        private TextView infoTextView;
         public ViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(v -> {
+
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    nameTextView.setTextColor(Color.RED);
+                }
+            });
             nameTextView = (TextView) itemView.findViewById(R.id.ingredient_name);
             infoTextView = (TextView) itemView.findViewById(R.id.ingredient_info);
         }
