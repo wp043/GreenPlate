@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
+import com.example.greenplate.viewmodels.managers.CookbookManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;

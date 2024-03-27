@@ -1,5 +1,6 @@
-package com.example.greenplate.viewmodels;
+package com.example.greenplate.viewmodels.managers;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.greenplate.models.GreenPlateStatus;
@@ -92,6 +93,20 @@ public class PantryManager implements Manager {
      * @return the status of the operation
      */
     public GreenPlateStatus addIngredient(Ingredient ingredient) {
+        if (ingredient == null) {
+            return new GreenPlateStatus(false, "Can't add a null ingredient.");
+        }
+        if (ingredient.getName() == null || TextUtils.isEmpty(ingredient.getName().trim())) {
+            return new GreenPlateStatus(false, "Can't add a ingredient with empty name.");
+        }
+        if (ingredient.getCalories() <= 0) {
+            return new GreenPlateStatus(false,
+                    "Can't add a ingredient with non-positive calorie.");
+        }
+        if (ingredient.getMultiplicity() <= 0) {
+            return new GreenPlateStatus(false,
+                    "Can't add a ingredient with non-positive multiplicity.");
+        }
         try {
             String ingredientKey = myRef.push().getKey();
             if (ingredientKey == null) {
@@ -137,6 +152,37 @@ public class PantryManager implements Manager {
      */
     public void updateIngredientMultiplicity(Ingredient ingredient,
                                              OnMultiplicityUpdateListener listener) {
+        if (ingredient == null) {
+            listener.onMultiplicityUpdateFailure(
+                    new GreenPlateStatus(false, "Can't update null ingredient.")
+            );
+            return;
+        }
+
+        if (ingredient.getMultiplicity() < 0) {
+            listener.onMultiplicityUpdateFailure(
+                    new GreenPlateStatus(false,
+                            "Can't update ingredient with negative multiplicity.")
+            );
+            return;
+        }
+
+        if (ingredient.getMultiplicity() == 0) {
+            this.removeIngredient(ingredient, new OnIngredientRemoveListener() {
+                @Override
+                public void onIngredientRemoveSuccess(GreenPlateStatus status) {
+                    listener.onMultiplicityUpdateSuccess(status);
+                }
+
+                @Override
+                public void onIngredientRemoveFailure(GreenPlateStatus status) {
+                    listener.onMultiplicityUpdateFailure(
+                            new GreenPlateStatus(false, status.getMessage()));
+                }
+            });
+            return;
+        }
+
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         String formattedDate = sdf.format(ingredient.getExpirationDate());
 
