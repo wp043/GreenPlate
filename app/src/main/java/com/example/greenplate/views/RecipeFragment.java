@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.greenplate.R;
 import com.example.greenplate.models.Recipe;
 import com.example.greenplate.viewmodels.RecipeViewModel;
-import com.example.greenplate.viewmodels.RecipesAdapter;
+import com.example.greenplate.viewmodels.adapters.RecipesAdapter;
 
 import java.util.ArrayList;
 
