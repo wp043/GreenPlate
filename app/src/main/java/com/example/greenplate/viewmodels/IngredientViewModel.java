@@ -8,6 +8,7 @@ import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.viewmodels.listeners.OnIngredientRemoveListener;
 import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
+import com.example.greenplate.viewmodels.managers.PantryManager;
 
 
 public class IngredientViewModel extends ViewModel {

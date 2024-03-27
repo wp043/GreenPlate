@@ -5,10 +5,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
+import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.viewmodels.IngredientViewModel;
+import com.example.greenplate.viewmodels.adapters.IngredientsAdapter;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,7 +73,37 @@ public class IngredientFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_ingredient, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+//        recipeViewModel = new RecipeViewModel();
+        RecyclerView rvRecipes = (RecyclerView) view.findViewById(R.id.rvIngredients);
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/DD/yyyy");
+
+            // Demo ingredient list
+            List<Ingredient> ingredients = Arrays.asList(
+                    new Ingredient("Apple", 95, 2, sdf.parse("12/31/2023")),
+                    new Ingredient("Beef brisket", 44, 1, sdf.parse("05/08/2025")),
+                    new Ingredient("Salmon"),
+                    new Ingredient("Lettuce", 5, 5, sdf.parse("03/20/2024")),
+                    new Ingredient("Corn"),
+                    new Ingredient("Tomato"),
+                    new Ingredient("Milk"),
+                    new Ingredient("Butter"),
+                    new Ingredient("Tuna"),
+                    new Ingredient("Rice")
+            );
+            IngredientsAdapter adapter = new IngredientsAdapter(ingredients);
+            rvRecipes.setAdapter(adapter);
+            rvRecipes.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        } catch (ParseException e) {
+
+        }
     }
 }

@@ -5,17 +5,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
-import com.example.greenplate.models.Meal;
-import com.example.greenplate.viewmodels.IngredientViewModel;
-import com.example.greenplate.viewmodels.InputMealViewModel;
-import com.example.greenplate.viewmodels.PantryManager;
+import com.example.greenplate.viewmodels.managers.PantryManager;
 import com.example.greenplate.viewmodels.listeners.OnIngredientRemoveListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -26,7 +21,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
