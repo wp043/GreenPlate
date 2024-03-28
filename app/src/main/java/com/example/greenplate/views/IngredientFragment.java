@@ -129,7 +129,7 @@ public class IngredientFragment extends Fragment {
                 LayoutInflater inflater = requireActivity().getLayoutInflater();
                 View dialogView = inflater.inflate(R.layout.dialog_ingredient, null);
 
-                // Pop expiration data window
+                // Expiration date window
                 EditText expirationEditText = dialogView.findViewById(R.id.ingredient_expiration);
                 expirationEditText.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -166,7 +166,7 @@ public class IngredientFragment extends Fragment {
                                 int calories = Integer.parseInt(caloriesEditText.getText().toString());
                                 String expiration = expirationEditText.getText().toString();
 
-                                // change expiration to date
+                                // change expiration string to date
                                 Date expirationDate = null;
                                 if (!expiration.isEmpty()) {
                                     try {
@@ -177,6 +177,7 @@ public class IngredientFragment extends Fragment {
                                     }
                                 }
                                 Ingredient newIngredient = new Ingredient(name, calories, quantity, expirationDate);
+                                // TODO: Didn't successfully add
                                 ingredientVM.addIngredient(newIngredient);
                             }
                         })
@@ -198,7 +199,7 @@ public class IngredientFragment extends Fragment {
                 LayoutInflater inflater = requireActivity().getLayoutInflater();
                 View dialogView = inflater.inflate(R.layout.dialog_ingredient, null);
 
-                // Pop expiration data window
+                // Expiration date window
                 EditText expirationEditText = dialogView.findViewById(R.id.ingredient_expiration);
                 expirationEditText.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -235,7 +236,7 @@ public class IngredientFragment extends Fragment {
                                 int calories = Integer.parseInt(caloriesEditText.getText().toString());
                                 String expiration = expirationEditText.getText().toString();
 
-                                // change expiration to date
+                                // change expiration string to date
                                 Date expirationDate = null;
                                 if (!expiration.isEmpty()) {
                                     try {
@@ -245,7 +246,10 @@ public class IngredientFragment extends Fragment {
                                         e.printStackTrace();
                                     }
                                 }
+
                                 Ingredient newIngredient = new Ingredient(name, calories, quantity, expirationDate);
+                                // TODO: Include remove ingredient logic, call removeIngredient when multiplicity sets to be 0
+                                // TODO: Didn't successfully update
                                 ingredientVM.updateIngredient(newIngredient);
                             }
                         })
