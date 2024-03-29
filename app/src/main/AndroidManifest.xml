@@ -80,6 +80,15 @@
             android:theme="@style/Theme.GreenPlate">
         </activity>
 
+        <!-- Enter New Recipe -->
+        <activity
+            android:name=".views.EnterNewRecipeActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.GreenPlate">
+        </activity>
+
+
     </application>
 
 </manifest>
