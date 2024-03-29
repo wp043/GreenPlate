@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,11 +20,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
 import com.example.greenplate.models.Ingredient;
+import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.IngredientViewModel;
 import com.example.greenplate.viewmodels.adapters.IngredientsAdapter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -97,30 +100,48 @@ public class IngredientFragment extends Fragment {
         addButton = view.findViewById(R.id.addButton);
         editButton = view.findViewById(R.id.editButton);
 
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/DD/yyyy");
+//        try {
+//            SimpleDateFormat sdf = new SimpleDateFormat("MM/DD/yyyy");
+//
+//            // Demo ingredient list
+//            List<Ingredient> ingredients = Arrays.asList(
+//                    new Ingredient("Apple", 95, 2, sdf.parse("12/31/2023")),
+//                    new Ingredient("Beef brisket", 44, 1, sdf.parse("05/08/2025")),
+//                    new Ingredient("Salmon"),
+//                    new Ingredient("Lettuce", 5, 5, sdf.parse("03/20/2024")),
+//                    new Ingredient("Corn"),
+//                    new Ingredient("Tomato"),
+//                    new Ingredient("Milk"),
+//                    new Ingredient("Butter"),
+//                    new Ingredient("Tuna"),
+//                    new Ingredient("Rice")
+//            );
+//            IngredientsAdapter adapter = new IngredientsAdapter(ingredients);
+//            rvRecipes.setAdapter(adapter);
+//            rvRecipes.setLayoutManager(new LinearLayoutManager(view.getContext()));
+//
+//
+//        } catch (ParseException e) {
+//
+//        }
+        ingredientVM.getIngredients(items -> {
+            List<Ingredient> ingredients=new ArrayList<>();
 
-            // Demo ingredient list
-            List<Ingredient> ingredients = Arrays.asList(
-                    new Ingredient("Apple", 95, 2, sdf.parse("12/31/2023")),
-                    new Ingredient("Beef brisket", 44, 1, sdf.parse("05/08/2025")),
-                    new Ingredient("Salmon"),
-                    new Ingredient("Lettuce", 5, 5, sdf.parse("03/20/2024")),
-                    new Ingredient("Corn"),
-                    new Ingredient("Tomato"),
-                    new Ingredient("Milk"),
-                    new Ingredient("Butter"),
-                    new Ingredient("Tuna"),
-                    new Ingredient("Rice")
-            );
+            if (items != null) {
+                for (RetrievableItem item : items) {
+                    if (item instanceof Ingredient) {
+                        Ingredient ingredient = (Ingredient) item;
+
+                        ingredients.add(ingredient);
+                    }
+                }
+            }
+
+
             IngredientsAdapter adapter = new IngredientsAdapter(ingredients);
             rvRecipes.setAdapter(adapter);
-            rvRecipes.setLayoutManager(new LinearLayoutManager(view.getContext()));
-
-
-        } catch (ParseException e) {
-
-        }
+            rvRecipes.setLayoutManager(new LinearLayoutManager(requireContext()));
+        });
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,8 +199,34 @@ public class IngredientFragment extends Fragment {
                                 }
                                 Ingredient newIngredient = new Ingredient(name, calories, quantity, expirationDate);
                                 // TODO: Didn't successfully add
-                                ingredientVM.addIngredient(newIngredient);
-                            }
+//                                ingredientVM.addIngredient(newIngredient);
+                                ingredientVM.addIngredient(newIngredient, success -> {
+                                    if (success) {
+                                        // If addition is successful, retrieve the updated list of ingredients
+                                        ingredientVM.getIngredients(items -> {
+                                            List<Ingredient> ingredients=new ArrayList<>();
+
+                                            if (items != null) {
+                                                for (RetrievableItem item : items) {
+                                                    if (item instanceof Ingredient) {
+                                                        Ingredient ingredient = (Ingredient) item;
+                                                        ingredients.add(ingredient);
+                                                    }
+                                                }
+                                            }
+
+                                            // Update the RecyclerView with the updated list of ingredients
+                                            IngredientsAdapter adapter = new IngredientsAdapter(ingredients);
+                                            rvRecipes.setAdapter(adapter);
+                                            rvRecipes.setLayoutManager(new LinearLayoutManager(requireContext()));
+                                        });
+                                    } else {
+                                        // Handle failure to add ingredient
+                                        Toast.makeText(requireContext(), "Failed to add ingredient", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                                }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -250,6 +297,7 @@ public class IngredientFragment extends Fragment {
                                 Ingredient newIngredient = new Ingredient(name, calories, quantity, expirationDate);
                                 // TODO: Include remove ingredient logic, call removeIngredient when multiplicity sets to be 0
                                 // TODO: Didn't successfully update
+//                                ingredientVM.updateIngredient(newIngredient);
                                 ingredientVM.updateIngredient(newIngredient);
                             }
                         })
