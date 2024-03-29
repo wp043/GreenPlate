@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.IngredientViewModel;
 import com.example.greenplate.viewmodels.adapters.IngredientsAdapter;
+import com.google.android.material.tabs.TabLayout;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -149,7 +151,7 @@ public class IngredientFragment extends Fragment {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 LayoutInflater inflater = requireActivity().getLayoutInflater();
                 View dialogView = inflater.inflate(R.layout.dialog_ingredient, null);
-
+                Log.d("TAG", "-1");
                 // Expiration date window
                 EditText expirationEditText = dialogView.findViewById(R.id.ingredient_expiration);
                 expirationEditText.setOnClickListener(new View.OnClickListener() {
@@ -180,51 +182,57 @@ public class IngredientFragment extends Fragment {
                                 EditText nameEditText = dialogView.findViewById(R.id.ingredient_name);
                                 EditText quantityEditText = dialogView.findViewById(R.id.ingredient_quantity);
                                 EditText caloriesEditText = dialogView.findViewById(R.id.ingredient_calories);
+                                Log.d("TAG", "0");
+                                try{
+                                    String name = nameEditText.getText().toString();
+                                    int quantity = Integer.parseInt(quantityEditText.getText().toString());
+                                    int calories = Integer.parseInt(caloriesEditText.getText().toString());
+                                    String expiration = expirationEditText.getText().toString();
 
-
-                                String name = nameEditText.getText().toString();
-                                int quantity = Integer.parseInt(quantityEditText.getText().toString());
-                                int calories = Integer.parseInt(caloriesEditText.getText().toString());
-                                String expiration = expirationEditText.getText().toString();
-
-                                // change expiration string to date
-                                Date expirationDate = null;
-                                if (!expiration.isEmpty()) {
-                                    try {
-                                        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-                                        expirationDate = sdf.parse(expiration);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
+                                    Log.d("TAG", "1");
+                                    // change expiration string to date
+                                    Date expirationDate = null;
+                                    if (!expiration.isEmpty()) {
+                                        try {
+                                            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                                            expirationDate = sdf.parse(expiration);
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
-                                }
-                                Ingredient newIngredient = new Ingredient(name, calories, quantity, expirationDate);
-                                // TODO: Didn't successfully add
-//                                ingredientVM.addIngredient(newIngredient);
-                                ingredientVM.addIngredient(newIngredient, success -> {
-                                    if (success) {
-                                        // If addition is successful, retrieve the updated list of ingredients
-                                        ingredientVM.getIngredients(items -> {
-                                            List<Ingredient> ingredients=new ArrayList<>();
+                                    Ingredient newIngredient = new Ingredient(name, calories, quantity, expirationDate);
+                                    Log.d("TAG", "2");
+                                    ingredientVM.addIngredient(newIngredient, success -> {
+                                        if (success) {
+                                            // If addition is successful, retrieve the updated list of ingredients
+                                            ingredientVM.getIngredients(items -> {
+                                                List<Ingredient> ingredients=new ArrayList<>();
 
-                                            if (items != null) {
-                                                for (RetrievableItem item : items) {
-                                                    if (item instanceof Ingredient) {
-                                                        Ingredient ingredient = (Ingredient) item;
-                                                        ingredients.add(ingredient);
+                                                if (items != null) {
+                                                    for (RetrievableItem item : items) {
+                                                        if (item instanceof Ingredient) {
+                                                            Ingredient ingredient = (Ingredient) item;
+                                                            ingredients.add(ingredient);
+                                                        }
                                                     }
                                                 }
-                                            }
 
-                                            // Update the RecyclerView with the updated list of ingredients
-                                            IngredientsAdapter adapter = new IngredientsAdapter(ingredients);
-                                            rvRecipes.setAdapter(adapter);
-                                            rvRecipes.setLayoutManager(new LinearLayoutManager(requireContext()));
-                                        });
-                                    } else {
-                                        // Handle failure to add ingredient
-                                        Toast.makeText(requireContext(), "Failed to add ingredient", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                                                // Update the RecyclerView with the updated list of ingredients
+                                                IngredientsAdapter adapter = new IngredientsAdapter(ingredients);
+                                                rvRecipes.setAdapter(adapter);
+                                                rvRecipes.setLayoutManager(new LinearLayoutManager(requireContext()));
+                                            });
+                                        } else {
+                                            // Handle failure to add ingredient
+                                            Toast.makeText(requireContext(), "Failed to add ingredient", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
+                                } catch (Exception e){
+                                    Toast.makeText(requireContext(), "Failed. All fields must be filled in.", Toast.LENGTH_SHORT).show();
+                                }
+
+
 
                                 }
                         })
@@ -272,17 +280,19 @@ public class IngredientFragment extends Fragment {
                         .setPositiveButton("Edit", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
+                                Log.d("TAG", "0");
                                 // Get user input
                                 EditText nameEditText = dialogView.findViewById(R.id.ingredient_name);
                                 EditText quantityEditText = dialogView.findViewById(R.id.ingredient_quantity);
                                 EditText caloriesEditText = dialogView.findViewById(R.id.ingredient_calories);
 
+                                Log.d("TAG", "1");
 
                                 String name = nameEditText.getText().toString();
                                 int quantity = Integer.parseInt(quantityEditText.getText().toString());
                                 int calories = Integer.parseInt(caloriesEditText.getText().toString());
                                 String expiration = expirationEditText.getText().toString();
-
+                                Log.d("TAG", "2");
                                 // change expiration string to date
                                 Date expirationDate = null;
                                 if (!expiration.isEmpty()) {
