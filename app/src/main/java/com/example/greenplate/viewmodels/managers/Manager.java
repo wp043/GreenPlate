@@ -1,4 +1,4 @@
-package com.example.greenplate.viewmodels;
+package com.example.greenplate.viewmodels.managers;
 
 import com.example.greenplate.viewmodels.listeners.OnDataRetrievedCallback;
 

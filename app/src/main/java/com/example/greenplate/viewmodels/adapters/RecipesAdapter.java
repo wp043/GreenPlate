@@ -1,4 +1,4 @@
-package com.example.greenplate.viewmodels;
+package com.example.greenplate.viewmodels.adapters;
 
 import android.content.Context;
 import android.text.Html;
