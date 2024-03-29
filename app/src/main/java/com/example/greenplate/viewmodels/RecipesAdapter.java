@@ -5,7 +5,6 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,11 +43,14 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
         // Set item views based on your views and data model
         TextView nameTextView = holder.nameTextView;
         TextView availabilityTextView = holder.availabilityTextView;
-        Button button = holder.viewButton;
+        TextView numIngredientsTextView = holder.numIngredientsTextView;
+        TextView numInstructionsTextView = holder.numInstructionsTextView;
 
         nameTextView.setText(recipe.getName());
         String availabilityText = "<font color=\"#32CD32\">Yes</font>";
         availabilityTextView.setText(Html.fromHtml(availabilityText));
+        numIngredientsTextView.setText("Ingredients: " + recipe.getIngredients().size());
+        numInstructionsTextView.setText("Instructions: " + recipe.getInstructions().size());
     }
 
     // Returns the total count of items in the list
@@ -60,14 +62,16 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView nameTextView;
         public TextView availabilityTextView;
-        public Button viewButton;
+        public TextView numIngredientsTextView;
+        public  TextView numInstructionsTextView;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             nameTextView = (TextView) itemView.findViewById(R.id.recipe_name);
             availabilityTextView = (TextView) itemView.findViewById(R.id.recipe_availability);
-            viewButton = (Button) itemView.findViewById(R.id.view_button);
+            numIngredientsTextView = (TextView) itemView.findViewById(R.id.num_ingredients);
+            numInstructionsTextView = (TextView) itemView.findViewById(R.id.num_instructions);
         }
     }
 }
