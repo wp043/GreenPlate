@@ -79,7 +79,9 @@ public class PantryManagerTests {
 
     @Test
     public void testAddNullIngredient() {
-        GreenPlateStatus status = manager.addIngredient(null);
+        GreenPlateStatus status = manager.addIngredient(null, success -> {
+            assertFalse(success);
+        });
         assertFalse(status.isSuccess());
         assertEquals("Can't add a null ingredient.", status.getMessage());
     }
@@ -87,22 +89,30 @@ public class PantryManagerTests {
     @Test
     public void testAddInvalidIngredient() {
         Ingredient ingredient = new Ingredient("     ", 180, 4, null);
-        GreenPlateStatus status = manager.addIngredient(ingredient);
+        GreenPlateStatus status = manager.addIngredient(ingredient, success -> {
+            assertFalse(success);
+        });
         assertFalse(status.isSuccess());
         assertEquals("Can't add a ingredient with empty name.", status.getMessage());
 
         ingredient = new Ingredient(null, 180, 4, null);
-        status = manager.addIngredient(ingredient);
+        status = manager.addIngredient(ingredient, success -> {
+            assertFalse(success);
+        });
         assertFalse(status.isSuccess());
         assertEquals("Can't add a ingredient with empty name.", status.getMessage());
 
         ingredient = new Ingredient("Test", -180, 4, null);
-        status = manager.addIngredient(ingredient);
+        status = manager.addIngredient(ingredient, success -> {
+            assertFalse(success);
+        });
         assertFalse(status.isSuccess());
         assertEquals("Can't add a ingredient with non-positive calorie.", status.getMessage());
 
         ingredient = new Ingredient("Test", 180, 0, null);
-        status = manager.addIngredient(ingredient);
+        status = manager.addIngredient(ingredient, success -> {
+            assertFalse(success);
+        });
         assertFalse(status.isSuccess());
         assertEquals("Can't add a ingredient with non-positive multiplicity.", status.getMessage());
     }
@@ -110,12 +120,16 @@ public class PantryManagerTests {
     @Test
     public void testAddValidIngredient() {
         Ingredient ingredient = new Ingredient("Test 1", 10, 4, null);
-        GreenPlateStatus status = manager.addIngredient(ingredient);
+        GreenPlateStatus status = manager.addIngredient(ingredient, success -> {
+            assertFalse(success);
+        });
         assertTrue(status.isSuccess());
         assertEquals(String.format("%s added to database successfully", ingredient), status.getMessage());
 
         ingredient = new Ingredient("Test 2", 10, 3, null);
-        status = manager.addIngredient(ingredient);
+        status = manager.addIngredient(ingredient, success -> {
+            assertFalse(success);
+        });
         assertTrue(status.isSuccess());
         assertEquals(String.format("%s added to database successfully", ingredient), status.getMessage());
     }
@@ -123,7 +137,9 @@ public class PantryManagerTests {
     @Test
     public void testAddDuplicateIngredient() {
         Ingredient ingredient = new Ingredient("Test 1", 10, 4, null);
-        GreenPlateStatus status = manager.addIngredient(ingredient);
+        GreenPlateStatus status = manager.addIngredient(ingredient, success -> {
+            assertFalse(success);
+        });
         assertTrue(status.isSuccess());
         assertEquals(String.format("%s added to database successfully", ingredient), status.getMessage());
 
@@ -137,7 +153,9 @@ public class PantryManagerTests {
     @Test
     public void testRemoveIngredient() {
         Ingredient ingredient = new Ingredient("Test 1", 10, 4, null);
-        GreenPlateStatus status = manager.addIngredient(ingredient);
+        GreenPlateStatus status = manager.addIngredient(ingredient, success -> {
+            assertFalse(success);
+        });
         assertTrue(status.isSuccess());
         assertEquals(String.format("%s added to database successfully", ingredient), status.getMessage());
 
