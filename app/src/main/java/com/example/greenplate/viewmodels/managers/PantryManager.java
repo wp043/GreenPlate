@@ -127,7 +127,7 @@ public class PantryManager implements Manager {
             listener.onIngredientUpdated(true);
         } catch (Exception e) {
             Log.d("Failure", "PantryManager failure due to: " + e.getLocalizedMessage());
-           listener.onIngredientUpdated(false);
+            listener.onIngredientUpdated(false);
             return new GreenPlateStatus(false, "Add meal: " + e.getLocalizedMessage());
         }
         return new GreenPlateStatus(true,
