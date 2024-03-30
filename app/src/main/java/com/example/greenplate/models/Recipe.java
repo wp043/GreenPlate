@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Recipe extends RetrievableItem {
-    private Map<Ingredient, Integer> ingredients;
+    private Map<Ingredient, Double> ingredients;
     private List<String> instructions;
 
     /**
@@ -18,7 +18,7 @@ public class Recipe extends RetrievableItem {
      * @param instructions - list of instructions for the recipe
      */
     public Recipe(String name,
-                  Map<Ingredient, Integer> ingredients, List<String> instructions) {
+                  Map<Ingredient, Double> ingredients, List<String> instructions) {
         super(name, Recipe.calculateTotalCalorie(ingredients), 1);
         this.ingredients = ingredients;
         this.instructions = instructions;
@@ -38,7 +38,7 @@ public class Recipe extends RetrievableItem {
      * @param multiplicity - the multiplicity to update
      * @return whether the operation succeeds
      */
-    public GreenPlateStatus addIngredient(Ingredient ingredient, int multiplicity) {
+    public GreenPlateStatus addIngredient(Ingredient ingredient, double multiplicity) {
         if (ingredient == null) {
             return new GreenPlateStatus(false,
                     "Can't add null to a recipe");
@@ -57,7 +57,7 @@ public class Recipe extends RetrievableItem {
      * @param ingredients - map of ingredients
      * @return total calorie of all ingredients in the map
      */
-    private static double calculateTotalCalorie(Map<Ingredient, Integer> ingredients) {
+    private static double calculateTotalCalorie(Map<Ingredient, Double> ingredients) {
         return ingredients.entrySet().stream()
                 .mapToDouble(entry -> entry.getKey().getCalories() * entry.getValue())
                 .sum();
@@ -88,7 +88,7 @@ public class Recipe extends RetrievableItem {
      * @param multiplicity - the new multiplicity of the ingredient
      * @return whether the operation succeeds
      */
-    public GreenPlateStatus updateIngredient(Ingredient ingredient, int multiplicity) {
+    public GreenPlateStatus updateIngredient(Ingredient ingredient, double multiplicity) {
         if (ingredient == null) {
             return new GreenPlateStatus(false,
                     "Can't update null in a recipe");
@@ -97,7 +97,7 @@ public class Recipe extends RetrievableItem {
             return new GreenPlateStatus(false,
                     "Can't update a non-existing ingredient in a recipe");
         }
-        int oldMult = this.ingredients.put(ingredient, multiplicity);
+        double oldMult = this.ingredients.put(ingredient, multiplicity);
         return new GreenPlateStatus(true,
                 String.format("Update multiplicity of %s from %d to %d",
                 ingredient, oldMult, multiplicity));
@@ -141,7 +141,7 @@ public class Recipe extends RetrievableItem {
      * Getter for ingredient map.
      * @return a map containing ingredients and their multiplicities of the recipe
      */
-    public Map<Ingredient, Integer> getIngredients() {
+    public Map<Ingredient, Double> getIngredients() {
         return ingredients;
     }
 

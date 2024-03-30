@@ -58,13 +58,13 @@ public class CookbookManager implements Manager {
                         String name = recipeSnapshot.getKey();
 
                         // Query ingredients of recipe from database
-                        Map<Ingredient, Integer> ingredients = new HashMap<>();
+                        Map<Ingredient, Double> ingredients = new HashMap<>();
                         DataSnapshot ingredientsSnapshot = recipeSnapshot.child("ingredients");
                         for (DataSnapshot ingredientSnapshot: ingredientsSnapshot.getChildren()) {
                             String ingredientName = ingredientSnapshot.child("name")
                                     .getValue(String.class);
-                            int quantity = ingredientSnapshot.child("quantity")
-                                    .getValue(Integer.class);
+                            double quantity = ingredientSnapshot.child("quantity")
+                                    .getValue(Double.class);
                             ingredients.put(new Ingredient(ingredientName), quantity);
                         }
 
@@ -105,7 +105,7 @@ public class CookbookManager implements Manager {
 
             // Add ingredients of recipe to database
             DatabaseReference ingredientsRef = recipeRef.child("ingredients");
-            for (Map.Entry<Ingredient, Integer> ingredient: recipe.getIngredients().entrySet()) {
+            for (Map.Entry<Ingredient, Double> ingredient: recipe.getIngredients().entrySet()) {
                 String ingredientKey = ingredientsRef.push().getKey();
                 if (ingredientKey == null) {
                     throw new RuntimeException("Failed to generate ingredient key");
@@ -113,7 +113,7 @@ public class CookbookManager implements Manager {
                 ingredientsRef.child(ingredientKey).child("name")
                         .setValue(ingredient.getKey().getName());
                 ingredientsRef.child(ingredientKey).child("quantity")
-                        .setValue((int) ingredient.getValue());
+                        .setValue((double) ingredient.getValue());
             }
 
             DatabaseReference instructionsRef = recipeRef.child("instructions");

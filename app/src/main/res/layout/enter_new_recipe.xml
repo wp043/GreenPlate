@@ -41,7 +41,15 @@
             android:layout_height="wrap_content"
             android:text="Add Ingredient"
             android:layout_marginTop="8dp"/>
-
+        <EditText
+            android:id="@+id/recipe_instructions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Recipe Instructions"
+            android:inputType="textMultiLine"
+            android:minLines="1"
+            android:gravity="top|start"
+            android:layout_marginTop="16dp"/>
         <Button
             android:id="@+id/submit_recipe"
             android:layout_width="match_parent"

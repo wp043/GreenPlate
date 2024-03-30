@@ -10,15 +10,27 @@
         android:id="@+id/ingredientName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:hint="Ingredient Name"
-        android:inputType="text"/>
+        android:inputType="text"
+        android:textSize="12sp"/>
 
     <EditText
         android:id="@+id/ingredientQuantity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:hint="Quantity"
-        android:inputType="numberDecimal"/>
+        android:hint="Quantity1"
+        android:inputType="numberDecimal"
+        android:textSize="12sp"/>
+
+    <EditText
+        android:id="@+id/ingredientCalories"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="Calories"
+        android:inputType="numberDecimal"
+        android:textSize="12sp"/>
+
 </LinearLayout>

@@ -1,15 +1,24 @@
 package com.example.greenplate.views;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.greenplate.R;
+import com.example.greenplate.models.Ingredient;
+import com.example.greenplate.models.Recipe;
 import com.example.greenplate.viewmodels.RecipeViewModel;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EnterNewRecipeActivity extends AppCompatActivity {
 
@@ -41,6 +50,13 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
                 finish();
             }
         });
+        Button submitRecipe = findViewById(R.id.submit_recipe);
+        submitRecipe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitRecipe();
+            }
+        });
     }
 
     private void addIngredientField() {
@@ -64,52 +80,95 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         ingredientsContainer.addView(ingredientView);
     }
 
+//    private void submitRecipe() {
+//        String recipeNameStr = recipeNameEditText.getText().toString().trim();
+//        if (recipeNameStr.isEmpty()) {
+//            recipeNameEditText.setError("Recipe name is required!");
+//            showToast("Recipe name is required!");
+//            return;
+//        }
+//
+//        List<Ingredient> ingredients = collectIngredients();
+//        if (ingredients.isEmpty()) {
+//            showToast("At least one ingredient required");
+//            return;
+//        }
+//
+//        // Validate ingredients using ViewModel
+//        String validationError = recipeViewModel.validateIngredients(ingredients);
+//        if (validationError != null) {
+//            showToast(validationError);
+//            return;
+//        }
+//
+////        // Assuming the ViewModel has a method to handle the recipe submission
+////        Recipe recipe = new Recipe(recipeNameStr); // Update as needed to match your Recipe class
+////        boolean submitSuccess = recipeViewModel.submitRecipe(recipe, ingredients);
+////
+////        if (submitSuccess) {
+////            showToast("Recipe submitted successfully!");
+////            finish(); // Go back to the main screen
+////        } else {
+////            showToast("Failed to submit the recipe. Please try again.");
+////        }
+//    }
     private void submitRecipe() {
         String recipeNameStr = recipeNameEditText.getText().toString().trim();
+        EditText recipeInstructionsEditText = findViewById(R.id.recipe_instructions);
+        String recipeInstructionsStr = recipeInstructionsEditText.getText().toString().trim();
+
+        // Check if recipe name is empty
         if (recipeNameStr.isEmpty()) {
             recipeNameEditText.setError("Recipe name is required!");
+            showToast("Recipe name is required!");
             return;
         }
 
-        for (int i = 0; i < ingredientsContainer.getChildCount(); i++) {
-            View ingredientView = ingredientsContainer.getChildAt(i);
-            EditText ingredientName = ingredientView.findViewById(R.id.ingredientName);
-            EditText ingredientQuantity = ingredientView.findViewById(R.id.ingredientQuantity);
-
-            String name = ingredientName.getText().toString().trim();
-            String quantityStr = ingredientQuantity.getText().toString().trim();
-
-            if (name.isEmpty()) {
-                ingredientName.setError("Ingredient name is required!");
-                return;
-            }
-
-            float quantity;
-            try {
-                quantity = Float.parseFloat(quantityStr);
-            } catch (NumberFormatException e) {
-                ingredientQuantity.setError("Please enter a valid number!");
-                return;
-            }
-
-            if (quantity <= 0) {
-                ingredientQuantity.setError("Quantity must be positive!");
-                return;
-            }
-
-            // TODO: Add ingredient data to a list or similar data structure
+        // Check if instructions are empty
+        if (recipeInstructionsStr.isEmpty()) {
+            recipeInstructionsEditText.setError("Instructions are required!");
+            showToast("Instructions are required!");
+            return;
         }
 
-        submitRecipe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Implement your submit logic here...
+        // Collect and validate ingredients
+        List<Ingredient> ingredients = collectIngredients();
+        if (ingredients == null || ingredients.isEmpty()) {
+            showToast("At least one ingredient required");
+            return;
+        }
 
-                // After submitting, finish the activity to go back to the main recipe screen
-                finish();
-            }
-        });
+        String validationError = recipeViewModel.validateIngredients(ingredients);
+        if (validationError != null) {
+            showToast(validationError);
+            return;
+        }
 
+        // Create a Recipe object and attempt to add it
+        Recipe recipe = new Recipe(recipeNameStr); // Assume constructor or setters to set ingredients and instructions
+        // You need to modify the Recipe class or use its methods accordingly
+        // Assume method to set ingredients and instructions exist in Recipe class
+        recipe.addInstruction(recipeInstructionsStr); // Split instructions by new lines
+        for (Ingredient ingredient : ingredients) {
+            recipe.addIngredient(ingredient, ingredient.getMultiplicity());
+        }
+
+        // Add recipe via ViewModel
+        boolean submitSuccess = recipeViewModel.addRecipe(recipe); // This method needs to be properly defined in your ViewModel
+
+        if (submitSuccess) {
+            showToast("Recipe submitted successfully!");
+            finish(); // Go back to the main screen
+        } else {
+            showToast("Failed to submit the recipe. Please try again.");
+        }
     }
 
+    private List<Ingredient> collectIngredients() {
+        List<Ingredient> ingredients = new ArrayList<>();
+        return ingredients;
+    }
+    private void showToast(String message) {
+        Toast.makeText(EnterNewRecipeActivity.this, message, Toast.LENGTH_SHORT).show();
+    }
 }
