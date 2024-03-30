@@ -287,28 +287,57 @@ public class IngredientFragment extends Fragment {
                                 EditText caloriesEditText = dialogView.findViewById(R.id.ingredient_calories);
 
                                 Log.d("TAG", "1");
-
-                                String name = nameEditText.getText().toString();
-                                int quantity = Integer.parseInt(quantityEditText.getText().toString());
-                                int calories = Integer.parseInt(caloriesEditText.getText().toString());
-                                String expiration = expirationEditText.getText().toString();
-                                Log.d("TAG", "2");
-                                // change expiration string to date
-                                Date expirationDate = null;
-                                if (!expiration.isEmpty()) {
-                                    try {
-                                        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-                                        expirationDate = sdf.parse(expiration);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
+                                try{
+                                    String name = nameEditText.getText().toString();
+                                    int quantity = Integer.parseInt(quantityEditText.getText().toString());
+                                    int calories = Integer.parseInt(caloriesEditText.getText().toString());
+                                    String expiration = expirationEditText.getText().toString();
+                                    Log.d("TAG", "2");
+                                    // change expiration string to date
+                                    Date expirationDate = null;
+                                    if (!expiration.isEmpty()) {
+                                        try {
+                                            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                                            expirationDate = sdf.parse(expiration);
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
+
+                                    Ingredient newIngredient = new Ingredient(name, calories, quantity, expirationDate);
+
+                                    ingredientVM.updateIngredient(newIngredient, success -> {
+                                        if (success) {
+                                            // If update is successful, retrieve the updated list of ingredients
+                                            Log.d("TAG", "update success");
+                                            ingredientVM.getIngredients(items -> {
+                                                List<Ingredient> ingredients=new ArrayList<>();
+
+                                                if (items != null) {
+                                                    for (RetrievableItem item : items) {
+                                                        if (item instanceof Ingredient) {
+                                                            Ingredient ingredient = (Ingredient) item;
+                                                            ingredients.add(ingredient);
+                                                        }
+                                                    }
+                                                }
+
+                                                // Update the RecyclerView with the updated list of ingredients
+                                                IngredientsAdapter adapter = new IngredientsAdapter(ingredients);
+                                                rvRecipes.setAdapter(adapter);
+                                                rvRecipes.setLayoutManager(new LinearLayoutManager(requireContext()));
+                                            });
+                                        } else {
+                                            // Handle failure to add
+                                            Toast.makeText(requireContext(), "Failed. Name, Calorie, expiration date must match the ingredient to be edited.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                } catch (Exception e){
+                                Toast.makeText(requireContext(), "Failed. All fields must be filled in.", Toast.LENGTH_SHORT).show();
                                 }
 
-                                Ingredient newIngredient = new Ingredient(name, calories, quantity, expirationDate);
-                                // TODO: Include remove ingredient logic, call removeIngredient when multiplicity sets to be 0
-                                // TODO: Didn't successfully update
-//                                ingredientVM.updateIngredient(newIngredient);
-                                ingredientVM.updateIngredient(newIngredient);
+
+
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

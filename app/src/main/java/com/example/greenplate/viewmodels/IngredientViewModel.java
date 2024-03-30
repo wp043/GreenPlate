@@ -92,16 +92,18 @@ public class IngredientViewModel extends ViewModel {
     }
 
     // TODO: This method can take a UI component as extra input, which will be updated accordingly.
-    public void updateIngredient(Ingredient ingredient) {
+    public void updateIngredient(Ingredient ingredient, OnIngredientUpdatedListener listener) {
         pantryManager.updateIngredientMultiplicity(ingredient, new OnMultiplicityUpdateListener() {
             @Override
             public void onMultiplicityUpdateSuccess(GreenPlateStatus status) {
                 Log.d("Success", status.getMessage());
+                listener.onIngredientUpdated(true);
             }
 
             @Override
             public void onMultiplicityUpdateFailure(GreenPlateStatus status) {
                 Log.d("Failure", status.getMessage());
+                listener.onIngredientUpdated(false);
             }
         });
     }
@@ -123,24 +125,10 @@ public class IngredientViewModel extends ViewModel {
     }
 
     /**
-     *
+     * get all ingredients in the pantry
      * @param callback
      */
     public void getIngredients(OnDataRetrievedCallback callback){
-//        List<Ingredient> ingredientList = new ArrayList<>();
-//        pantryManager.retrieve(items -> {
-//            if (items != null) {
-//                // Do something with the retrieved ingredients
-//                for (RetrievableItem item : items) {
-//                    if (item instanceof Ingredient) {
-//                        Ingredient ingredient = (Ingredient) item;
-//                        // Add the ingredient to the list
-//                        ingredientList.add(ingredient);
-//                    }
-//                }
-//            }
-//        });
-//        return ingredientList;
         pantryManager.retrieve(callback);
 
     }
