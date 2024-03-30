@@ -7,6 +7,7 @@ import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.viewmodels.listeners.OnDataRetrievedCallback;
 import com.example.greenplate.viewmodels.listeners.OnDuplicateCheckListener;
+import com.example.greenplate.viewmodels.listeners.OnIngredientUpdatedListener;
 import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
 import com.example.greenplate.viewmodels.listeners.OnIngredientRemoveListener;
 import com.google.firebase.database.DataSnapshot;
@@ -92,18 +93,22 @@ public class PantryManager implements Manager {
      * @param ingredient - the ingredient to add
      * @return the status of the operation
      */
-    public GreenPlateStatus addIngredient(Ingredient ingredient) {
+    public GreenPlateStatus addIngredient(Ingredient ingredient, OnIngredientUpdatedListener listener) {
         if (ingredient == null) {
+            listener.onIngredientUpdated(false);
             return new GreenPlateStatus(false, "Can't add a null ingredient.");
         }
         if (ingredient.getName() == null || TextUtils.isEmpty(ingredient.getName().trim())) {
+            listener.onIngredientUpdated(false);
             return new GreenPlateStatus(false, "Can't add a ingredient with empty name.");
         }
         if (ingredient.getCalories() <= 0) {
+            listener.onIngredientUpdated(false);
             return new GreenPlateStatus(false,
                     "Can't add a ingredient with non-positive calorie.");
         }
         if (ingredient.getMultiplicity() <= 0) {
+               listener.onIngredientUpdated(false);
             return new GreenPlateStatus(false,
                     "Can't add a ingredient with non-positive multiplicity.");
         }
@@ -119,13 +124,16 @@ public class PantryManager implements Manager {
             myRef.child(ingredientKey).child("calories").setValue(ingredient.getCalories());
             myRef.child(ingredientKey).child("multiplicity").setValue(ingredient.getMultiplicity());
             myRef.child(ingredientKey).child("expirationDate").setValue(expDate);
+            listener.onIngredientUpdated(true);
         } catch (Exception e) {
             Log.d("Failure", "PantryManager failure due to: " + e.getLocalizedMessage());
+           listener.onIngredientUpdated(false);
             return new GreenPlateStatus(false, "Add meal: " + e.getLocalizedMessage());
         }
         return new GreenPlateStatus(true,
                 String.format("%s added to database successfully", ingredient));
     }
+
 
     /**
      * Check whether the input ingredient is duplicate.
