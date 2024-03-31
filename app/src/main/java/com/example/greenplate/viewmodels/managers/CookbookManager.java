@@ -2,12 +2,16 @@ package com.example.greenplate.viewmodels.managers;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
 import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.listeners.OnDataRetrievedCallback;
 import com.example.greenplate.viewmodels.listeners.OnDuplicateCheckListener;
+import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
+import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -50,7 +54,7 @@ public class CookbookManager implements Manager {
         List<RetrievableItem> items = new ArrayList<>();
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 DataSnapshot cookbookSnapshot = dataSnapshot.child("Cookbook");
                 for (DataSnapshot recipeSnapshot : cookbookSnapshot.getChildren()) {
                     try {
@@ -99,7 +103,7 @@ public class CookbookManager implements Manager {
      * @param recipe - the recipe to add
      * @return the status of the operation
      */
-    public GreenPlateStatus addRecipe(Recipe recipe) {
+    public GreenPlateStatus addRecipe(Recipe recipe, OnRecipeAddedListener listener) {
         try {
             DatabaseReference recipeRef = myRef.child("Cookbook").child(recipe.getName());
 
@@ -127,8 +131,10 @@ public class CookbookManager implements Manager {
 
         } catch (Exception e) {
             Log.d("Failure", "CookbookManager failure due to: " + e.getLocalizedMessage());
+            listener.onRecipeAdded(false);
             return new GreenPlateStatus(false, "Add meal: " + e.getLocalizedMessage());
         }
+        listener.onRecipeAdded(true);
         return new GreenPlateStatus(true,
                 String.format("%s added to database successfully", recipe));
     }
