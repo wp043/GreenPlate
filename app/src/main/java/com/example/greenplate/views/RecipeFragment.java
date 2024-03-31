@@ -82,7 +82,6 @@ public class RecipeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe, container, false);
 
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_recipe, container, false);
     }
 
@@ -93,8 +92,6 @@ public class RecipeFragment extends Fragment {
         recipeViewModel = new RecipeViewModel();
         RecyclerView rvRecipes = view.findViewById(R.id.rvRecipes);
 
-        // Moved initialization logic to another method
-        //initializeRecipesIfNeeded();
         recipeViewModel.addDefaultRecipes(getContext(), rvRecipes);
         recipeViewModel.retrieveAndDisplayIngredients(getContext(), rvRecipes);
 
@@ -107,8 +104,4 @@ public class RecipeFragment extends Fragment {
             }
         });
     }
-
-//    private void initializeRecipesIfNeeded() {
-//        recipeViewModel.initializeDefaultRecipesIfNeeded(getContext(), null);
-//    }
 }

@@ -62,13 +62,6 @@ public class RecipeViewModel extends ViewModel {
         defaultRecipesInitialized = true;
     }
 
-//    public void initializeDefaultRecipesIfNeeded(Context context, RecyclerView rvRecipes) {
-//        if (!defaultRecipesInitialized) {
-//            addDefaultRecipes(context, rvRecipes);
-//            defaultRecipesInitialized = true;
-//        }
-//    }
-
     public void addRecipe(Recipe recipe, OnRecipeAddedListener listener) {
         if (recipe.getName() == null) {
             listener.onRecipeAdded(false);
@@ -142,7 +135,6 @@ public class RecipeViewModel extends ViewModel {
                 }
             }
 
-            // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
             RecipesAdapter adapter = new RecipesAdapter(recipes);
             rvRecipes.setAdapter(adapter);
             rvRecipes.setLayoutManager(new LinearLayoutManager(context));
