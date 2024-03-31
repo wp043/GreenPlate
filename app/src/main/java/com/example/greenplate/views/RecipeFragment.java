@@ -119,8 +119,4 @@ public class RecipeFragment extends Fragment {
             }
         });
     }
-
-//    private void initializeRecipesIfNeeded() {
-//        recipeViewModel.initializeDefaultRecipesIfNeeded(getContext(), null);
-//    }
 }

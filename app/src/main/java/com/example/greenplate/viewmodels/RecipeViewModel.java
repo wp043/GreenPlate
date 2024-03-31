@@ -57,26 +57,6 @@ public class RecipeViewModel extends ViewModel {
         defaultRecipesInitialized = true;
     }
 
-//    public void initializeDefaultRecipesIfNeeded(Context context, RecyclerView rvRecipes) {
-//        if (!defaultRecipesInitialized) {
-//            addDefaultRecipes(context, rvRecipes);
-//            defaultRecipesInitialized = true;
-//        }
-//    }
-
-//    public void addRecipe(Recipe recipe, OnRecipeAddedListener listener) {
-//        // Check if recipe is already in Cookbook
-//        cookbookManager.isRecipeDuplicate(recipe, isDuplicate -> {
-//            if (isDuplicate) {
-//                Log.d("Failed to add recipe", "RecipeViewModel: "
-//                        + recipe.getName() + " recipe already exists.");
-//            } else {
-//                cookbookManager.addRecipe(recipe, success -> {
-//                    listener.onRecipeAdded(success);
-//                });
-//            }
-//        });
-//    }
     public void addRecipe(Recipe recipe, OnRecipeAddedListener listener) {
         if (recipe.getIngredients().isEmpty()) {
             listener.onRecipeAdded(false);
@@ -85,8 +65,8 @@ public class RecipeViewModel extends ViewModel {
 
         // Further validation for each ingredient can be added here as needed.
         for (Ingredient ingredient : recipe.getIngredients()) {
-            if (ingredient.getName() == null || ingredient.getName().trim().isEmpty() ||
-                    ingredient.getMultiplicity() <= 0 || ingredient.getCalories() < 0) {
+            if (ingredient.getName() == null || ingredient.getName().trim().isEmpty()
+                    || ingredient.getMultiplicity() <= 0 || ingredient.getCalories() < 0) {
                 listener.onRecipeAdded(false);
                 return; // Invalid ingredient details, so we do not proceed further.
             }
@@ -109,7 +89,8 @@ public class RecipeViewModel extends ViewModel {
         });
     }
 
-    public GreenPlateStatus validateRecipeData(String recipeName, List<String> instructions, List<Ingredient> ingredients) {
+    public GreenPlateStatus validateRecipeData(String recipeName, List<String> instructions,
+                                               List<Ingredient> ingredients) {
         if (recipeName.trim().isEmpty()) {
             return new GreenPlateStatus(false, "Recipe name cannot be empty");
         }
@@ -117,21 +98,23 @@ public class RecipeViewModel extends ViewModel {
         boolean hasValidIngredient = true;
         int index = 0;
         for (Ingredient ingredient : ingredients) {
-            if (ingredient.getName().trim().isEmpty() || ingredients.get(index).getMultiplicity() <= 0) {
+            if (ingredient.getName().trim().isEmpty()
+                    || ingredients.get(index).getMultiplicity() <= 0) {
                 hasValidIngredient = false;
             }
             index++;
         }
 
         if (!hasValidIngredient) {
-            return new GreenPlateStatus(false, "At least one ingredient with a valid name and quantity is required");
+            return new GreenPlateStatus(false,
+                    "At least one ingredient with a valid name and quantity is required");
         }
 
         return new GreenPlateStatus(true, null);
     }
     /**
      * get all recipes in the cookbook
-     * @param callback
+     * @param callback callback that retreives the recipes from the cookbook manager
      */
     public void getRecipes(OnDataRetrievedCallback callback) {
         cookbookManager.retrieve(callback);
@@ -181,9 +164,6 @@ public class RecipeViewModel extends ViewModel {
                     }
                 }
             }
-//            if (filteredList.isEmpty()) {
-//
-//            }
             filteredList.sort((r1, r2) -> r1.getName().compareToIgnoreCase(r2.getName()));
             // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
             RecipesAdapter adapter = new RecipesAdapter(filteredList);
