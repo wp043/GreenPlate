@@ -18,7 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.greenplate.R;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
+import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.RecipeViewModel;
+import com.example.greenplate.viewmodels.adapters.IngredientsAdapter;
 import com.example.greenplate.viewmodels.adapters.RecipesAdapter;
 
 import java.util.ArrayList;
@@ -90,53 +92,9 @@ public class RecipeFragment extends Fragment {
         recipeViewModel = new RecipeViewModel();
         RecyclerView rvRecipes = (RecyclerView) view.findViewById(R.id.rvRecipes);
 
-        // Demo recipe list
-        ArrayList<Recipe> recipes = new ArrayList<>();
-        // Add full test recipe 1
-        Map<Ingredient, Integer> ingredients1 = new HashMap<>();
-        ingredients1.put(new Ingredient("Bun"), 2);
-        ingredients1.put(new Ingredient("Hamburger Patty"), 1);
-        List<String> instructions1 = new ArrayList<>();
-        instructions1.add("Grill hamburger patty.");
-        instructions1.add("Put hamburger patty between buns.");
-        Recipe fullRecipe1 = new Recipe("Hamburger", ingredients1, instructions1);
-        recipes.add(fullRecipe1);
-        // Add full test recipe 2
-        Map<Ingredient, Integer> ingredients2 = new HashMap<>();
-        ingredients2.put(new Ingredient("Bun"), 1);
-        ingredients2.put(new Ingredient("Sausage"), 1);
-        List<String> instructions2 = new ArrayList<>();
-        instructions2.add("Grill sausage.");
-        instructions2.add("Put sausage into bun.");
-        Recipe fullRecipe2 = new Recipe("Hot dog", ingredients2, instructions2);
-        recipes.add(fullRecipe2);
-        // Add dummy recipes
-        Recipe recipe1 = new Recipe("Milkshake");
-        Recipe recipe2 = new Recipe("Fries");
-        Recipe recipe3 = new Recipe("Chicken Noodle Soup");
-        Recipe recipe4 = new Recipe("Steak");
-        Recipe recipe5 = new Recipe("Pasta");
-        Recipe recipe6 = new Recipe("Soup");
-        Recipe recipe7 = new Recipe("Salad");
-        Recipe recipe8 = new Recipe("Cookie");
-        Recipe recipe9 = new Recipe("Taco");
-        Recipe recipe10 = new Recipe("Dumplings");
-        recipes.add(recipe1);
-        recipes.add(recipe2);
-        recipes.add(recipe3);
-        recipes.add(recipe4);
-        recipes.add(recipe5);
-        recipes.add(recipe6);
-        recipes.add(recipe7);
-        recipes.add(recipe8);
-        recipes.add(recipe9);
-        recipes.add(recipe10);
+        recipeViewModel.addDefaultRecipes(getContext(), rvRecipes);
 
-        // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
-        RecipesAdapter adapter = new RecipesAdapter(recipes);
-        rvRecipes.setAdapter(adapter);
-        rvRecipes.setLayoutManager(new LinearLayoutManager(view.getContext()));
-
+        recipeViewModel.retrieveAndDisplayIngredients(getContext(), rvRecipes);
 
         Button addRecipeButton = view.findViewById(R.id.btnEnterNewRecipe);
         addRecipeButton.setOnClickListener(new View.OnClickListener() {
@@ -146,6 +104,5 @@ public class RecipeFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
     }
 }
