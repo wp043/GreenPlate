@@ -108,7 +108,7 @@ public class Recipe extends RetrievableItem {
         this.ingredients.get(index).setMultiplicity(multiplicity);
         return new GreenPlateStatus(true,
                 String.format("Update multiplicity of %s from %d to %d",
-                ingredient, oldMult, multiplicity));
+                        ingredient, oldMult, multiplicity));
     }
 
     /**
@@ -146,8 +146,8 @@ public class Recipe extends RetrievableItem {
 
 
     /**
-     * Getter for ingredient map.
-     * @return a map containing ingredients and their multiplicities of the recipe
+     * Getter for ingredient list within a recipe
+     * @return a list containing ingredients
      */
     public List<Ingredient> getIngredients() {
         return ingredients;

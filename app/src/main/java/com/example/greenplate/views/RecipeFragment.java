@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -89,10 +90,11 @@ public class RecipeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recipeViewModel = new RecipeViewModel();
-        RecyclerView rvRecipes = (RecyclerView) view.findViewById(R.id.rvRecipes);
+        recipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
+        RecyclerView rvRecipes = view.findViewById(R.id.rvRecipes);
 
-        recipeViewModel.addDefaultRecipes(getContext(), rvRecipes);
+        // Moved initialization logic to another method
+        initializeRecipesIfNeeded();
         recipeViewModel.retrieveAndDisplayIngredients(getContext(), rvRecipes);
 
         Button addRecipeButton = view.findViewById(R.id.btnEnterNewRecipe);
@@ -103,5 +105,9 @@ public class RecipeFragment extends Fragment {
                 startActivity(intent);
             }
         });
+    }
+
+    private void initializeRecipesIfNeeded() {
+        recipeViewModel.initializeDefaultRecipesIfNeeded(getContext(), null);
     }
 }

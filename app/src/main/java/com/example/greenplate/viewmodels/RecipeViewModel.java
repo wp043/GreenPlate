@@ -25,6 +25,7 @@ import java.util.Map;
 
 public class RecipeViewModel extends ViewModel {
     private CookbookManager cookbookManager;
+    private boolean defaultRecipesInitialized = false;
 
     public RecipeViewModel() {
         cookbookManager = new CookbookManager();
@@ -58,17 +59,56 @@ public class RecipeViewModel extends ViewModel {
             // Update RecyclerView
             retrieveAndDisplayIngredients(context, rvRecipes);
         });
+        defaultRecipesInitialized = true;
     }
 
+    public void initializeDefaultRecipesIfNeeded(Context context, RecyclerView rvRecipes) {
+        if (!defaultRecipesInitialized) {
+            addDefaultRecipes(context, rvRecipes);
+            defaultRecipesInitialized = true;
+        }
+    }
+
+//    public void addRecipe(Recipe recipe, OnRecipeAddedListener listener) {
+//        // Check if recipe is already in Cookbook
+//        cookbookManager.isRecipeDuplicate(recipe, isDuplicate -> {
+//            if (isDuplicate) {
+//                Log.d("Failed to add recipe", "RecipeViewModel: "
+//                        + recipe.getName() + " recipe already exists.");
+//            } else {
+//                cookbookManager.addRecipe(recipe, success -> {
+//                    listener.onRecipeAdded(success);
+//                });
+//            }
+//        });
+//    }
     public void addRecipe(Recipe recipe, OnRecipeAddedListener listener) {
-        // Check if recipe is already in Cookbook
+        if (recipe.getIngredients().isEmpty()) {
+            listener.onRecipeAdded(false);
+            return; // No ingredients, so we do not proceed further.
+        }
+
+        // Further validation for each ingredient can be added here as needed.
+        for (Ingredient ingredient : recipe.getIngredients()) {
+            if (ingredient.getName() == null || ingredient.getName().trim().isEmpty() ||
+                    ingredient.getMultiplicity() <= 0 || ingredient.getCalories() < 0) {
+                listener.onRecipeAdded(false);
+                return; // Invalid ingredient details, so we do not proceed further.
+            }
+        }
+
         cookbookManager.isRecipeDuplicate(recipe, isDuplicate -> {
             if (isDuplicate) {
-                Log.d("Failed to add recipe", "RecipeViewModel: "
-                        + recipe.getName() + " recipe already exists.");
+                // Notify via listener that recipe is a duplicate
+                listener.onRecipeAdded(false);
             } else {
-                cookbookManager.addRecipe(recipe, success -> {
-                    listener.onRecipeAdded(success);
+                // Proceed to add the recipe since it's not a duplicate
+                cookbookManager.addRecipe(recipe, new OnRecipeAddedListener() {
+                    @Override
+                    public void onRecipeAdded(boolean success) {
+                        // Forward the result from CookbookManager
+                        listener.onRecipeAdded(success);
+                    }
                 });
             }
         });
@@ -77,10 +117,6 @@ public class RecipeViewModel extends ViewModel {
     public GreenPlateStatus validateRecipeData(String recipeName, List<String> instructions, List<Ingredient> ingredients) {
         if (recipeName.trim().isEmpty()) {
             return new GreenPlateStatus(false, "Recipe name cannot be empty");
-        }
-
-        if (instructions.isEmpty()) {
-            return new GreenPlateStatus(false, "At least one instruction is required");
         }
 
         boolean hasValidIngredient = true;
