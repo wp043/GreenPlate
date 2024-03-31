@@ -11,6 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
@@ -80,7 +83,6 @@ public class RecipeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe, container, false);
 
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_recipe, container, false);
     }
 
@@ -89,8 +91,7 @@ public class RecipeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         recipeViewModel = new RecipeViewModel();
-
-        RecyclerView rvRecipes = (RecyclerView) view.findViewById(R.id.rvRecipes);
+        RecyclerView rvRecipes = view.findViewById(R.id.rvRecipes);
 
         SearchView recipeListSearchView = (SearchView) view.findViewById(R.id.recipeListSearchView);
         recipeListSearchView.clearFocus();
@@ -116,6 +117,7 @@ public class RecipeFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), EnterNewRecipeActivity.class);
                 startActivity(intent);
+                recipeViewModel.retrieveAndDisplayIngredients(getContext(), rvRecipes);
             }
         });
     }

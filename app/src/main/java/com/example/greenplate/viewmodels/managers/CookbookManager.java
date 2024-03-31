@@ -62,14 +62,14 @@ public class CookbookManager implements Manager {
                         String name = recipeSnapshot.getKey();
 
                         // Query ingredients of recipe from database
-                        Map<Ingredient, Integer> ingredients = new HashMap<>();
+                        List<Ingredient> ingredients = new ArrayList<>();
                         DataSnapshot ingredientsSnapshot = recipeSnapshot.child("ingredients");
                         for (DataSnapshot ingredientSnapshot: ingredientsSnapshot.getChildren()) {
                             String ingredientName = ingredientSnapshot.child("name")
                                     .getValue(String.class);
-                            int quantity = ingredientSnapshot.child("quantity")
-                                    .getValue(Integer.class);
-                            ingredients.put(new Ingredient(ingredientName), quantity);
+                            double quantity = ingredientSnapshot.child("quantity")
+                                    .getValue(Double.class);
+                            ingredients.add(new Ingredient(ingredientName));
                         }
 
                         // Query instructions of recipe from database
@@ -110,15 +110,17 @@ public class CookbookManager implements Manager {
 
             // Add ingredients of recipe to database
             DatabaseReference ingredientsRef = recipeRef.child("ingredients");
-            for (Map.Entry<Ingredient, Integer> ingredient: recipe.getIngredients().entrySet()) {
+            for (Ingredient ingredient: recipe.getIngredients()) {
                 String ingredientKey = ingredientsRef.push().getKey();
                 if (ingredientKey == null) {
                     throw new RuntimeException("Failed to generate ingredient key");
                 }
                 ingredientsRef.child(ingredientKey).child("name")
-                        .setValue(ingredient.getKey().getName());
+                        .setValue(ingredient.getName());
                 ingredientsRef.child(ingredientKey).child("quantity")
-                        .setValue((int) ingredient.getValue());
+                        .setValue((double) ingredient.getMultiplicity());
+                ingredientsRef.child(ingredientKey).child("calories")
+                        .setValue(ingredient.getCalories());
             }
 
             DatabaseReference instructionsRef = recipeRef.child("instructions");
@@ -137,7 +139,7 @@ public class CookbookManager implements Manager {
         }
         listener.onRecipeAdded(true);
         return new GreenPlateStatus(true,
-                String.format("%s added to database successfully", recipe));
+                String.format("%s recipe added to database successfully", recipe));
     }
 
     /**
@@ -149,7 +151,7 @@ public class CookbookManager implements Manager {
         retrieve(items -> {
             boolean isDuplicate = false;
             for (RetrievableItem item : items) {
-                if (item.equals(recipe)) {
+                if (item.getName().equals(recipe.getName())) {
                     isDuplicate = true;
                     break;
                 }

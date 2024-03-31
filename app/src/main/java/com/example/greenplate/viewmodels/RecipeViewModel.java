@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
 import com.example.greenplate.models.RetrievableItem;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 public class RecipeViewModel extends ViewModel {
     private CookbookManager cookbookManager;
+    private boolean defaultRecipesInitialized = false;
 
     public RecipeViewModel() {
         cookbookManager = new CookbookManager();
@@ -29,10 +31,10 @@ public class RecipeViewModel extends ViewModel {
 
     public void addDefaultRecipes(Context context, RecyclerView rvRecipes) {
         // Add test recipe 1
-        Map<Ingredient, Integer> ingredients1 = new HashMap<>();
-        ingredients1.put(new Ingredient("Bun"), 2);
-        ingredients1.put(new Ingredient("Hamburger Patty"), 1);
-        ingredients1.put(new Ingredient("Cheese Slice"), 1);
+        List<Ingredient> ingredients1 = new ArrayList<>();
+        ingredients1.add(new Ingredient("Bun", 100, 2, null));
+        ingredients1.add(new Ingredient("Hamburger Patty", 200, 1, null));
+        ingredients1.add(new Ingredient("Cheese Slice", 50, 1, null));
         List<String> instructions1 = new ArrayList<>();
         instructions1.add("Grill hamburger patty.");
         instructions1.add("Put cheese slice onto hamburger.");
@@ -44,9 +46,9 @@ public class RecipeViewModel extends ViewModel {
         });
 
         // Add test recipe 2
-        Map<Ingredient, Integer> ingredients2 = new HashMap<>();
-        ingredients2.put(new Ingredient("Bun"), 1);
-        ingredients2.put(new Ingredient("Sausage"), 1);
+        List<Ingredient> ingredients2 = new ArrayList<>();
+        ingredients2.add(new Ingredient("Bun", 100, 1, null));
+        ingredients2.add(new Ingredient("Sausage", 100, 1, null));
         List<String> instructions2 = new ArrayList<>();
         instructions2.add("Grill sausage.");
         instructions2.add("Put sausage into bun.");
@@ -55,23 +57,61 @@ public class RecipeViewModel extends ViewModel {
             // Update RecyclerView
             retrieveAndDisplayIngredients(context, rvRecipes);
         });
+        defaultRecipesInitialized = true;
     }
 
     public void addRecipe(Recipe recipe, OnRecipeAddedListener listener) {
-        // Check if recipe is already in Cookbook
+        if (recipe.getName() == null) {
+            listener.onRecipeAdded(false);
+            return;
+        }
+        if (recipe.getIngredients().isEmpty()) {
+            listener.onRecipeAdded(false);
+            return;
+        }
+
+        for (Ingredient ingredient : recipe.getIngredients()) {
+            if (ingredient.getName() == null || ingredient.getName().trim().isEmpty() ||
+                    ingredient.getMultiplicity() <= 0 || ingredient.getCalories() < 0) {
+                listener.onRecipeAdded(false);
+                return;
+            }
+        }
+
         cookbookManager.isRecipeDuplicate(recipe, isDuplicate -> {
             if (isDuplicate) {
-                Log.d("Failed to add recipe", "RecipeViewModel: "
-                        + recipe.getName() + " recipe already exists.");
                 listener.onRecipeAdded(false);
             } else {
-                cookbookManager.addRecipe(recipe, success -> {
-                    listener.onRecipeAdded(success);
+                cookbookManager.addRecipe(recipe, new OnRecipeAddedListener() {
+                    @Override
+                    public void onRecipeAdded(boolean success) {
+                        listener.onRecipeAdded(success);
+                    }
                 });
             }
         });
     }
 
+    public GreenPlateStatus validateRecipeData(String recipeName, List<String> instructions, List<Ingredient> ingredients) {
+        if (recipeName.trim().isEmpty()) {
+            return new GreenPlateStatus(false, "Recipe name cannot be empty");
+        }
+
+        boolean hasValidIngredient = true;
+        int index = 0;
+        for (Ingredient ingredient : ingredients) {
+            if (ingredient.getName().trim().isEmpty() || ingredients.get(index).getMultiplicity() <= 0) {
+                hasValidIngredient = false;
+            }
+            index++;
+        }
+
+        if (!hasValidIngredient) {
+            return new GreenPlateStatus(false, "At least one ingredient with a valid name and quantity is required");
+        }
+
+        return new GreenPlateStatus(true, null);
+    }
     /**
      * get all recipes in the cookbook
      * @param callback Callback to retrieve recipes from the cookbookManager
@@ -82,10 +122,10 @@ public class RecipeViewModel extends ViewModel {
 
 
     public void retrieveAndDisplayIngredients(Context context, RecyclerView rvRecipes) {
-        this.getRecipes(items -> {
+        this.getRecipes(itemsRecipe -> {
             List<Recipe> recipes = new ArrayList<>();
-            if (items != null) {
-                for (RetrievableItem item : items) {
+            if (itemsRecipe != null) {
+                for (RetrievableItem item : itemsRecipe) {
                     if (item instanceof Recipe) {
                         Recipe recipe = (Recipe) item;
                         recipes.add(recipe);
@@ -93,10 +133,36 @@ public class RecipeViewModel extends ViewModel {
                 }
             }
 
-            // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
-            RecipesAdapter adapter = new RecipesAdapter(recipes);
-            rvRecipes.setAdapter(adapter);
-            rvRecipes.setLayoutManager(new LinearLayoutManager(context));
+            new IngredientViewModel().getIngredients(itemsIngredient -> {
+                List<String> availability = new ArrayList<>();
+                Map<String, Double> ingredients = new HashMap<>();
+
+                for (RetrievableItem item: itemsIngredient) {
+                    ingredients.put(item.getName(), item.getMultiplicity());
+                }
+
+                for (Recipe recipe: recipes) {
+                    boolean enoughIngredients = true;
+                    for (Ingredient ingredient: recipe.getIngredients()) {
+                        Log.d(recipe.getName() + ", " + ingredient.getName(),
+                                "Recipe: " + ingredient.getMultiplicity() + " Database: " + ingredients.get(ingredient.getName()));
+                        if (!ingredients.containsKey(ingredient.getName()) || (ingredients.get(ingredient.getName()) < recipe.getMultiplicity())) {
+                            enoughIngredients = false;
+                            break;
+                        }
+                    }
+                    if (enoughIngredients) {
+                        availability.add("Yes");
+                    } else {
+                        availability.add("No");
+                    }
+                }
+
+                // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
+                RecipesAdapter adapter = new RecipesAdapter(recipes, availability);
+                rvRecipes.setAdapter(adapter);
+                rvRecipes.setLayoutManager(new LinearLayoutManager(context));
+            });
         });
     }
 
@@ -112,24 +178,60 @@ public class RecipeViewModel extends ViewModel {
                     }
                 }
             }
-            // Filter from search
-            ArrayList<Recipe> filteredList = new ArrayList<>();
-            if (search.isEmpty()) {
-                // If the search query is empty, show the original list
-                filteredList = new ArrayList<>(recipes);
-            } else {
-                filteredList = new ArrayList<>();
-                for (Recipe recipeItem : recipes) {
-                    if (recipeItem.getName().toLowerCase().contains(search.toLowerCase())) {
-                        filteredList.add(recipeItem);
+
+            new IngredientViewModel().getIngredients(itemsIngredient -> {
+                List<String> availability = new ArrayList<>();
+                Map<String, Double> ingredients = new HashMap<>();
+
+                for (RetrievableItem item: itemsIngredient) {
+                    ingredients.put(item.getName(), item.getMultiplicity());
+                }
+
+                for (Recipe recipe: recipes) {
+                    boolean enoughIngredients = true;
+                    for (Ingredient ingredient: recipe.getIngredients()) {
+                        Log.d(recipe.getName() + ", " + ingredient.getName(),
+                                "Recipe: " + ingredient.getMultiplicity() + " Database: " +
+                                        ingredients.get(ingredient.getName()));
+                        if (!ingredients.containsKey(ingredient.getName())
+                                || (ingredients.get(ingredient.getName())
+                                < recipe.getMultiplicity())) {
+                            enoughIngredients = false;
+                            break;
+                        }
+                    }
+                    if (enoughIngredients) {
+                        availability.add("Yes");
+                    } else {
+                        availability.add("No");
                     }
                 }
-            }
-            filteredList.sort((r1, r2) -> r1.getName().compareToIgnoreCase(r2.getName()));
-            // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
-            RecipesAdapter adapter = new RecipesAdapter(filteredList);
-            rvRecipes.setAdapter(adapter);
-            rvRecipes.setLayoutManager(new LinearLayoutManager(context));
+
+                // Filter from search
+                ArrayList<Recipe> filteredList = new ArrayList<>();
+                List<String> filteredAvailability = new ArrayList<>();
+                if (search.isEmpty()) {
+                    // If the search query is empty, show the original list
+                    filteredList = new ArrayList<>(recipes);
+                    filteredAvailability = new ArrayList<>(availability);
+                } else {
+                    filteredList = new ArrayList<>();
+                    for (int i = 0; i <= recipes.size() - 1; i++) {
+                        Recipe recipeItem = recipes.get(i);
+                        if (recipeItem.getName().toLowerCase().contains(search.toLowerCase())) {
+                            filteredList.add(recipeItem);
+                            filteredAvailability.add(availability.get(i));
+                        }
+                    }
+                }
+
+
+//                filteredList.sort((r1, r2) -> r1.getName().compareToIgnoreCase(r2.getName()));
+                // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
+                RecipesAdapter adapter = new RecipesAdapter(filteredList, filteredAvailability);
+                rvRecipes.setAdapter(adapter);
+                rvRecipes.setLayoutManager(new LinearLayoutManager(context));
+            });
         });
     }
 
