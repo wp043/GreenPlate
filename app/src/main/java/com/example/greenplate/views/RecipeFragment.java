@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -81,7 +82,6 @@ public class RecipeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe, container, false);
 
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_recipe, container, false);
     }
 
@@ -90,10 +90,9 @@ public class RecipeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         recipeViewModel = new RecipeViewModel();
-        RecyclerView rvRecipes = (RecyclerView) view.findViewById(R.id.rvRecipes);
+        RecyclerView rvRecipes = view.findViewById(R.id.rvRecipes);
 
         recipeViewModel.addDefaultRecipes(getContext(), rvRecipes);
-
         recipeViewModel.retrieveAndDisplayIngredients(getContext(), rvRecipes);
 
         Button addRecipeButton = view.findViewById(R.id.btnEnterNewRecipe);
@@ -102,6 +101,7 @@ public class RecipeFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), EnterNewRecipeActivity.class);
                 startActivity(intent);
+                recipeViewModel.retrieveAndDisplayIngredients(getContext(), rvRecipes);
             }
         });
     }

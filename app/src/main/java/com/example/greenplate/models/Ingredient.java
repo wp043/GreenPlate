@@ -15,7 +15,7 @@ public class Ingredient extends RetrievableItem {
      * @param multiplicity - multiplicity of the ingredient
      * @param expirationDate - expiration date of the ingredient. Default to infinitely away.
      */
-    public Ingredient(String name, double calories, int multiplicity, Date expirationDate) {
+    public Ingredient(String name, double calories, double multiplicity, Date expirationDate) {
         super(name, calories, multiplicity);
         this.expirationDate = expirationDate != null ? expirationDate : new Date(Long.MAX_VALUE);
     }
