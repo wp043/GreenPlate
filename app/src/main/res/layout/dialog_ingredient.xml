@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="48dp">
+
+    <EditText
+        android:id="@+id/ingredient_name"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Ingredient Name" />
+
+    <EditText
+        android:id="@+id/ingredient_quantity"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Quantity"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/ingredient_calories"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Calories per Serving"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/ingredient_expiration"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Expiration Date (optional)"
+        android:focusable="false"
+        android:clickable="true"
+        android:cursorVisible="false"
+        android:inputType="none" />
+
+
+</LinearLayout>
