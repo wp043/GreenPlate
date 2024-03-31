@@ -93,18 +93,18 @@ public class RecipeFragment extends Fragment {
         // Demo recipe list
         ArrayList<Recipe> recipes = new ArrayList<>();
         // Add full test recipe 1
-        Map<Ingredient, Integer> ingredients1 = new HashMap<>();
-        ingredients1.put(new Ingredient("Bun"), 2);
-        ingredients1.put(new Ingredient("Hamburger Patty"), 1);
+        Map<Ingredient, Double> ingredients1 = new HashMap<>();
+        ingredients1.put(new Ingredient("Bun"), 2.0);
+        ingredients1.put(new Ingredient("Hamburger Patty"), 1.0);
         List<String> instructions1 = new ArrayList<>();
         instructions1.add("Grill hamburger patty.");
         instructions1.add("Put hamburger patty between buns.");
         Recipe fullRecipe1 = new Recipe("Hamburger", ingredients1, instructions1);
         recipes.add(fullRecipe1);
         // Add full test recipe 2
-        Map<Ingredient, Integer> ingredients2 = new HashMap<>();
-        ingredients2.put(new Ingredient("Bun"), 1);
-        ingredients2.put(new Ingredient("Sausage"), 1);
+        Map<Ingredient, Double> ingredients2 = new HashMap<>();
+        ingredients2.put(new Ingredient("Bun"), 1.0);
+        ingredients2.put(new Ingredient("Sausage"), 1.0);
         List<String> instructions2 = new ArrayList<>();
         instructions2.add("Grill sausage.");
         instructions2.add("Put sausage into bun.");

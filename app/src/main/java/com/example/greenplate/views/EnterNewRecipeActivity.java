@@ -154,14 +154,6 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         }
 
         // Add recipe via ViewModel
-        boolean submitSuccess = recipeViewModel.addRecipe(recipe); // This method needs to be properly defined in your ViewModel
-
-        if (submitSuccess) {
-            showToast("Recipe submitted successfully!");
-            finish(); // Go back to the main screen
-        } else {
-            showToast("Failed to submit the recipe. Please try again.");
-        }
     }
 
     private List<Ingredient> collectIngredients() {
