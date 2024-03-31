@@ -1,0 +1,9 @@
+{
+  "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle",
+  "editor.formatOnSave": true,
+  "spotlessGradle.format.enable": true,
+  "java.format.settings.url": "build.gradle",
+  "checkstyle.checkstylePath": "Checkstyle",
+  "checkstyle.configurationPath": "",
+  "java.checkstyle.configuration": "/Users/hannah/GT/CS 2340/cs2340_checks.xml"
+}
