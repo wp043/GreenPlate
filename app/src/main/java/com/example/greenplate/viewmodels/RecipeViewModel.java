@@ -1,13 +1,20 @@
 package com.example.greenplate.viewmodels;
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.lifecycle.ViewModel;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
+import com.example.greenplate.models.RetrievableItem;
+import com.example.greenplate.viewmodels.adapters.RecipesAdapter;
+import com.example.greenplate.viewmodels.listeners.OnDataRetrievedCallback;
+import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
 import com.example.greenplate.viewmodels.managers.CookbookManager;
 import com.example.greenplate.views.EnterNewRecipeActivity;
 
@@ -21,16 +28,23 @@ public class RecipeViewModel extends ViewModel {
 
     public RecipeViewModel() {
         cookbookManager = new CookbookManager();
+    }
 
+    public void addDefaultRecipes(Context context, RecyclerView rvRecipes) {
         // Add test recipe 1
         List<Ingredient> ingredients1 = new ArrayList<>();
         ingredients1.add(new Ingredient("Bun", 100, 2, null));
         ingredients1.add(new Ingredient("Hamburger Patty", 200, 1, null));
+        ingredients1.add(new Ingredient("Cheese Slice", 50, 1, null));
         List<String> instructions1 = new ArrayList<>();
         instructions1.add("Grill hamburger patty.");
+        instructions1.add("Put cheese slice onto hamburger.");
         instructions1.add("Put hamburger patty between buns.");
-        Recipe recipe1 = new Recipe("Hamburger", ingredients1, instructions1);
-        addRecipe(recipe1);
+        Recipe recipe1 = new Recipe("Cheeseburger", ingredients1, instructions1);
+        addRecipe(recipe1, success -> {
+            // Update RecyclerView
+            retrieveAndDisplayIngredients(context, rvRecipes);
+        });
 
         // Add test recipe 2
         List<Ingredient> ingredients2 = new ArrayList<>();
@@ -40,19 +54,22 @@ public class RecipeViewModel extends ViewModel {
         instructions2.add("Grill sausage.");
         instructions2.add("Put sausage into bun.");
         Recipe recipe2 = new Recipe("Hot dog", ingredients2, instructions2);
-        addRecipe(recipe2);
+        addRecipe(recipe2, success -> {
+            // Update RecyclerView
+            retrieveAndDisplayIngredients(context, rvRecipes);
+        });
     }
 
-    public void addRecipe(Recipe recipe) {
+    public void addRecipe(Recipe recipe, OnRecipeAddedListener listener) {
         // Check if recipe is already in Cookbook
         cookbookManager.isRecipeDuplicate(recipe, isDuplicate -> {
             if (isDuplicate) {
                 Log.d("Failed to add recipe", "RecipeViewModel: "
                         + recipe.getName() + " recipe already exists.");
-
             } else {
-                cookbookManager.addRecipe(recipe);
-                Log.d("Add recipe", "Successfully");
+                cookbookManager.addRecipe(recipe, success -> {
+                    listener.onRecipeAdded(success);
+                });
             }
         });
     }
@@ -80,5 +97,32 @@ public class RecipeViewModel extends ViewModel {
         }
 
         return new GreenPlateStatus(true, null);
+    }
+    /**
+     * get all recipes in the cookbook
+     * @param callback
+     */
+    public void getRecipes(OnDataRetrievedCallback callback) {
+        cookbookManager.retrieve(callback);
+    }
+
+
+    public void retrieveAndDisplayIngredients(Context context, RecyclerView rvRecipes) {
+        this.getRecipes(items -> {
+            List<Recipe> recipes = new ArrayList<>();
+            if (items != null) {
+                for (RetrievableItem item : items) {
+                    if (item instanceof Recipe) {
+                        Recipe recipe = (Recipe) item;
+                        recipes.add(recipe);
+                    }
+                }
+            }
+
+            // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
+            RecipesAdapter adapter = new RecipesAdapter(recipes);
+            rvRecipes.setAdapter(adapter);
+            rvRecipes.setLayoutManager(new LinearLayoutManager(context));
+        });
     }
 }

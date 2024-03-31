@@ -15,6 +15,7 @@ import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
 import com.example.greenplate.viewmodels.RecipeViewModel;
+import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
 import com.example.greenplate.viewmodels.managers.CookbookManager;
 
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
     private Button buttonAddIngredient;
     private Button submitRecipe;
     private EditText recipeNameEditText;
+    private OnRecipeAddedListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +113,7 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
 
         // Add the recipe to the Firebase Realtime Database
         CookbookManager cookbookManager = new CookbookManager();
-        cookbookManager.addRecipe(recipe);
+        cookbookManager.addRecipe(recipe, listener);
 
         // Show a success message and return to the RecipeFragment
         showToast("Recipe added successfully!");
