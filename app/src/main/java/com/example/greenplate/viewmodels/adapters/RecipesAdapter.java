@@ -79,11 +79,19 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
 
         // Set the text color and toast message based on the selection status
         if (holder.getAdapterPosition() == selectedPosition) {
-            holder.nameTextView.setTextColor(Color.rgb(50, 205, 50));
-            Toast.makeText(holder.itemView.getContext(),
-                            "View recipe " + recipe.getName(),
-                            Toast.LENGTH_SHORT)
-                    .show();
+            if ((availabilityTextView.getText()).toString().equals("Yes")) {
+                holder.nameTextView.setTextColor(Color.rgb(50, 205, 50));
+                Toast.makeText(holder.itemView.getContext(),
+                                "View recipe " + recipe.getName(),
+                                Toast.LENGTH_SHORT)
+                        .show();
+            } else {
+                holder.nameTextView.setTextColor(Color.rgb(220, 20, 60));
+                Toast.makeText(holder.itemView.getContext(),
+                                "Not Enough Ingredients",
+                                Toast.LENGTH_SHORT)
+                        .show();
+            }
         } else {
             holder.nameTextView.setTextColor(Color.BLACK);
         }
