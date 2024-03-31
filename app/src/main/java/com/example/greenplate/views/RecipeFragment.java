@@ -6,28 +6,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
-import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
-import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.RecipeViewModel;
-import com.example.greenplate.viewmodels.adapters.IngredientsAdapter;
 import com.example.greenplate.viewmodels.adapters.RecipesAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -99,6 +90,8 @@ public class RecipeFragment extends Fragment {
 
         recipeViewModel = new RecipeViewModel();
 
+        RecyclerView rvRecipes = (RecyclerView) view.findViewById(R.id.rvRecipes);
+
         SearchView recipeListSearchView = (SearchView) view.findViewById(R.id.recipeListSearchView);
         recipeListSearchView.clearFocus();
         recipeListSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -109,12 +102,11 @@ public class RecipeFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                filterList(newText);
+                recipeViewModel.retrieveAndDisplayFiltered(getContext(), rvRecipes, newText);
                 return true;
             }
         });
 
-        RecyclerView rvRecipes = (RecyclerView) view.findViewById(R.id.rvRecipes);
         recipeViewModel.addDefaultRecipes(getContext(), rvRecipes);
         recipeViewModel.retrieveAndDisplayIngredients(getContext(), rvRecipes);
 
@@ -128,43 +120,6 @@ public class RecipeFragment extends Fragment {
         });
     }
 
-    private void filterList(String newText) {
-        ArrayList<Recipe> filteredList = new ArrayList<>();
-
-        if (newText.isEmpty()) {
-            // If the search query is empty, show the original list
-            filteredList = new ArrayList<>(copyRecipes);
-        } else {
-            filteredList = new ArrayList<>();
-            for (Recipe recipeItem : copyRecipes) {
-                if (recipeItem.getName().toLowerCase().contains(newText.toLowerCase())) {
-                    filteredList.add(recipeItem);
-                }
-            }
-        }
-
-        if (filteredList.isEmpty()) {
-            Toast.makeText(getActivity(), "No matching recipes found", Toast.LENGTH_SHORT).show();
-        }
-        setFilteredList(filteredList);
-    }
-
-    private void setFilteredList (ArrayList<Recipe> filteredList) {
-        this.recipes = filteredList;
-        filteredList.sort((r1, r2) -> r1.getName().compareToIgnoreCase(r2.getName()));
-        RecyclerView rvRecipes = requireView().findViewById(R.id.rvRecipes);
-        adapter = new RecipesAdapter(filteredList);
-        rvRecipes.setAdapter(adapter);
-    }
-
-    public void sortByName(View view) {
-        // Sort the RecyclerView adapter by recipe name
-
-    }
-
-    public void sortByEnoughIngredients(View view) {
-        // Sort the RecyclerView adapter by whether the recipe has enough ingredients
-    }
 //    private void initializeRecipesIfNeeded() {
 //        recipeViewModel.initializeDefaultRecipesIfNeeded(getContext(), null);
 //    }

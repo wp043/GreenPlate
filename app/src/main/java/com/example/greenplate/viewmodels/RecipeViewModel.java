@@ -156,4 +156,40 @@ public class RecipeViewModel extends ViewModel {
             rvRecipes.setLayoutManager(new LinearLayoutManager(context));
         });
     }
+
+    public void retrieveAndDisplayFiltered(Context context, RecyclerView rvRecipes, String search) {
+        this.getRecipes(items -> {
+            List<Recipe> recipes = new ArrayList<>();
+            if (items != null) {
+                for (RetrievableItem item : items) {
+                    if (item instanceof Recipe) {
+                        Recipe recipe = (Recipe) item;
+                        recipes.add(recipe);
+                    }
+                }
+            }
+            // Filter from search
+            ArrayList<Recipe> filteredList = new ArrayList<>();
+            if (search.isEmpty()) {
+                // If the search query is empty, show the original list
+                filteredList = new ArrayList<>(recipes);
+            } else {
+                filteredList = new ArrayList<>();
+                for (Recipe recipeItem : recipes) {
+                    if (recipeItem.getName().toLowerCase().contains(search.toLowerCase())) {
+                        filteredList.add(recipeItem);
+                    }
+                }
+            }
+//            if (filteredList.isEmpty()) {
+//
+//            }
+            filteredList.sort((r1, r2) -> r1.getName().compareToIgnoreCase(r2.getName()));
+            // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
+            RecipesAdapter adapter = new RecipesAdapter(filteredList);
+            rvRecipes.setAdapter(adapter);
+            rvRecipes.setLayoutManager(new LinearLayoutManager(context));
+        });
+    }
+
 }
