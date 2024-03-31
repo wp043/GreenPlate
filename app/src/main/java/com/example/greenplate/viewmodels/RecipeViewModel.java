@@ -39,8 +39,10 @@ public class RecipeViewModel extends ViewModel {
         instructions1.add("Put hamburger patty between buns.");
         Recipe recipe1 = new Recipe("Cheeseburger", ingredients1, instructions1);
         addRecipe(recipe1, success -> {
-            // Update RecyclerView
-            retrieveAndDisplayIngredients(context, rvRecipes);
+            // Update RecyclerView if successful
+            if (success) {
+                retrieveAndDisplayIngredients(context, rvRecipes);
+            }
         });
 
         // Add test recipe 2
@@ -52,8 +54,10 @@ public class RecipeViewModel extends ViewModel {
         instructions2.add("Put sausage into bun.");
         Recipe recipe2 = new Recipe("Hot dog", ingredients2, instructions2);
         addRecipe(recipe2, success -> {
-            // Update RecyclerView
-            retrieveAndDisplayIngredients(context, rvRecipes);
+            // Update RecyclerView if successful
+            if (success) {
+                retrieveAndDisplayIngredients(context, rvRecipes);
+            }
         });
     }
 
