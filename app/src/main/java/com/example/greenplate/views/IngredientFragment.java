@@ -25,7 +25,6 @@ import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.IngredientViewModel;
 import com.example.greenplate.viewmodels.adapters.IngredientsAdapter;
 
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,8 +51,6 @@ public class IngredientFragment extends Fragment {
 
     private Button addButton;
     private Button editButton;
-
-
 
     public IngredientFragment() {
         ingredientVM = new IngredientViewModel();
@@ -88,10 +85,9 @@ public class IngredientFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_ingredient, container, false);
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -133,8 +129,7 @@ public class IngredientFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(
-                        getContext()
-                );
+                        getContext());
                 LayoutInflater inflater = requireActivity().getLayoutInflater();
                 View dialogView = inflater.inflate(R.layout.dialog_ingredient, null);
                 Log.d("TAG", "-1");
@@ -152,7 +147,7 @@ public class IngredientFragment extends Fragment {
                                 new DatePickerDialog.OnDateSetListener() {
                                     @Override
                                     public void onDateSet(DatePicker view,
-                                                          int year, int month, int dayOfMonth) {
+                                            int year, int month, int dayOfMonth) {
                                         String date = (month + 1) + "/" + dayOfMonth + "/" + year;
                                         expirationEditText.setText(date);
                                     }
@@ -180,7 +175,7 @@ public class IngredientFragment extends Fragment {
                                     int calories = Integer.parseInt(caloriesStr);
                                     String expiration = expirationEditText.getText().toString();
                                     Log.d("TAG", "1");
-                                    // change expiration string to date
+
                                     Date expirationDate = null;
                                     if (!expiration.isEmpty()) {
                                         try {
@@ -191,9 +186,8 @@ public class IngredientFragment extends Fragment {
                                             e.printStackTrace();
                                         }
                                     }
-                                    Ingredient newIngredient =
-                                            new Ingredient(name,
-                                                    calories, quantity, expirationDate);
+                                    Ingredient newIngredient = new Ingredient(name,
+                                            calories, quantity, expirationDate);
                                     Log.d("TAG", "2");
                                     ingredientVM.addIngredient(newIngredient, success -> {
                                         if (success) {
@@ -267,9 +261,9 @@ public class IngredientFragment extends Fragment {
                                 new DatePickerDialog.OnDateSetListener() {
                                     @Override
                                     public void onDateSet(DatePicker view,
-                                                          int year,
-                                                          int month,
-                                                          int dayOfMonth) {
+                                            int year,
+                                            int month,
+                                            int dayOfMonth) {
                                         String date = (month + 1) + "/" + dayOfMonth + "/" + year;
                                         expirationEditText.setText(date);
                                     }
@@ -314,9 +308,9 @@ public class IngredientFragment extends Fragment {
 
                                     Ingredient newIngredient =
                                             new Ingredient(name,
-                                                    calories,
-                                                    quantity,
-                                                    expirationDate);
+                                            calories,
+                                            quantity,
+                                            expirationDate);
 
                                     ingredientVM.updateIngredient(newIngredient, success -> {
                                         if (success) {
@@ -359,8 +353,6 @@ public class IngredientFragment extends Fragment {
                                             Toast.LENGTH_SHORT).show();
                                 }
 
-
-
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -373,6 +365,4 @@ public class IngredientFragment extends Fragment {
             }
         });
     }
-
-
 }

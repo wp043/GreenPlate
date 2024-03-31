@@ -41,7 +41,20 @@
             android:layout_height="wrap_content"
             android:text="Add Ingredient"
             android:layout_marginTop="8dp"/>
+        <LinearLayout
+            android:id="@+id/instructions_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!-- Instructions will be added dynamically here -->
+        </LinearLayout>
 
+        <Button
+            android:id="@+id/btn_add_instruction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Instruction"
+            android:layout_marginTop="8dp"/>
         <Button
             android:id="@+id/submit_recipe"
             android:layout_width="match_parent"
