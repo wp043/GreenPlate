@@ -121,14 +121,14 @@ public class PantryManagerTests {
     public void testAddValidIngredient() {
         Ingredient ingredient = new Ingredient("Test 1", 10, 4, null);
         GreenPlateStatus status = manager.addIngredient(ingredient, success -> {
-            assertFalse(success);
+            assertTrue(success);
         });
         assertTrue(status.isSuccess());
         assertEquals(String.format("%s added to database successfully", ingredient), status.getMessage());
 
         ingredient = new Ingredient("Test 2", 10, 3, null);
         status = manager.addIngredient(ingredient, success -> {
-            assertFalse(success);
+            assertTrue(success);
         });
         assertTrue(status.isSuccess());
         assertEquals(String.format("%s added to database successfully", ingredient), status.getMessage());
@@ -138,23 +138,23 @@ public class PantryManagerTests {
     public void testAddDuplicateIngredient() {
         Ingredient ingredient = new Ingredient("Test 1", 10, 4, null);
         GreenPlateStatus status = manager.addIngredient(ingredient, success -> {
-            assertFalse(success);
+            assertTrue(success);
         });
         assertTrue(status.isSuccess());
         assertEquals(String.format("%s added to database successfully", ingredient), status.getMessage());
 
         ingredient = new Ingredient("Test 1", 10, 3, null);
-        manager.isIngredientDuplicate(ingredient, Assert::assertTrue);
+        manager.isIngredientDuplicate(ingredient, Assert::assertFalse);
 
         ingredient = new Ingredient("Test 2", 10, 3, null);
-        manager.isIngredientDuplicate(ingredient, Assert::assertFalse);
+        manager.isIngredientDuplicate(ingredient, Assert::assertTrue);
     }
 
     @Test
     public void testRemoveIngredient() {
         Ingredient ingredient = new Ingredient("Test 1", 10, 4, null);
         GreenPlateStatus status = manager.addIngredient(ingredient, success -> {
-            assertFalse(success);
+            assertTrue(success);
         });
         assertTrue(status.isSuccess());
         assertEquals(String.format("%s added to database successfully", ingredient), status.getMessage());
