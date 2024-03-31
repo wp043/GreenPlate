@@ -23,9 +23,9 @@ public class RecipeViewModel extends ViewModel {
         cookbookManager = new CookbookManager();
 
         // Add test recipe 1
-        Map<Ingredient, Double> ingredients1 = new HashMap<>();
-        ingredients1.put(new Ingredient("Bun"), 2.0);
-        ingredients1.put(new Ingredient("Hamburger Patty"), 1.0);
+        List<Ingredient> ingredients1 = new ArrayList<>();
+        ingredients1.add(new Ingredient("Bun", 100, 2, null));
+        ingredients1.add(new Ingredient("Hamburger Patty", 200, 1, null));
         List<String> instructions1 = new ArrayList<>();
         instructions1.add("Grill hamburger patty.");
         instructions1.add("Put hamburger patty between buns.");
@@ -33,9 +33,9 @@ public class RecipeViewModel extends ViewModel {
         addRecipe(recipe1);
 
         // Add test recipe 2
-        Map<Ingredient, Double> ingredients2 = new HashMap<>();
-        ingredients2.put(new Ingredient("Bun"), 1.0);
-        ingredients2.put(new Ingredient("Sausage"), 1.0);
+        List<Ingredient> ingredients2 = new ArrayList<>();
+        ingredients2.add(new Ingredient("Bun", 100, 1, null));
+        ingredients2.add(new Ingredient("Sausage", 100, 1, null));
         List<String> instructions2 = new ArrayList<>();
         instructions2.add("Grill sausage.");
         instructions2.add("Put sausage into bun.");
@@ -57,29 +57,7 @@ public class RecipeViewModel extends ViewModel {
         });
     }
 
-//    public String validateIngredients(List<Ingredient> ingredients) {
-//        if (ingredients.isEmpty()) {
-//            return "At least one ingredient required";
-//        }
-//
-//        for (Ingredient ingredient : ingredients) {
-//            if (ingredient.getName().trim().isEmpty()) {
-//                return "Must have a name for the ingredient";
-//            }
-//
-//            if (ingredient.getMultiplicity() <= 0) {
-//                return "A positive quantity required";
-//            }
-//
-//            if (ingredient.getCalories() < 0) {
-//                return "Non-negative calorie required";
-//            }
-//        }
-//
-//        // If all validations pass
-//        return null; // null indicates no error
-//    }
-    public GreenPlateStatus validateRecipeData(String recipeName, List<String> instructions, Map<Ingredient, Double> ingredients) {
+    public GreenPlateStatus validateRecipeData(String recipeName, List<String> instructions, List<Ingredient> ingredients) {
         if (recipeName.trim().isEmpty()) {
             return new GreenPlateStatus(false, "Recipe name cannot be empty");
         }
@@ -88,11 +66,13 @@ public class RecipeViewModel extends ViewModel {
             return new GreenPlateStatus(false, "At least one instruction is required");
         }
 
-        boolean hasValidIngredient = false;
-        for (Ingredient ingredient : ingredients.keySet()) {
-            if (!ingredient.getName().trim().isEmpty() && ingredients.get(ingredient) > 0) {
-                hasValidIngredient = true;
+        boolean hasValidIngredient = true;
+        int index = 0;
+        for (Ingredient ingredient : ingredients) {
+            if (ingredient.getName().trim().isEmpty() || ingredients.get(index).getMultiplicity() <= 0) {
+                hasValidIngredient = false;
             }
+            index++;
         }
 
         if (!hasValidIngredient) {

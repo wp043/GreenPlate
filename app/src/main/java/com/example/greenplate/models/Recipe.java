@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Recipe extends RetrievableItem {
-    private Map<Ingredient, Double> ingredients;
+    private List<Ingredient> ingredients;
     private List<String> instructions;
 
     /**
@@ -18,7 +18,7 @@ public class Recipe extends RetrievableItem {
      * @param instructions - list of instructions for the recipe
      */
     public Recipe(String name,
-                  Map<Ingredient, Double> ingredients, List<String> instructions) {
+                  List<Ingredient> ingredients, List<String> instructions) {
         super(name, Recipe.calculateTotalCalorie(ingredients), 1);
         this.ingredients = ingredients;
         this.instructions = instructions;
@@ -29,25 +29,24 @@ public class Recipe extends RetrievableItem {
      * @param name - name of recipe
      */
     public Recipe(String name) {
-        this(name, new HashMap<>(), new ArrayList<>());
+        this(name, new ArrayList<>(), new ArrayList<>());
     }
 
     /**
      * Add an ingredient to the ingredients map.
      * @param ingredient - the ingredient to add
-     * @param multiplicity - the multiplicity to update
      * @return whether the operation succeeds
      */
-    public GreenPlateStatus addIngredient(Ingredient ingredient, double multiplicity) {
+    public GreenPlateStatus addIngredient(Ingredient ingredient) {
         if (ingredient == null) {
             return new GreenPlateStatus(false,
                     "Can't add null to a recipe");
         }
-        if (multiplicity <= 0) {
+        if (ingredient.getMultiplicity() <= 0) {
             return new GreenPlateStatus(false,
                     "Can't add an ingredient with non-positive multiplicity.");
         }
-        this.ingredients.put(ingredient, multiplicity);
+        this.ingredients.add(ingredient);
         return new GreenPlateStatus(true,
                 String.format("Successfully added %s to a recipe", ingredient));
     }
@@ -57,9 +56,9 @@ public class Recipe extends RetrievableItem {
      * @param ingredients - map of ingredients
      * @return total calorie of all ingredients in the map
      */
-    private static double calculateTotalCalorie(Map<Ingredient, Double> ingredients) {
-        return ingredients.entrySet().stream()
-                .mapToDouble(entry -> entry.getKey().getCalories() * entry.getValue())
+    private static double calculateTotalCalorie(List<Ingredient> ingredients) {
+        return ingredients.stream()
+                .mapToDouble(entry -> entry.getCalories() * entry.getMultiplicity())
                 .sum();
     }
 
@@ -73,7 +72,7 @@ public class Recipe extends RetrievableItem {
             return new GreenPlateStatus(false,
                     "Can't remove null from a recipe");
         }
-        if (!this.ingredients.containsKey(ingredient)) {
+        if (!this.ingredients.contains(ingredient)) {
             return new GreenPlateStatus(false,
                     "Can't remove a non-existing ingredient from a recipe");
         }
@@ -93,11 +92,20 @@ public class Recipe extends RetrievableItem {
             return new GreenPlateStatus(false,
                     "Can't update null in a recipe");
         }
-        if (!this.ingredients.containsKey(ingredient)) {
+        if (!this.ingredients.contains(ingredient)) {
             return new GreenPlateStatus(false,
                     "Can't update a non-existing ingredient in a recipe");
         }
-        double oldMult = this.ingredients.put(ingredient, multiplicity);
+        int index = 0;
+        for (Ingredient i : this.ingredients) {
+            if (!i.equals(ingredient)) {
+                index++;
+            } else {
+                break;
+            }
+        }
+        double oldMult = this.ingredients.get(index).getMultiplicity();
+        this.ingredients.get(index).setMultiplicity(multiplicity);
         return new GreenPlateStatus(true,
                 String.format("Update multiplicity of %s from %d to %d",
                 ingredient, oldMult, multiplicity));
@@ -141,7 +149,7 @@ public class Recipe extends RetrievableItem {
      * Getter for ingredient map.
      * @return a map containing ingredients and their multiplicities of the recipe
      */
-    public Map<Ingredient, Double> getIngredients() {
+    public List<Ingredient> getIngredients() {
         return ingredients;
     }
 

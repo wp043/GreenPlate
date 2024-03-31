@@ -90,46 +90,6 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         }
     }
 
-//    private void submitRecipe() {
-//        String recipeNameStr = recipeNameEditText.getText().toString().trim();
-//        EditText recipeInstructionsEditText = findViewById(R.id.recipe_instructions);
-//        String recipeInstructionsStr = recipeInstructionsEditText.getText().toString().trim();
-//
-//        // Check if at least one ingredient has a valid name and quantity
-//        boolean hasValidIngredient = false;
-//        Map<Ingredient, Double> ingredients = new HashMap<>();
-//        for (int i = 0; i < ingredientsContainer.getChildCount(); i++) {
-//            View ingredientView = ingredientsContainer.getChildAt(i);
-//            EditText ingredientNameEditText = ingredientView.findViewById(R.id.ingredientName);
-//            EditText ingredientQuantityEditText = ingredientView.findViewById(R.id.ingredientQuantity);
-//
-//            String ingredientName = ingredientNameEditText.getText().toString().trim();
-//            double ingredientQuantity = Double.parseDouble(ingredientQuantityEditText.getText().toString());
-//
-//            if (!ingredientName.isEmpty() && ingredientQuantity > 0) {
-//                ingredients.put(new Ingredient(ingredientName), ingredientQuantity);
-//                hasValidIngredient = true;
-//            }
-//        }
-//
-//        if (!hasValidIngredient) {
-//            showToast("Please enter at least one ingredient with a valid name and quantity");
-//            return;
-//        }
-//
-//        // Create a new Recipe object
-//        List<String> instructions = new ArrayList<>();
-//        instructions.add(recipeInstructionsStr); // Add instructions (you may need to split by newline)
-//        Recipe recipe = new Recipe(recipeNameStr, ingredients, instructions);
-//
-//        // Add the recipe to the Firebase Realtime Database
-//        CookbookManager cookbookManager = new CookbookManager();
-//        cookbookManager.addRecipe(recipe);
-//
-//        // Show a success message and return to the RecipeFragment
-//        showToast("Recipe added successfully!");
-//        finish();
-//    }
     private void submitRecipe() {
         String recipeNameStr = recipeNameEditText.getText().toString().trim();
         EditText recipeInstructionsEditText = findViewById(R.id.recipe_instructions);
@@ -140,14 +100,9 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
 
         List<Ingredient> ingredients = collectIngredients();
 
-        // Create a new Recipe object
-        Map<Ingredient, Double> ingredientsMap = new HashMap<>();
-        for (Ingredient ingredient : ingredients) {
-            ingredientsMap.put(ingredient, ingredient.getMultiplicity());
-        }
-        Recipe recipe = new Recipe(recipeNameStr, ingredientsMap, instructions);
+        Recipe recipe = new Recipe(recipeNameStr, ingredients, instructions);
 
-        GreenPlateStatus validationStatus = recipeViewModel.validateRecipeData(recipeNameStr, instructions, ingredientsMap);
+        GreenPlateStatus validationStatus = recipeViewModel.validateRecipeData(recipeNameStr, instructions, ingredients);
 
         if (!validationStatus.isSuccess()) {
             showToast(validationStatus.getMessage());
