@@ -12,46 +12,45 @@ import com.example.greenplate.viewmodels.listeners.OnIngredientUpdatedListener;
 import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
 import com.example.greenplate.viewmodels.managers.PantryManager;
 
-
 public class IngredientViewModel extends ViewModel {
     private PantryManager pantryManager;
 
     /*
-        Test w/o UI: insert in the constructor to test
-        pantryManager.retrieve(items -> {
-            if (items != null) {
-                Log.d("Items", items.toString());
-            }
-        });
-        Calendar calendar = Calendar.getInstance();
-
-        // Set the year, month, and day
-        calendar.set(Calendar.YEAR, 2024);
-        calendar.set(Calendar.MONTH, Calendar.MARCH);
-        calendar.set(Calendar.DAY_OF_MONTH, 21);
-
-        // Set the hour, minute, second, and millisecond to zero
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-
-        Ingredient newIngredient = new Ingredient(
-                "Test Ingredient 2",
-                125,
-                2,
-                calendar.getTime()
-        );
-        Ingredient updatedIngredient = new Ingredient(
-                "Test Ingredient",
-                125,
-                3,
-                calendar.getTime()
-        );
-        addIngredient(newIngredient);
-        addIngredient(updatedIngredient);
-        updateIngredient(updatedIngredient);
-        removeIngredient(updatedIngredient);
+     * Test w/o UI: insert in the constructor to test
+     * pantryManager.retrieve(items -> {
+     * if (items != null) {
+     * Log.d("Items", items.toString());
+     * }
+     * });
+     * Calendar calendar = Calendar.getInstance();
+     * 
+     * // Set the year, month, and day
+     * calendar.set(Calendar.YEAR, 2024);
+     * calendar.set(Calendar.MONTH, Calendar.MARCH);
+     * calendar.set(Calendar.DAY_OF_MONTH, 21);
+     * 
+     * // Set the hour, minute, second, and millisecond to zero
+     * calendar.set(Calendar.HOUR_OF_DAY, 0);
+     * calendar.set(Calendar.MINUTE, 0);
+     * calendar.set(Calendar.SECOND, 0);
+     * calendar.set(Calendar.MILLISECOND, 0);
+     * 
+     * Ingredient newIngredient = new Ingredient(
+     * "Test Ingredient 2",
+     * 125,
+     * 2,
+     * calendar.getTime()
+     * );
+     * Ingredient updatedIngredient = new Ingredient(
+     * "Test Ingredient",
+     * 125,
+     * 3,
+     * calendar.getTime()
+     * );
+     * addIngredient(newIngredient);
+     * addIngredient(updatedIngredient);
+     * updateIngredient(updatedIngredient);
+     * removeIngredient(updatedIngredient);
      */
 
     /**
@@ -61,17 +60,18 @@ public class IngredientViewModel extends ViewModel {
         pantryManager = new PantryManager();
     }
 
-    // TODO: This method can take a UI component as extra input, which will be updated accordingly.
-//    public void addIngredient(Ingredient ingredient) {
-//        pantryManager.isIngredientDuplicate(ingredient, isDuplicate -> {
-//            if (isDuplicate) {
-//                Log.d("Information", "Duplicate found");
-//            } else {
-//                pantryManager.addIngredient(ingredient);
-//                Log.d("Information", "Ingredient added");
-//            }
-//        });
-//    }
+
+    // updated accordingly.
+    // public void addIngredient(Ingredient ingredient) {
+    // pantryManager.isIngredientDuplicate(ingredient, isDuplicate -> {
+    // if (isDuplicate) {
+    // Log.d("Information", "Duplicate found");
+    // } else {
+    // pantryManager.addIngredient(ingredient);
+    // Log.d("Information", "Ingredient added");
+    // }
+    // });
+    // }
     public void addIngredient(Ingredient ingredient, OnIngredientUpdatedListener listener) {
         pantryManager.isIngredientDuplicate(ingredient, isDuplicate -> {
             if (isDuplicate) {
@@ -79,10 +79,10 @@ public class IngredientViewModel extends ViewModel {
                 listener.onIngredientUpdated(false);
             } else {
                 pantryManager.addIngredient(ingredient, success -> {
-                    if (success){
+                    if (success) {
                         Log.d("Information", "Ingredient added");
                         listener.onIngredientUpdated(true);
-                    } else{
+                    } else {
                         listener.onIngredientUpdated(false);
                     }
                 });
@@ -91,7 +91,8 @@ public class IngredientViewModel extends ViewModel {
         });
     }
 
-    // TODO: This method can take a UI component as extra input, which will be updated accordingly.
+
+    // updated accordingly.
     public void updateIngredient(Ingredient ingredient, OnIngredientUpdatedListener listener) {
         pantryManager.updateIngredientMultiplicity(ingredient, new OnMultiplicityUpdateListener() {
             @Override
@@ -109,7 +110,7 @@ public class IngredientViewModel extends ViewModel {
     }
 
 
-    // TODO: This method can take a UI component as extra input, which will be updated accordingly.
+    // updated accordingly.
     public void removeIngredient(Ingredient ingredient) {
         pantryManager.removeIngredient(ingredient, new OnIngredientRemoveListener() {
             @Override
@@ -126,9 +127,10 @@ public class IngredientViewModel extends ViewModel {
 
     /**
      * get all ingredients in the pantry
-     * @param callback
+     * 
+     * @param callback callback
      */
-    public void getIngredients(OnDataRetrievedCallback callback){
+    public void getIngredients(OnDataRetrievedCallback callback) {
         pantryManager.retrieve(callback);
 
     }

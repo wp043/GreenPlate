@@ -32,7 +32,6 @@ public class PantryManager implements Manager {
     private DatabaseReference myRef;
     private FirebaseUser currentUser;
 
-
     /**
      * Constructor for PantryManager.
      */
@@ -90,10 +89,14 @@ public class PantryManager implements Manager {
 
     /**
      * Add an ingredient to the database.
+     * 
      * @param ingredient - the ingredient to add
+     * @param listener - listener
      * @return the status of the operation
+     *
      */
-    public GreenPlateStatus addIngredient(Ingredient ingredient, OnIngredientUpdatedListener listener) {
+    public GreenPlateStatus addIngredient(Ingredient ingredient, OnIngredientUpdatedListener
+            listener) {
         if (ingredient == null) {
             listener.onIngredientUpdated(false);
             return new GreenPlateStatus(false, "Can't add a null ingredient.");
@@ -108,7 +111,7 @@ public class PantryManager implements Manager {
                     "Can't add a ingredient with non-positive calorie.");
         }
         if (ingredient.getMultiplicity() <= 0) {
-               listener.onIngredientUpdated(false);
+            listener.onIngredientUpdated(false);
             return new GreenPlateStatus(false,
                     "Can't add a ingredient with non-positive multiplicity.");
         }
@@ -134,11 +137,11 @@ public class PantryManager implements Manager {
                 String.format("%s added to database successfully", ingredient));
     }
 
-
     /**
      * Check whether the input ingredient is duplicate.
+     * 
      * @param ingredient - the ingredient to check
-     * @param listener - the listener to update
+     * @param listener   - the listener to update
      */
     public void isIngredientDuplicate(Ingredient ingredient, OnDuplicateCheckListener listener) {
         retrieve(items -> {
@@ -155,23 +158,22 @@ public class PantryManager implements Manager {
 
     /**
      * Update the multiplicity of the input ingredient.
+     * 
      * @param ingredient - the ingredient to update
-     * @param listener - the listener to update
+     * @param listener   - the listener to update
      */
     public void updateIngredientMultiplicity(Ingredient ingredient,
-                                             OnMultiplicityUpdateListener listener) {
+            OnMultiplicityUpdateListener listener) {
         if (ingredient == null) {
             listener.onMultiplicityUpdateFailure(
-                    new GreenPlateStatus(false, "Can't update null ingredient.")
-            );
+                    new GreenPlateStatus(false, "Can't update null ingredient."));
             return;
         }
 
         if (ingredient.getMultiplicity() < 0) {
             listener.onMultiplicityUpdateFailure(
                     new GreenPlateStatus(false,
-                            "Can't update ingredient with negative multiplicity.")
-            );
+                            "Can't update ingredient with negative multiplicity."));
             return;
         }
 
@@ -216,8 +218,7 @@ public class PantryManager implements Manager {
                                                 String.format("Successful update %s.",
                                                         ingredient))))
                                 .addOnFailureListener(e -> listener.onMultiplicityUpdateFailure(
-                                        new GreenPlateStatus(false, e.getMessage()
-                                        )));
+                                        new GreenPlateStatus(false, e.getMessage())));
                         ingredientFound = true;
                         break;
                     }
@@ -225,24 +226,23 @@ public class PantryManager implements Manager {
                 if (!ingredientFound) {
                     listener.onMultiplicityUpdateFailure(
                             new GreenPlateStatus(false,
-                                    "Can't find the ingredient to update")
-                    );
+                                    "Can't find the ingredient to update"));
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 listener.onMultiplicityUpdateFailure(
-                        new GreenPlateStatus(false, "Issue with DB Query")
-                );
+                        new GreenPlateStatus(false, "Issue with DB Query"));
             }
         });
     }
 
     /**
      * Remove the input ingredient from the db.
+     * 
      * @param ingredient - the ingredient to remove
-     * @param listener - the listener to update
+     * @param listener   - the listener to update
      */
     public void removeIngredient(Ingredient ingredient, OnIngredientRemoveListener listener) {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
@@ -264,16 +264,12 @@ public class PantryManager implements Manager {
                             && expirationDateString.equals(formattedDate)) {
                         String key = childSnapshot.getKey();
                         myRef.child(key).removeValue()
-                            .addOnSuccessListener(e -> listener.onIngredientRemoveSuccess(
-                                            new GreenPlateStatus(true,
-                                                    String.format("Successfully removed %s",
-                                                            ingredient))
-                                    )
-                            ).addOnFailureListener(e ->
-                                    listener.onIngredientRemoveFailure(
-                                            new GreenPlateStatus(false, e.getMessage())
-                                    )
-                            );
+                                .addOnSuccessListener(e -> listener.onIngredientRemoveSuccess(
+                                        new GreenPlateStatus(true,
+                                                String.format("Successfully removed %s",
+                                                        ingredient))))
+                                .addOnFailureListener(e -> listener.onIngredientRemoveFailure(
+                                        new GreenPlateStatus(false, e.getMessage())));
                         ingredientFound = true;
                         break;
                     }
