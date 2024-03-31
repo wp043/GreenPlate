@@ -42,7 +42,7 @@ public class RecipeViewModel extends ViewModel {
         instructions1.add("Put cheese slice onto hamburger.");
         instructions1.add("Put hamburger patty between buns.");
         Recipe recipe1 = new Recipe("Cheeseburger", ingredients1, instructions1);
-        addRecipe(recipe1, success -> {
+        addRecipe(recipe1, context, rvRecipes, success -> {
             // Update RecyclerView
             retrieveAndDisplayIngredients(context, rvRecipes);
         });
@@ -55,14 +55,14 @@ public class RecipeViewModel extends ViewModel {
         instructions2.add("Grill sausage.");
         instructions2.add("Put sausage into bun.");
         Recipe recipe2 = new Recipe("Hot dog", ingredients2, instructions2);
-        addRecipe(recipe2, success -> {
+        addRecipe(recipe2, context, rvRecipes, success -> {
             // Update RecyclerView
             retrieveAndDisplayIngredients(context, rvRecipes);
         });
         defaultRecipesInitialized = true;
     }
 
-    public void addRecipe(Recipe recipe, OnRecipeAddedListener listener) {
+    public void addRecipe(Recipe recipe, Context context, RecyclerView rvRecipes, OnRecipeAddedListener listener) {
         if (recipe.getName() == null) {
             listener.onRecipeAdded(false);
             return;
@@ -88,6 +88,7 @@ public class RecipeViewModel extends ViewModel {
                     @Override
                     public void onRecipeAdded(boolean success) {
                         listener.onRecipeAdded(success);
+                        retrieveAndDisplayIngredients(context, rvRecipes);
                     }
                 });
             }

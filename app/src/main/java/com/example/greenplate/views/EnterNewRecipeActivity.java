@@ -23,8 +23,10 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class EnterNewRecipeActivity extends AppCompatActivity {
 
@@ -135,7 +137,8 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         }
 
         Recipe recipe = new Recipe(recipeNameStr, ingredients, instructions);
-        recipeViewModel.addRecipe(recipe, new OnRecipeAddedListener() {
+
+        recipeViewModel.addRecipe(recipe, context, rvRecipes, new OnRecipeAddedListener() {
             @Override
             public void onRecipeAdded(boolean success) {
                 if (success) {
@@ -150,6 +153,7 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
 
     private List<Ingredient> collectIngredients() {
         List<Ingredient> ingredients = new ArrayList<>();
+        Set<String> ingredientNames = new HashSet<>();
         for (int i = 0; i < ingredientsContainer.getChildCount(); i++) {
             View ingredientView = ingredientsContainer.getChildAt(i);
             EditText ingredientNameEditText = ingredientView.findViewById(R.id.ingredientName);
@@ -167,8 +171,14 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
                     double ingredientQuantity = Double.parseDouble(quantityStr);
                     double ingredientCalorie = Double.parseDouble(caloriesStr);
                     if (ingredientQuantity > 0) {
-                        ingredients.add(new Ingredient(ingredientName, ingredientCalorie,
-                                ingredientQuantity, null));
+                        if (ingredientNames.contains(ingredientName)) {
+                            showToast("Duplicate ingredient: " + ingredientName
+                                    + ". Please remove the duplicate.");
+                            return null;
+                        } else {
+                            ingredients.add(new Ingredient(ingredientName, ingredientCalorie, ingredientQuantity, null));
+                            ingredientNames.add(ingredientName);
+                        }
                     }
                 } catch (NumberFormatException e) {
                     Log.e("EnterNewRecipeActivity", "Invalid number format", e);
