@@ -90,11 +90,12 @@ public class RecipeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
+        recipeViewModel = new RecipeViewModel();
         RecyclerView rvRecipes = view.findViewById(R.id.rvRecipes);
 
         // Moved initialization logic to another method
-        initializeRecipesIfNeeded();
+        //initializeRecipesIfNeeded();
+        recipeViewModel.addDefaultRecipes(getContext(), rvRecipes);
         recipeViewModel.retrieveAndDisplayIngredients(getContext(), rvRecipes);
 
         Button addRecipeButton = view.findViewById(R.id.btnEnterNewRecipe);
@@ -107,7 +108,7 @@ public class RecipeFragment extends Fragment {
         });
     }
 
-    private void initializeRecipesIfNeeded() {
-        recipeViewModel.initializeDefaultRecipesIfNeeded(getContext(), null);
-    }
+//    private void initializeRecipesIfNeeded() {
+//        recipeViewModel.initializeDefaultRecipesIfNeeded(getContext(), null);
+//    }
 }

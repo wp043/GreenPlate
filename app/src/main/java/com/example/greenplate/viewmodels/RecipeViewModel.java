@@ -62,51 +62,38 @@ public class RecipeViewModel extends ViewModel {
         defaultRecipesInitialized = true;
     }
 
-    public void initializeDefaultRecipesIfNeeded(Context context, RecyclerView rvRecipes) {
-        if (!defaultRecipesInitialized) {
-            addDefaultRecipes(context, rvRecipes);
-            defaultRecipesInitialized = true;
-        }
-    }
-
-//    public void addRecipe(Recipe recipe, OnRecipeAddedListener listener) {
-//        // Check if recipe is already in Cookbook
-//        cookbookManager.isRecipeDuplicate(recipe, isDuplicate -> {
-//            if (isDuplicate) {
-//                Log.d("Failed to add recipe", "RecipeViewModel: "
-//                        + recipe.getName() + " recipe already exists.");
-//            } else {
-//                cookbookManager.addRecipe(recipe, success -> {
-//                    listener.onRecipeAdded(success);
-//                });
-//            }
-//        });
+//    public void initializeDefaultRecipesIfNeeded(Context context, RecyclerView rvRecipes) {
+//        if (!defaultRecipesInitialized) {
+//            addDefaultRecipes(context, rvRecipes);
+//            defaultRecipesInitialized = true;
+//        }
 //    }
+
     public void addRecipe(Recipe recipe, OnRecipeAddedListener listener) {
+        if (recipe.getName() == null) {
+            listener.onRecipeAdded(false);
+            return;
+        }
         if (recipe.getIngredients().isEmpty()) {
             listener.onRecipeAdded(false);
-            return; // No ingredients, so we do not proceed further.
+            return;
         }
 
-        // Further validation for each ingredient can be added here as needed.
         for (Ingredient ingredient : recipe.getIngredients()) {
             if (ingredient.getName() == null || ingredient.getName().trim().isEmpty() ||
                     ingredient.getMultiplicity() <= 0 || ingredient.getCalories() < 0) {
                 listener.onRecipeAdded(false);
-                return; // Invalid ingredient details, so we do not proceed further.
+                return;
             }
         }
 
         cookbookManager.isRecipeDuplicate(recipe, isDuplicate -> {
             if (isDuplicate) {
-                // Notify via listener that recipe is a duplicate
                 listener.onRecipeAdded(false);
             } else {
-                // Proceed to add the recipe since it's not a duplicate
                 cookbookManager.addRecipe(recipe, new OnRecipeAddedListener() {
                     @Override
                     public void onRecipeAdded(boolean success) {
-                        // Forward the result from CookbookManager
                         listener.onRecipeAdded(success);
                     }
                 });

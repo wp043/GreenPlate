@@ -118,6 +118,8 @@ public class CookbookManager implements Manager {
                         .setValue(ingredient.getName());
                 ingredientsRef.child(ingredientKey).child("quantity")
                         .setValue((double) ingredient.getMultiplicity());
+                ingredientsRef.child(ingredientKey).child("calories")
+                        .setValue(ingredient.getCalories());
             }
 
             DatabaseReference instructionsRef = recipeRef.child("instructions");
@@ -136,7 +138,7 @@ public class CookbookManager implements Manager {
         }
         listener.onRecipeAdded(true);
         return new GreenPlateStatus(true,
-                String.format("%s added to database successfully", recipe));
+                String.format("%s recipe added to database successfully", recipe));
     }
 
     /**

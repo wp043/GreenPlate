@@ -126,7 +126,6 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         }
         List<String> instructions = collectInstructions();
 
-
         // Validate each ingredient
         GreenPlateStatus status = recipeViewModel.validateRecipeData(
                 recipeNameStr, instructions, ingredients);
@@ -135,7 +134,7 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
             return;
         }
 
-        Recipe recipe = new Recipe(recipeNameStr, ingredients, new ArrayList<>());
+        Recipe recipe = new Recipe(recipeNameStr, ingredients, instructions);
         recipeViewModel.addRecipe(recipe, new OnRecipeAddedListener() {
             @Override
             public void onRecipeAdded(boolean success) {
@@ -186,11 +185,11 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         LinearLayout instructionsContainer = findViewById(R.id.instructions_container);
         for (int i = 0; i < instructionsContainer.getChildCount(); i++) {
             View view = instructionsContainer.getChildAt(i);
-            if (view instanceof EditText) {
-                String instruction = ((EditText) view).getText().toString().trim();
-                if (!instruction.isEmpty()) {
-                    instructions.add(instruction);
-                }
+            EditText instructionEditText = view.findViewById(R.id.recipe_instruction);
+
+            String inst = instructionEditText.getText().toString().trim();
+            if (!inst.isEmpty()) {
+                instructions.add(inst);
             }
         }
         return instructions;
