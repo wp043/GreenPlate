@@ -16,11 +16,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
+import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
 import com.example.greenplate.viewmodels.RecipeViewModel;
 import com.example.greenplate.viewmodels.adapters.RecipesAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -110,10 +114,29 @@ public class RecipeFragment extends Fragment {
         RecyclerView rvRecipes = (RecyclerView) view.findViewById(R.id.rvRecipes);
 
         // Demo recipe list
-        recipes = new ArrayList<>();
-        Recipe recipe1 = new Recipe("Hamburger");
+        ArrayList<Recipe> recipes = new ArrayList<>();
+        // Add full test recipe 1
+        Map<Ingredient, Integer> ingredients1 = new HashMap<>();
+        ingredients1.put(new Ingredient("Bun"), 2);
+        ingredients1.put(new Ingredient("Hamburger Patty"), 1);
+        List<String> instructions1 = new ArrayList<>();
+        instructions1.add("Grill hamburger patty.");
+        instructions1.add("Put hamburger patty between buns.");
+        Recipe fullRecipe1 = new Recipe("Hamburger", ingredients1, instructions1);
+        recipes.add(fullRecipe1);
+        // Add full test recipe 2
+        Map<Ingredient, Integer> ingredients2 = new HashMap<>();
+        ingredients2.put(new Ingredient("Bun"), 1);
+        ingredients2.put(new Ingredient("Sausage"), 1);
+        List<String> instructions2 = new ArrayList<>();
+        instructions2.add("Grill sausage.");
+        instructions2.add("Put sausage into bun.");
+        Recipe fullRecipe2 = new Recipe("Hot dog", ingredients2, instructions2);
+        recipes.add(fullRecipe2);
+        // Add dummy recipes
+        Recipe recipe1 = new Recipe("Milkshake");
         Recipe recipe2 = new Recipe("Fries");
-        Recipe recipe3 = new Recipe("Hot Dog");
+        Recipe recipe3 = new Recipe("Chicken Noodle Soup");
         Recipe recipe4 = new Recipe("Steak");
         Recipe recipe5 = new Recipe("Pasta");
         Recipe recipe6 = new Recipe("Soup");
@@ -139,6 +162,7 @@ public class RecipeFragment extends Fragment {
         adapter = new RecipesAdapter(recipes);
         rvRecipes.setAdapter(adapter);
         rvRecipes.setLayoutManager(new LinearLayoutManager(view.getContext()));
+
 
         Button addRecipeButton = view.findViewById(R.id.btnEnterNewRecipe);
         addRecipeButton.setOnClickListener(new View.OnClickListener() {

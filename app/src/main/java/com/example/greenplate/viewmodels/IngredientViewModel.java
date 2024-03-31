@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
+import com.example.greenplate.viewmodels.listeners.OnDataRetrievedCallback;
 import com.example.greenplate.viewmodels.listeners.OnIngredientRemoveListener;
+import com.example.greenplate.viewmodels.listeners.OnIngredientUpdatedListener;
 import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
 import com.example.greenplate.viewmodels.managers.PantryManager;
 
@@ -60,31 +62,52 @@ public class IngredientViewModel extends ViewModel {
     }
 
     // TODO: This method can take a UI component as extra input, which will be updated accordingly.
-    public void addIngredient(Ingredient ingredient) {
+//    public void addIngredient(Ingredient ingredient) {
+//        pantryManager.isIngredientDuplicate(ingredient, isDuplicate -> {
+//            if (isDuplicate) {
+//                Log.d("Information", "Duplicate found");
+//            } else {
+//                pantryManager.addIngredient(ingredient);
+//                Log.d("Information", "Ingredient added");
+//            }
+//        });
+//    }
+    public void addIngredient(Ingredient ingredient, OnIngredientUpdatedListener listener) {
         pantryManager.isIngredientDuplicate(ingredient, isDuplicate -> {
             if (isDuplicate) {
                 Log.d("Information", "Duplicate found");
+                listener.onIngredientUpdated(false);
             } else {
-                pantryManager.addIngredient(ingredient);
-                Log.d("Information", "Ingredient added");
+                pantryManager.addIngredient(ingredient, success -> {
+                    if (success){
+                        Log.d("Information", "Ingredient added");
+                        listener.onIngredientUpdated(true);
+                    } else{
+                        listener.onIngredientUpdated(false);
+                    }
+                });
+
             }
         });
     }
 
     // TODO: This method can take a UI component as extra input, which will be updated accordingly.
-    public void updateIngredient(Ingredient ingredient) {
+    public void updateIngredient(Ingredient ingredient, OnIngredientUpdatedListener listener) {
         pantryManager.updateIngredientMultiplicity(ingredient, new OnMultiplicityUpdateListener() {
             @Override
             public void onMultiplicityUpdateSuccess(GreenPlateStatus status) {
                 Log.d("Success", status.getMessage());
+                listener.onIngredientUpdated(true);
             }
 
             @Override
             public void onMultiplicityUpdateFailure(GreenPlateStatus status) {
                 Log.d("Failure", status.getMessage());
+                listener.onIngredientUpdated(false);
             }
         });
     }
+
 
     // TODO: This method can take a UI component as extra input, which will be updated accordingly.
     public void removeIngredient(Ingredient ingredient) {
@@ -99,5 +122,14 @@ public class IngredientViewModel extends ViewModel {
                 Log.d("Failure", status.getMessage());
             }
         });
+    }
+
+    /**
+     * get all ingredients in the pantry
+     * @param callback
+     */
+    public void getIngredients(OnDataRetrievedCallback callback){
+        pantryManager.retrieve(callback);
+
     }
 }
