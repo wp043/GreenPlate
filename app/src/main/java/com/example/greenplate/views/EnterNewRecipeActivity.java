@@ -11,14 +11,19 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.greenplate.R;
+import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
 import com.example.greenplate.viewmodels.RecipeViewModel;
+import com.example.greenplate.viewmodels.managers.CookbookManager;
+
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EnterNewRecipeActivity extends AppCompatActivity {
 
@@ -38,7 +43,7 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         ingredientsContainer = findViewById(R.id.ingredients_container);
         buttonAddIngredient = findViewById(R.id.btn_add_ingredient);
         submitRecipe = findViewById(R.id.submit_recipe);
-
+        submitRecipe.setEnabled(false);
         buttonAddIngredient.setOnClickListener(v -> addIngredientField());
         submitRecipe.setOnClickListener(v -> submitRecipe());
 
@@ -78,86 +83,106 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         ingredientView.addView(removeButton, buttonLayoutParams);
 
         ingredientsContainer.addView(ingredientView);
+
+        // Enable the submit button if it's not already enabled
+        if (!submitRecipe.isEnabled()) {
+            submitRecipe.setEnabled(true);
+        }
     }
 
 //    private void submitRecipe() {
 //        String recipeNameStr = recipeNameEditText.getText().toString().trim();
-//        if (recipeNameStr.isEmpty()) {
-//            recipeNameEditText.setError("Recipe name is required!");
-//            showToast("Recipe name is required!");
+//        EditText recipeInstructionsEditText = findViewById(R.id.recipe_instructions);
+//        String recipeInstructionsStr = recipeInstructionsEditText.getText().toString().trim();
+//
+//        // Check if at least one ingredient has a valid name and quantity
+//        boolean hasValidIngredient = false;
+//        Map<Ingredient, Double> ingredients = new HashMap<>();
+//        for (int i = 0; i < ingredientsContainer.getChildCount(); i++) {
+//            View ingredientView = ingredientsContainer.getChildAt(i);
+//            EditText ingredientNameEditText = ingredientView.findViewById(R.id.ingredientName);
+//            EditText ingredientQuantityEditText = ingredientView.findViewById(R.id.ingredientQuantity);
+//
+//            String ingredientName = ingredientNameEditText.getText().toString().trim();
+//            double ingredientQuantity = Double.parseDouble(ingredientQuantityEditText.getText().toString());
+//
+//            if (!ingredientName.isEmpty() && ingredientQuantity > 0) {
+//                ingredients.put(new Ingredient(ingredientName), ingredientQuantity);
+//                hasValidIngredient = true;
+//            }
+//        }
+//
+//        if (!hasValidIngredient) {
+//            showToast("Please enter at least one ingredient with a valid name and quantity");
 //            return;
 //        }
 //
-//        List<Ingredient> ingredients = collectIngredients();
-//        if (ingredients.isEmpty()) {
-//            showToast("At least one ingredient required");
-//            return;
-//        }
+//        // Create a new Recipe object
+//        List<String> instructions = new ArrayList<>();
+//        instructions.add(recipeInstructionsStr); // Add instructions (you may need to split by newline)
+//        Recipe recipe = new Recipe(recipeNameStr, ingredients, instructions);
 //
-//        // Validate ingredients using ViewModel
-//        String validationError = recipeViewModel.validateIngredients(ingredients);
-//        if (validationError != null) {
-//            showToast(validationError);
-//            return;
-//        }
+//        // Add the recipe to the Firebase Realtime Database
+//        CookbookManager cookbookManager = new CookbookManager();
+//        cookbookManager.addRecipe(recipe);
 //
-////        // Assuming the ViewModel has a method to handle the recipe submission
-////        Recipe recipe = new Recipe(recipeNameStr); // Update as needed to match your Recipe class
-////        boolean submitSuccess = recipeViewModel.submitRecipe(recipe, ingredients);
-////
-////        if (submitSuccess) {
-////            showToast("Recipe submitted successfully!");
-////            finish(); // Go back to the main screen
-////        } else {
-////            showToast("Failed to submit the recipe. Please try again.");
-////        }
+//        // Show a success message and return to the RecipeFragment
+//        showToast("Recipe added successfully!");
+//        finish();
 //    }
     private void submitRecipe() {
         String recipeNameStr = recipeNameEditText.getText().toString().trim();
         EditText recipeInstructionsEditText = findViewById(R.id.recipe_instructions);
         String recipeInstructionsStr = recipeInstructionsEditText.getText().toString().trim();
 
-        // Check if recipe name is empty
-        if (recipeNameStr.isEmpty()) {
-            recipeNameEditText.setError("Recipe name is required!");
-            showToast("Recipe name is required!");
-            return;
-        }
+        List<String> instructions = new ArrayList<>();
+        instructions.add(recipeInstructionsStr); // Add instructions (you may need to split by newline)
 
-        // Check if instructions are empty
-        if (recipeInstructionsStr.isEmpty()) {
-            recipeInstructionsEditText.setError("Instructions are required!");
-            showToast("Instructions are required!");
-            return;
-        }
-
-        // Collect and validate ingredients
         List<Ingredient> ingredients = collectIngredients();
-        if (ingredients == null || ingredients.isEmpty()) {
-            showToast("At least one ingredient required");
-            return;
-        }
 
-        String validationError = recipeViewModel.validateIngredients(ingredients);
-        if (validationError != null) {
-            showToast(validationError);
-            return;
-        }
-
-        // Create a Recipe object and attempt to add it
-        Recipe recipe = new Recipe(recipeNameStr); // Assume constructor or setters to set ingredients and instructions
-        // You need to modify the Recipe class or use its methods accordingly
-        // Assume method to set ingredients and instructions exist in Recipe class
-        recipe.addInstruction(recipeInstructionsStr); // Split instructions by new lines
+        // Create a new Recipe object
+        Map<Ingredient, Double> ingredientsMap = new HashMap<>();
         for (Ingredient ingredient : ingredients) {
-            recipe.addIngredient(ingredient, ingredient.getMultiplicity());
+            ingredientsMap.put(ingredient, ingredient.getMultiplicity());
+        }
+        Recipe recipe = new Recipe(recipeNameStr, ingredientsMap, instructions);
+
+        GreenPlateStatus validationStatus = recipeViewModel.validateRecipeData(recipeNameStr, instructions, ingredientsMap);
+
+        if (!validationStatus.isSuccess()) {
+            showToast(validationStatus.getMessage());
+            return;
         }
 
-        // Add recipe via ViewModel
+        // Add the recipe to the Firebase Realtime Database
+        CookbookManager cookbookManager = new CookbookManager();
+        cookbookManager.addRecipe(recipe);
+
+        // Show a success message and return to the RecipeFragment
+        showToast("Recipe added successfully!");
+        finish();
     }
 
+//    private Map<Ingredient, Double> collectIngredients() {
+//        Map<Ingredient, Double> ingredients = new HashMap<>();
+//        return ingredients;
+//    }
     private List<Ingredient> collectIngredients() {
         List<Ingredient> ingredients = new ArrayList<>();
+        for (int i = 0; i < ingredientsContainer.getChildCount(); i++) {
+            View ingredientView = ingredientsContainer.getChildAt(i);
+            EditText ingredientNameEditText = ingredientView.findViewById(R.id.ingredientName);
+            EditText ingredientQuantityEditText = ingredientView.findViewById(R.id.ingredientQuantity);
+            EditText ingredientCaloriesEditText = ingredientView.findViewById(R.id.ingredientCalories);
+
+            String ingredientName = ingredientNameEditText.getText().toString().trim();
+            double ingredientQuantity = Double.parseDouble(ingredientQuantityEditText.getText().toString());
+            double ingredientCalorie = Double.parseDouble(ingredientCaloriesEditText.getText().toString());
+
+            if (!ingredientName.isEmpty() && ingredientQuantity > 0) {
+                ingredients.add(new Ingredient(ingredientName, ingredientCalorie, ingredientQuantity, null));
+            }
+        }
         return ingredients;
     }
     private void showToast(String message) {

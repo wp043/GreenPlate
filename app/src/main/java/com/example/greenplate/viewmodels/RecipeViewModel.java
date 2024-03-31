@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import androidx.lifecycle.ViewModel;
 
+import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
 import com.example.greenplate.viewmodels.managers.CookbookManager;
@@ -56,26 +57,48 @@ public class RecipeViewModel extends ViewModel {
         });
     }
 
-    public String validateIngredients(List<Ingredient> ingredients) {
-        if (ingredients.isEmpty()) {
-            return "At least one ingredient required";
+//    public String validateIngredients(List<Ingredient> ingredients) {
+//        if (ingredients.isEmpty()) {
+//            return "At least one ingredient required";
+//        }
+//
+//        for (Ingredient ingredient : ingredients) {
+//            if (ingredient.getName().trim().isEmpty()) {
+//                return "Must have a name for the ingredient";
+//            }
+//
+//            if (ingredient.getMultiplicity() <= 0) {
+//                return "A positive quantity required";
+//            }
+//
+//            if (ingredient.getCalories() < 0) {
+//                return "Non-negative calorie required";
+//            }
+//        }
+//
+//        // If all validations pass
+//        return null; // null indicates no error
+//    }
+    public GreenPlateStatus validateRecipeData(String recipeName, List<String> instructions, Map<Ingredient, Double> ingredients) {
+        if (recipeName.trim().isEmpty()) {
+            return new GreenPlateStatus(false, "Recipe name cannot be empty");
         }
 
-        for (Ingredient ingredient : ingredients) {
-            if (ingredient.getName().trim().isEmpty()) {
-                return "Must have a name for the ingredient";
-            }
+        if (instructions.isEmpty()) {
+            return new GreenPlateStatus(false, "At least one instruction is required");
+        }
 
-            if (ingredient.getMultiplicity() <= 0) {
-                return "A positive quantity required";
-            }
-
-            if (ingredient.getCalories() < 0) {
-                return "Non-negative calorie required";
+        boolean hasValidIngredient = false;
+        for (Ingredient ingredient : ingredients.keySet()) {
+            if (!ingredient.getName().trim().isEmpty() && ingredients.get(ingredient) > 0) {
+                hasValidIngredient = true;
             }
         }
 
-        // If all validations pass
-        return null; // null indicates no error
+        if (!hasValidIngredient) {
+            return new GreenPlateStatus(false, "At least one ingredient with a valid name and quantity is required");
+        }
+
+        return new GreenPlateStatus(true, null);
     }
 }

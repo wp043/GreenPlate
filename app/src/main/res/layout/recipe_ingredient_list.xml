@@ -20,7 +20,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:hint="Quantity1"
+        android:hint="Quantity"
         android:inputType="numberDecimal"
         android:textSize="12sp"/>
 
