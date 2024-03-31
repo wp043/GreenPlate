@@ -203,4 +203,14 @@ public class RecipeFragment extends Fragment {
         adapter = new RecipesAdapter(filteredList);
         rvRecipes.setAdapter(adapter);
     }
+
+    public void sortByName(View view) {
+        // Sort the RecyclerView adapter by recipe name
+
+    }
+
+    public void sortByEnoughIngredients(View view) {
+        // Sort the RecyclerView adapter by whether the recipe has enough ingredients
+        
+    }
 }
