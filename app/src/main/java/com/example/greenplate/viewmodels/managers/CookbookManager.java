@@ -150,7 +150,7 @@ public class CookbookManager implements Manager {
         retrieve(items -> {
             boolean isDuplicate = false;
             for (RetrievableItem item : items) {
-                if (item.equals(recipe)) {
+                if (item.getName().equals(recipe.getName())) {
                     isDuplicate = true;
                     break;
                 }

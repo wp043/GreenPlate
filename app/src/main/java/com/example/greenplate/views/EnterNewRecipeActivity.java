@@ -138,7 +138,7 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
 
         Recipe recipe = new Recipe(recipeNameStr, ingredients, instructions);
 
-        recipeViewModel.addRecipe(recipe, context, rvRecipes, new OnRecipeAddedListener() {
+        recipeViewModel.addRecipe(recipe, new OnRecipeAddedListener() {
             @Override
             public void onRecipeAdded(boolean success) {
                 if (success) {

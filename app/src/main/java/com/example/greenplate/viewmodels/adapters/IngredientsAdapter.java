@@ -48,7 +48,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         TextView infoTextView = holder.infoTextView;
         nameTextView.setText(ingredient.getName());
 
-        String info = String.format("Calorie: %.0f, count: %d, expirate date: ",
+        String info = String.format("Calorie: %.0f, count: %.0f, expirate date: ",
                 ingredient.getCalories(), ingredient.getMultiplicity());
         if (ingredient.getExpirationDate().equals(new Date(Long.MAX_VALUE))) {
             info += "forever away";
