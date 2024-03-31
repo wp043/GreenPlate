@@ -61,15 +61,15 @@ public class PantryManagerTests {
                 .getReference(String.format("user/%s/pantries/", A1.getCurrentUser().getUid()));
     }
 
-//    @Before
-//    public void clearDB() {
-//        // Remove all records for the user
-//        ref.removeValue()
-//                .addOnSuccessListener(e -> { })
-//                .addOnFailureListener(e -> {
-//                    throw new RuntimeException("Clear DB: " + e.getMessage());
-//                });
-//    }
+    // @Before
+    // public void clearDB() {
+    // // Remove all records for the user
+    // ref.removeValue()
+    // .addOnSuccessListener(e -> { })
+    // .addOnFailureListener(e -> {
+    // throw new RuntimeException("Clear DB: " + e.getMessage());
+    // });
+    // }
 
     @Test
     public void testLogin() {
@@ -88,7 +88,8 @@ public class PantryManagerTests {
 
     @Test
     public void testAddInvalidIngredient() {
-        Ingredient ingredient = new Ingredient("     ", 180, 4, null);
+        Ingredient ingredient =
+                new Ingredient("     ", 180, 4, null);
         GreenPlateStatus status = manager.addIngredient(ingredient, success -> {
             assertFalse(success);
         });
@@ -119,19 +120,22 @@ public class PantryManagerTests {
 
     @Test
     public void testAddValidIngredient() {
-        Ingredient ingredient = new Ingredient("Test 1", 10, 4, null);
+        Ingredient ingredient =
+                new Ingredient("Test 1", 10, 4, null);
         GreenPlateStatus status = manager.addIngredient(ingredient, success -> {
             assertTrue(success);
         });
         assertTrue(status.isSuccess());
-        assertEquals(String.format("%s added to database successfully", ingredient), status.getMessage());
+        assertEquals(String.format("%s added to database successfully", ingredient),
+                status.getMessage());
 
         ingredient = new Ingredient("Test 2", 10, 3, null);
         status = manager.addIngredient(ingredient, success -> {
             assertTrue(success);
         });
         assertTrue(status.isSuccess());
-        assertEquals(String.format("%s added to database successfully", ingredient), status.getMessage());
+        assertEquals(String.format("%s added to database successfully", ingredient),
+                status.getMessage());
     }
 
     @Test
@@ -141,7 +145,8 @@ public class PantryManagerTests {
             assertTrue(success);
         });
         assertTrue(status.isSuccess());
-        assertEquals(String.format("%s added to database successfully", ingredient), status.getMessage());
+        assertEquals(String.format("%s added to database successfully", ingredient),
+                status.getMessage());
 
         ingredient = new Ingredient("Test 1", 10, 3, null);
         manager.isIngredientDuplicate(ingredient, Assert::assertFalse);
@@ -152,18 +157,21 @@ public class PantryManagerTests {
 
     @Test
     public void testRemoveIngredient() {
-        Ingredient ingredient = new Ingredient("Test 1", 10, 4, null);
+        Ingredient ingredient = new Ingredient("Test 1", 10,
+                4, null);
         GreenPlateStatus status = manager.addIngredient(ingredient, success -> {
             assertTrue(success);
         });
         assertTrue(status.isSuccess());
-        assertEquals(String.format("%s added to database successfully", ingredient), status.getMessage());
+        assertEquals(String.format("%s added to database successfully",
+                ingredient), status.getMessage());
 
         ingredient = new Ingredient("Test 1", 10, 4, null);
 
         manager.removeIngredient(ingredient, new OnIngredientRemoveListener() {
             @Override
-            public void onIngredientRemoveSuccess(GreenPlateStatus status) {}
+            public void onIngredientRemoveSuccess(GreenPlateStatus status) {
+            }
 
             @Override
             public void onIngredientRemoveFailure(GreenPlateStatus status) {
