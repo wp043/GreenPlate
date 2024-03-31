@@ -3,13 +3,15 @@ package com.example.greenplate.views;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.greenplate.R;
 import com.example.greenplate.viewmodels.RecipeViewModel;
-import android.view.ViewGroup;
 
 public class EnterNewRecipeActivity extends AppCompatActivity {
 
@@ -64,6 +66,7 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         ingredientsContainer.addView(ingredientView);
     }
 
+    /** @noinspection checkstyle:TodoComment*/
     private void submitRecipe() {
         String recipeNameStr = recipeNameEditText.getText().toString().trim();
         if (recipeNameStr.isEmpty()) {

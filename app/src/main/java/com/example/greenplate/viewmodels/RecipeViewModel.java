@@ -74,7 +74,7 @@ public class RecipeViewModel extends ViewModel {
 
     /**
      * get all recipes in the cookbook
-     * @param callback
+     * @param callback Callback to retrieve recipes from the cookbookManager
      */
     public void getRecipes(OnDataRetrievedCallback callback) {
         cookbookManager.retrieve(callback);

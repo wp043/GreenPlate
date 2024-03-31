@@ -88,10 +88,10 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView nameTextView;
-        public TextView availabilityTextView;
-        public TextView numIngredientsTextView;
-        public  TextView numInstructionsTextView;
+        private TextView nameTextView;
+        private TextView availabilityTextView;
+        private TextView numIngredientsTextView;
+        private TextView numInstructionsTextView;
 
         public ViewHolder(View itemView) {
             super(itemView);
