@@ -43,10 +43,8 @@ public class RecipeViewModel extends ViewModel {
         instructions1.add("Put hamburger patty between buns.");
         Recipe recipe1 = new Recipe("Cheeseburger", ingredients1, instructions1);
         addRecipe(recipe1, success -> {
-            // Update RecyclerView if successful
-            if (success) {
-                retrieveAndDisplayIngredients(context, rvRecipes);
-            }
+            // Update RecyclerView
+            retrieveAndDisplayIngredients(context, rvRecipes);
         });
 
         // Add test recipe 2
@@ -58,10 +56,8 @@ public class RecipeViewModel extends ViewModel {
         instructions2.add("Put sausage into bun.");
         Recipe recipe2 = new Recipe("Hot dog", ingredients2, instructions2);
         addRecipe(recipe2, success -> {
-            // Update RecyclerView if successful
-            if (success) {
-                retrieveAndDisplayIngredients(context, rvRecipes);
-            }
+            // Update RecyclerView
+            retrieveAndDisplayIngredients(context, rvRecipes);
         });
         defaultRecipesInitialized = true;
     }
@@ -92,7 +88,6 @@ public class RecipeViewModel extends ViewModel {
                     @Override
                     public void onRecipeAdded(boolean success) {
                         listener.onRecipeAdded(success);
-                        // retrieveAndDisplayIngredients(context, rvRecipes);
                     }
                 });
             }
@@ -129,10 +124,10 @@ public class RecipeViewModel extends ViewModel {
 
 
     public void retrieveAndDisplayIngredients(Context context, RecyclerView rvRecipes) {
-        this.getRecipes(items -> {
+        this.getRecipes(itemsRecipe -> {
             List<Recipe> recipes = new ArrayList<>();
-            if (items != null) {
-                for (RetrievableItem item : items) {
+            if (itemsRecipe != null) {
+                for (RetrievableItem item : itemsRecipe) {
                     if (item instanceof Recipe) {
                         Recipe recipe = (Recipe) item;
                         recipes.add(recipe);
@@ -140,9 +135,36 @@ public class RecipeViewModel extends ViewModel {
                 }
             }
 
-            RecipesAdapter adapter = new RecipesAdapter(recipes);
-            rvRecipes.setAdapter(adapter);
-            rvRecipes.setLayoutManager(new LinearLayoutManager(context));
+            new IngredientViewModel().getIngredients(itemsIngredient -> {
+                List<String> availability = new ArrayList<>();
+                Map<String, Double> ingredients = new HashMap<>();
+
+                for (RetrievableItem item: itemsIngredient) {
+                    ingredients.put(item.getName(), item.getMultiplicity());
+                }
+
+                for (Recipe recipe: recipes) {
+                    boolean enoughIngredients = true;
+                    for (Ingredient ingredient: recipe.getIngredients()) {
+                        Log.d(recipe.getName() + ", " + ingredient.getName(),
+                                "Recipe: " + ingredient.getMultiplicity() + " Database: " + ingredients.get(ingredient.getName()));
+                        if (!ingredients.containsKey(ingredient.getName()) || (ingredients.get(ingredient.getName()) < recipe.getMultiplicity())) {
+                            enoughIngredients = false;
+                            break;
+                        }
+                    }
+                    if (enoughIngredients) {
+                        availability.add("Yes");
+                    } else {
+                        availability.add("No");
+                    }
+                }
+
+                // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
+                RecipesAdapter adapter = new RecipesAdapter(recipes, availability);
+                rvRecipes.setAdapter(adapter);
+                rvRecipes.setLayoutManager(new LinearLayoutManager(context));
+            });
         });
     }
 }

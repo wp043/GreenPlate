@@ -18,10 +18,12 @@ import java.util.List;
 
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHolder> {
     private List<Recipe> recipeList;
+    private List<String> availabilityList;
     private int selectedPosition = RecyclerView.NO_POSITION;
 
-    public RecipesAdapter(List<Recipe> recipes) {
+    public RecipesAdapter(List<Recipe> recipes, List<String> availability) {
         recipeList = recipes;
+        availabilityList = availability;
     }
 
     @Override
@@ -42,6 +44,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
     public void onBindViewHolder(RecipesAdapter.ViewHolder holder, int position) {
         // Get the data model based on position
         Recipe recipe = recipeList.get(position);
+        String availability = availabilityList.get(position);
 
         // Set item views based on your views and data model
         TextView nameTextView = holder.nameTextView;
@@ -50,10 +53,15 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
         TextView numInstructionsTextView = holder.numInstructionsTextView;
 
         nameTextView.setText(recipe.getName());
-        String availabilityText = "<font color=\"#32CD32\">Yes</font>";
-        availabilityTextView.setText(Html.fromHtml(availabilityText));
         numIngredientsTextView.setText("Ingredients: " + recipe.getIngredients().size());
         numInstructionsTextView.setText("Instructions: " + recipe.getInstructions().size());
+        String availabilityText;
+        if (availability.equals("Yes")) {
+            availabilityText = "<font color=\"#32CD32\">Yes</font>";
+        } else {
+            availabilityText = "<font color=\"#DC143C\">No</font>";
+        }
+        availabilityTextView.setText(Html.fromHtml(availabilityText));
 
         // Check if recipe item is clicked
         holder.itemView.setOnClickListener(v -> {
@@ -73,9 +81,9 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
         if (holder.getAdapterPosition() == selectedPosition) {
             holder.nameTextView.setTextColor(Color.rgb(50, 205, 50));
             Toast.makeText(holder.itemView.getContext(),
-                "View recipe " + recipe.getName(),
-                Toast.LENGTH_SHORT)
-                .show();
+                            "View recipe " + recipe.getName(),
+                            Toast.LENGTH_SHORT)
+                    .show();
         } else {
             holder.nameTextView.setTextColor(Color.BLACK);
         }
