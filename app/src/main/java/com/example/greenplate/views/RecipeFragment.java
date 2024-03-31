@@ -40,6 +40,7 @@ public class RecipeFragment extends Fragment {
     private RecipeViewModel recipeViewModel;
 
     private ArrayList<Recipe> recipes;
+    private ArrayList<Recipe> copyRecipes;
 
     private RecipesAdapter adapter;
 
@@ -131,6 +132,9 @@ public class RecipeFragment extends Fragment {
         recipes.add(recipe9);
         recipes.add(recipe10);
 
+        // Copy of recipes arraylist
+        copyRecipes = new ArrayList<>(recipes);
+
         // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
         adapter = new RecipesAdapter(recipes);
         rvRecipes.setAdapter(adapter);
@@ -148,14 +152,14 @@ public class RecipeFragment extends Fragment {
     }
 
     private void filterList(String newText) {
-        ArrayList<Recipe> filteredList;
+        ArrayList<Recipe> filteredList = new ArrayList<>();
 
         if (newText.isEmpty()) {
             // If the search query is empty, show the original list
-            filteredList = new ArrayList<>(recipes);
+            filteredList = new ArrayList<>(copyRecipes);
         } else {
             filteredList = new ArrayList<>();
-            for (Recipe recipeItem : recipes) {
+            for (Recipe recipeItem : copyRecipes) {
                 if (recipeItem.getName().toLowerCase().contains(newText.toLowerCase())) {
                     filteredList.add(recipeItem);
                 }
@@ -164,9 +168,8 @@ public class RecipeFragment extends Fragment {
 
         if (filteredList.isEmpty()) {
             Toast.makeText(getActivity(), "No matching recipes found", Toast.LENGTH_SHORT).show();
-        } else {
-            setFilteredList(filteredList);
         }
+        setFilteredList(filteredList);
     }
 
     private void setFilteredList (ArrayList<Recipe> filteredList) {
