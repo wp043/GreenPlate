@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.greenplate.R;
 import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
@@ -114,6 +116,7 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         instructionsContainer.addView(instructionView);
     }
 
+    /** @noinspection checkstyle:TodoComment*/
     private void submitRecipe() {
         String recipeNameStr = recipeNameEditText.getText().toString().trim();
 

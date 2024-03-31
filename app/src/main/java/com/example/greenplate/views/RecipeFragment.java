@@ -6,28 +6,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
-import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
-import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.RecipeViewModel;
-import com.example.greenplate.viewmodels.adapters.IngredientsAdapter;
 import com.example.greenplate.viewmodels.adapters.RecipesAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,6 +39,13 @@ public class RecipeFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private RecipeViewModel recipeViewModel;
+
+    private ArrayList<Recipe> recipes;
+    private ArrayList<Recipe> copyRecipes;
+
+    private RecipesAdapter adapter;
+
+
 
     public RecipeFragment() {
         // Required empty public constructor
@@ -91,6 +92,21 @@ public class RecipeFragment extends Fragment {
 
         recipeViewModel = new RecipeViewModel();
         RecyclerView rvRecipes = view.findViewById(R.id.rvRecipes);
+
+        SearchView recipeListSearchView = (SearchView) view.findViewById(R.id.recipeListSearchView);
+        recipeListSearchView.clearFocus();
+        recipeListSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                recipeViewModel.retrieveAndDisplayFiltered(getContext(), rvRecipes, newText);
+                return true;
+            }
+        });
 
         recipeViewModel.addDefaultRecipes(getContext(), rvRecipes);
         recipeViewModel.retrieveAndDisplayIngredients(getContext(), rvRecipes);
