@@ -60,7 +60,6 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         cancelRecipeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Just finish the current activity to return to the previous screen
                 finish();
             }
         });
@@ -82,7 +81,6 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         EditText ingredientName = ingredientView.findViewById(R.id.ingredientName);
         EditText ingredientQuantity = ingredientView.findViewById(R.id.ingredientQuantity);
 
-        // Optionally set up a button to remove this ingredient field
         Button removeButton = new Button(this);
         removeButton.setText("-");
         removeButton.setOnClickListener(v -> ingredientsContainer.removeView(ingredientView));
@@ -93,7 +91,6 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
 
         ingredientsContainer.addView(ingredientView);
 
-        // Enable the submit button if it's not already enabled
         if (!submitRecipe.isEnabled()) {
             submitRecipe.setEnabled(true);
         }
@@ -106,7 +103,6 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
 
         EditText instruction = instructionView.findViewById(R.id.recipe_instruction);
 
-        // Optionally set up a button to remove this ingredient field
         Button removeButton = new Button(this);
         removeButton.setText("-");
         removeButton.setOnClickListener(v -> instructionsContainer.removeView(instructionView));
@@ -128,7 +124,6 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         }
         List<String> instructions = collectInstructions();
 
-        // Validate each ingredient
         GreenPlateStatus status = recipeViewModel.validateRecipeData(
                 recipeNameStr, instructions, ingredients);
         if (!status.isSuccess()) {
