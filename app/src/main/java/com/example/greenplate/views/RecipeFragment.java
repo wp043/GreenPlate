@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -115,7 +116,6 @@ public class RecipeFragment extends Fragment {
 
         RecyclerView rvRecipes = (RecyclerView) view.findViewById(R.id.rvRecipes);
         recipeViewModel.addDefaultRecipes(getContext(), rvRecipes);
-
         recipeViewModel.retrieveAndDisplayIngredients(getContext(), rvRecipes);
 
         Button addRecipeButton = view.findViewById(R.id.btnEnterNewRecipe);
@@ -164,6 +164,8 @@ public class RecipeFragment extends Fragment {
 
     public void sortByEnoughIngredients(View view) {
         // Sort the RecyclerView adapter by whether the recipe has enough ingredients
-        
     }
+//    private void initializeRecipesIfNeeded() {
+//        recipeViewModel.initializeDefaultRecipesIfNeeded(getContext(), null);
+//    }
 }

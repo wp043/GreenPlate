@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 public abstract class RetrievableItem {
     private String name;
     private double calories;
-    private int multiplicity;
+    private double multiplicity;
 
     /**
      * Constructor for a general RetrievableItem.
@@ -13,7 +13,7 @@ public abstract class RetrievableItem {
      * @param calories - calories of the item
      * @param multiplicity - multiplicity of the item
      */
-    public RetrievableItem(String name, double calories, int multiplicity) {
+    public RetrievableItem(String name, double calories, double multiplicity) {
         this.name = name;
         this.calories = calories;
         this.multiplicity = multiplicity;
@@ -62,7 +62,7 @@ public abstract class RetrievableItem {
      * Getter for multiplicity.
      * @return multiplicity
      */
-    public int getMultiplicity() {
+    public double getMultiplicity() {
         return multiplicity;
     }
 
@@ -70,7 +70,7 @@ public abstract class RetrievableItem {
      * Setter for multiplicity.
      * @param multiplicity - multiplicity to set to
      */
-    public void setMultiplicity(int multiplicity) {
+    public void setMultiplicity(double multiplicity) {
         this.multiplicity = multiplicity;
     }
 
@@ -81,7 +81,7 @@ public abstract class RetrievableItem {
         result = prime + (name == null ? 0 : name.hashCode());
         long temp = Double.doubleToLongBits(calories);
         result = prime * result + (int) (temp ^ (temp >>> 32));
-        result = prime * result + multiplicity;
+        result = (int) (prime * result + multiplicity);
         return result;
     }
 
