@@ -365,5 +365,4 @@ public class IngredientFragment extends Fragment {
             }
         });
     }
-
 }
