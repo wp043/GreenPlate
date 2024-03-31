@@ -6,11 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,6 +38,12 @@ public class RecipeFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private RecipeViewModel recipeViewModel;
+
+    private ArrayList<Recipe> recipes;
+
+    private RecipesAdapter adapter;
+
+
 
     public RecipeFragment() {
         // Required empty public constructor
@@ -84,10 +90,26 @@ public class RecipeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         recipeViewModel = new RecipeViewModel();
+
+        SearchView recipeListSearchView = (SearchView) view.findViewById(R.id.recipeListSearchView);
+        recipeListSearchView.clearFocus();
+        recipeListSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterList(newText);
+                return true;
+            }
+        });
+
         RecyclerView rvRecipes = (RecyclerView) view.findViewById(R.id.rvRecipes);
 
         // Demo recipe list
-        ArrayList<Recipe> recipes = new ArrayList<>();
+        recipes = new ArrayList<>();
         Recipe recipe1 = new Recipe("Hamburger");
         Recipe recipe2 = new Recipe("Fries");
         Recipe recipe3 = new Recipe("Hot Dog");
@@ -110,7 +132,7 @@ public class RecipeFragment extends Fragment {
         recipes.add(recipe10);
 
         // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
-        RecipesAdapter adapter = new RecipesAdapter(recipes);
+        adapter = new RecipesAdapter(recipes);
         rvRecipes.setAdapter(adapter);
         rvRecipes.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
@@ -123,5 +145,35 @@ public class RecipeFragment extends Fragment {
             }
         });
 
+    }
+
+    private void filterList(String newText) {
+        ArrayList<Recipe> filteredList;
+
+        if (newText.isEmpty()) {
+            // If the search query is empty, show the original list
+            filteredList = new ArrayList<>(recipes);
+        } else {
+            filteredList = new ArrayList<>();
+            for (Recipe recipeItem : recipes) {
+                if (recipeItem.getName().toLowerCase().contains(newText.toLowerCase())) {
+                    filteredList.add(recipeItem);
+                }
+            }
+        }
+
+        if (filteredList.isEmpty()) {
+            Toast.makeText(getActivity(), "No matching recipes found", Toast.LENGTH_SHORT).show();
+        } else {
+            setFilteredList(filteredList);
+        }
+    }
+
+    private void setFilteredList (ArrayList<Recipe> filteredList) {
+        this.recipes = filteredList;
+        filteredList.sort((r1, r2) -> r1.getName().compareToIgnoreCase(r2.getName()));
+        RecyclerView rvRecipes = requireView().findViewById(R.id.rvRecipes);
+        adapter = new RecipesAdapter(filteredList);
+        rvRecipes.setAdapter(adapter);
     }
 }
