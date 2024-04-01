@@ -121,8 +121,8 @@ public class IngredientFragment extends Fragment {
 
                 try {
                     String name = nameEditText.getText().toString();
-                    int quantity = Integer.parseInt(quantityEditText.getText().toString());
-                    int calories = Integer.parseInt(caloriesEditText.getText().toString());
+                    double quantity = Double.parseDouble(quantityEditText.getText().toString());
+                    double calories = Double.parseDouble(caloriesEditText.getText().toString());
                     Date expirationDate = str2Date(expirationEditText.getText().toString());
                     Ingredient newIngredient = new Ingredient(name,
                             calories, quantity, expirationDate);
@@ -196,7 +196,8 @@ public class IngredientFragment extends Fragment {
                     .setPositiveButton("Edit", (dialog, id) -> {
                         try {
                             String name = nameEditText.getText().toString();
-                            int quantity = Integer.parseInt(quantityEditText.getText().toString());
+                            double quantity =
+                                    Double.parseDouble(quantityEditText.getText().toString());
                             double calories =
                                     Double.parseDouble(caloriesEditText.getText().toString());
                             Date expirationDate = str2Date(expirationEditText.getText().toString());
