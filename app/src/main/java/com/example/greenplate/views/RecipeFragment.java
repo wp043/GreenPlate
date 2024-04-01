@@ -133,7 +133,8 @@ public class RecipeFragment extends Fragment {
         sortByIngredientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recipeViewModel.retrieveAndDisplaySortedByIngredients(getContext(), rvRecipes, fragment);
+                recipeViewModel.retrieveAndDisplaySortedByIngredients(
+                        getContext(), rvRecipes, fragment);
             }
         });
     }
