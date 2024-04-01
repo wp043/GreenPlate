@@ -125,7 +125,7 @@ public class RecipeFragment extends Fragment {
         sortByNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recipeViewModel.retrieveAndDisplaySortedByName(getContext(), rvRecipes);
+                recipeViewModel.retrieveAndDisplaySortedByName(getContext(), rvRecipes, fragment);
             }
         });
 
@@ -133,7 +133,7 @@ public class RecipeFragment extends Fragment {
         sortByIngredientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recipeViewModel.retrieveAndDisplaySortedByIngredients(getContext(), rvRecipes);
+                recipeViewModel.retrieveAndDisplaySortedByIngredients(getContext(), rvRecipes, fragment);
             }
         });
     }
