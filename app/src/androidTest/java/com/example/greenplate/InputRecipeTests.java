@@ -1,6 +1,7 @@
 package com.example.greenplate;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -133,5 +134,84 @@ public class InputRecipeTests {
 
     }
 
+    @Test
+    public void testAddRecipeWithInvalidCalories() {
+        RecipeViewModel vm = new RecipeViewModel();
+        String name = "test1";
+        List<Ingredient> ingredients = new ArrayList<>();
+        Ingredient ingredient1 = new Ingredient("chug jug", -100,
+                2, null);
+        ingredients.add(ingredient1);
+        List<String> instructions = new ArrayList<>();
+        instructions.add("test instruction 1");
+        instructions.add("test instruction 2");
+        Recipe testRecipe = new Recipe(name, ingredients, instructions);
+
+        final boolean[] isSuccessful = {false}; // Use an array to hold the result
+        final String[] message = {null}; // Use an array to hold the message
+
+        // Act
+        vm.addRecipe(testRecipe, success -> {
+            isSuccessful[0] = success;
+            assertFalse("Expected the recipe addition to fail "
+                    + "due to invalid calories.", isSuccessful[0]);
+        });
+
+        String nameTest2 = "test2";
+        List<Ingredient> ingredientsTest2 = new ArrayList<>();
+        Ingredient ingredient1Test2 = new Ingredient("magica potion", -1,
+                1, null);
+        ingredientsTest2.add(ingredient1Test2);
+        List<String> instructionsTest2 = new ArrayList<>();
+        instructionsTest2.add("test instruction 1");
+        instructionsTest2.add("test instruction 2");
+        Recipe testRecipeTest2 = new Recipe(nameTest2, ingredientsTest2, instructionsTest2);
+
+        // Act
+        vm.addRecipe(testRecipeTest2, success -> {
+            isSuccessful[0] = success;
+            assertFalse("Expected the recipe addition to fail "
+                    + "due to invalid calories.", isSuccessful[0]);
+        });
+
+    }
+
+    @Test
+    public void testAddRecipeWithValidParameters() {
+        RecipeViewModel vm = new RecipeViewModel();
+        String name = "test1";
+        List<Ingredient> ingredients = new ArrayList<>();
+        Ingredient ingredient1 = new Ingredient("instant yakisoba", 100,
+                1, null);
+        ingredients.add(ingredient1);
+        List<String> instructions = new ArrayList<>();
+        instructions.add("test instruction 1");
+        instructions.add("test instruction 2");
+        Recipe testRecipe = new Recipe(name, ingredients, instructions);
+
+        final boolean[] isSuccessful = {false}; // Use an array to hold the result
+        final String[] message = {null}; // Use an array to hold the message
+
+        // Act
+        vm.addRecipe(testRecipe, success -> {
+            assertTrue("Expected the recipe addition to succeed.", success);
+        });
+
+        String nameTest2 = "test1";
+        List<Ingredient> ingredientsTest2 = new ArrayList<>();
+        Ingredient ingredient1Test2 = new Ingredient("caloric explosion", 50000,
+                10, null);
+        ingredientsTest2.add(ingredient1Test2);
+        List<String> instructionsTest2 = new ArrayList<>();
+        instructionsTest2.add("test instruction 1");
+        instructionsTest2.add("test instruction 2");
+        Recipe testRecipeTest2 = new Recipe(nameTest2, ingredientsTest2, instructionsTest2);
+
+        // Act
+        vm.addRecipe(testRecipeTest2, success -> {
+            assertTrue("Expected the recipe addition to succeed.", success);
+        });
+
+    }
 
 }
