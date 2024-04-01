@@ -186,6 +186,13 @@ public class IngredientFragment extends Fragment {
             View dialogView = inflater.inflate(R.layout.dialog_ingredient, null);
 
             IngredientsAdapter oldAdapter = (IngredientsAdapter) rvRecipes.getAdapter();
+            if (oldAdapter.getSelectedPosition() < 0
+                    || oldAdapter.getSelectedPosition() >= oldAdapter.getRecipeList().size()) {
+                Toast.makeText(requireContext(),
+                        "Please select an item to update!",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
             Ingredient selectedIngredient = oldAdapter.getRecipeList()
                     .get(oldAdapter.getSelectedPosition());
 
