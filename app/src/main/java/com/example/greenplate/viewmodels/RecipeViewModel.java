@@ -134,7 +134,6 @@ public class RecipeViewModel extends ViewModel {
             }
 
             new IngredientViewModel().getIngredients(itemsIngredient -> {
-                List<String> availability = new ArrayList<>();
                 Map<String, Double> ingredients = new HashMap<>();
 
                 for (RetrievableItem item: itemsIngredient) {
@@ -151,15 +150,11 @@ public class RecipeViewModel extends ViewModel {
                             break;
                         }
                     }
-                    if (enoughIngredients) {
-                        availability.add("Yes");
-                    } else {
-                        availability.add("No");
-                    }
+                    recipe.setAvailable(enoughIngredients);
                 }
 
                 // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
-                RecipesAdapter adapter = new RecipesAdapter(recipes, availability);
+                RecipesAdapter adapter = new RecipesAdapter(recipes);
                 rvRecipes.setAdapter(adapter);
                 rvRecipes.setLayoutManager(new LinearLayoutManager(context));
             });
@@ -180,7 +175,6 @@ public class RecipeViewModel extends ViewModel {
             }
 
             new IngredientViewModel().getIngredients(itemsIngredient -> {
-                List<String> availability = new ArrayList<>();
                 Map<String, Double> ingredients = new HashMap<>();
 
                 for (RetrievableItem item: itemsIngredient) {
@@ -200,27 +194,20 @@ public class RecipeViewModel extends ViewModel {
                             break;
                         }
                     }
-                    if (enoughIngredients) {
-                        availability.add("Yes");
-                    } else {
-                        availability.add("No");
-                    }
+                    recipe.setAvailable(enoughIngredients);
                 }
 
                 // Filter from search
                 ArrayList<Recipe> filteredList = new ArrayList<>();
-                List<String> filteredAvailability = new ArrayList<>();
                 if (search.isEmpty()) {
                     // If the search query is empty, show the original list
                     filteredList = new ArrayList<>(recipes);
-                    filteredAvailability = new ArrayList<>(availability);
                 } else {
                     filteredList = new ArrayList<>();
                     for (int i = 0; i <= recipes.size() - 1; i++) {
                         Recipe recipeItem = recipes.get(i);
                         if (recipeItem.getName().toLowerCase().contains(search.toLowerCase())) {
                             filteredList.add(recipeItem);
-                            filteredAvailability.add(availability.get(i));
                         }
                     }
                 }
@@ -228,7 +215,7 @@ public class RecipeViewModel extends ViewModel {
 
 //                filteredList.sort((r1, r2) -> r1.getName().compareToIgnoreCase(r2.getName()));
                 // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
-                RecipesAdapter adapter = new RecipesAdapter(filteredList, filteredAvailability);
+                RecipesAdapter adapter = new RecipesAdapter(filteredList);
                 rvRecipes.setAdapter(adapter);
                 rvRecipes.setLayoutManager(new LinearLayoutManager(context));
             });
