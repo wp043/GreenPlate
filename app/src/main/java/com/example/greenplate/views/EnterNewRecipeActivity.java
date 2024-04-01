@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.greenplate.R;
 import com.example.greenplate.models.GreenPlateStatus;
@@ -16,16 +15,13 @@ import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
 import com.example.greenplate.viewmodels.RecipeViewModel;
 import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
-import com.example.greenplate.viewmodels.managers.CookbookManager;
 
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class EnterNewRecipeActivity extends AppCompatActivity {
@@ -175,7 +171,8 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
                                     + ". Please remove the duplicate.");
                             return null;
                         } else {
-                            ingredients.add(new Ingredient(ingredientName, ingredientCalorie, ingredientQuantity, null));
+                            ingredients.add(new Ingredient(ingredientName, ingredientCalorie,
+                                    ingredientQuantity, null));
                             ingredientNames.add(ingredientName);
                         }
                     }

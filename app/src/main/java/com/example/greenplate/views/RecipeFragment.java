@@ -6,28 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
-import com.example.greenplate.models.Ingredient;
-import com.example.greenplate.models.Recipe;
-import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.RecipeViewModel;
-import com.example.greenplate.viewmodels.adapters.IngredientsAdapter;
-import com.example.greenplate.viewmodels.adapters.RecipesAdapter;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.

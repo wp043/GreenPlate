@@ -11,7 +11,6 @@ import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.listeners.OnDataRetrievedCallback;
 import com.example.greenplate.viewmodels.listeners.OnDuplicateCheckListener;
 import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -21,9 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CookbookManager implements Manager {
     private FirebaseDatabase database;
@@ -101,13 +98,13 @@ public class CookbookManager implements Manager {
     /**
      * Add a recipe to the database.
      * @param recipe - the recipe to add
+     * @param listener - for callback
      * @return the status of the operation
      */
     public GreenPlateStatus addRecipe(Recipe recipe, OnRecipeAddedListener listener) {
         try {
             DatabaseReference recipeRef = myRef.child("Cookbook").child(recipe.getName());
 
-            // Add ingredients of recipe to database
             DatabaseReference ingredientsRef = recipeRef.child("ingredients");
             for (Ingredient ingredient: recipe.getIngredients()) {
                 String ingredientKey = ingredientsRef.push().getKey();

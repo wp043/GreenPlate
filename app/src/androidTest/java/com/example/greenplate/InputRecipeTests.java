@@ -1,31 +1,19 @@
 package com.example.greenplate;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
-import com.example.greenplate.models.Meal;
 import com.example.greenplate.models.Recipe;
-import com.example.greenplate.viewmodels.InputMealViewModel;
 import com.example.greenplate.viewmodels.RecipeViewModel;
-import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -38,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 @RunWith(AndroidJUnit4.class)
 public class InputRecipeTests {
@@ -73,7 +60,8 @@ public class InputRecipeTests {
         Date date = new Date();
         String currDate = dateFormat.format(date);
         ref = FirebaseDatabase.getInstance()
-                .getReference(String.format("user/%s/meals/%s/", A1.getCurrentUser().getUid(), currDate));
+                .getReference(String.format("user/%s/meals/%s/",
+                        A1.getCurrentUser().getUid(), currDate));
     }
 
     @Before
@@ -119,7 +107,8 @@ public class InputRecipeTests {
         // Act
         vm.addRecipe(testRecipe, success -> {
             isSuccessful[0] = success;
-            assertFalse("Expected the recipe addition to fail due to invalid quantity.", isSuccessful[0]);
+            assertFalse("Expected the recipe addition to fail "
+                    + "due to invalid quantity.", isSuccessful[0]);
         });
 
 
@@ -138,7 +127,8 @@ public class InputRecipeTests {
         // Act
         vm.addRecipe(testRecipe2, success -> {
             isSuccessful[0] = success;
-            assertFalse("Expected the recipe addition to fail due to invalid quantity.", isSuccessful[0]);
+            assertFalse("Expected the recipe addition to "
+                    + "fail due to invalid quantity.", isSuccessful[0]);
         });
 
     }

@@ -2,7 +2,6 @@ package com.example.greenplate.viewmodels;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,7 +15,6 @@ import com.example.greenplate.viewmodels.adapters.RecipesAdapter;
 import com.example.greenplate.viewmodels.listeners.OnDataRetrievedCallback;
 import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
 import com.example.greenplate.viewmodels.managers.CookbookManager;
-import com.example.greenplate.views.EnterNewRecipeActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,8 +75,8 @@ public class RecipeViewModel extends ViewModel {
         }
 
         for (Ingredient ingredient : recipe.getIngredients()) {
-            if (ingredient.getName() == null || ingredient.getName().trim().isEmpty() ||
-                    ingredient.getMultiplicity() <= 0 || ingredient.getCalories() < 0) {
+            if (ingredient.getName() == null || ingredient.getName().trim().isEmpty()
+                    || ingredient.getMultiplicity() <= 0 || ingredient.getCalories() < 0) {
                 listener.onRecipeAdded(false);
                 return;
             }
@@ -98,7 +96,8 @@ public class RecipeViewModel extends ViewModel {
         });
     }
 
-    public GreenPlateStatus validateRecipeData(String recipeName, List<String> instructions, List<Ingredient> ingredients) {
+    public GreenPlateStatus validateRecipeData(String recipeName, List<String>
+            instructions, List<Ingredient> ingredients) {
         if (recipeName.trim().isEmpty()) {
             return new GreenPlateStatus(false, "Recipe name cannot be empty");
         }
@@ -106,21 +105,23 @@ public class RecipeViewModel extends ViewModel {
         boolean hasValidIngredient = true;
         int index = 0;
         for (Ingredient ingredient : ingredients) {
-            if (ingredient.getName().trim().isEmpty() || ingredients.get(index).getMultiplicity() <= 0) {
+            if (ingredient.getName().trim().isEmpty()
+                    || ingredients.get(index).getMultiplicity() <= 0) {
                 hasValidIngredient = false;
             }
             index++;
         }
 
         if (!hasValidIngredient) {
-            return new GreenPlateStatus(false, "At least one ingredient with a valid name and quantity is required");
+            return new GreenPlateStatus(false,
+                    "At least one ingredient with a valid name and quantity is required");
         }
 
         return new GreenPlateStatus(true, null);
     }
     /**
      * get all recipes in the cookbook
-     * @param callback
+     * @param callback - for alerting other files
      */
     public void getRecipes(OnDataRetrievedCallback callback) {
         cookbookManager.retrieve(callback);
@@ -151,8 +152,13 @@ public class RecipeViewModel extends ViewModel {
                     boolean enoughIngredients = true;
                     for (Ingredient ingredient: recipe.getIngredients()) {
                         Log.d(recipe.getName() + ", " + ingredient.getName(),
-                                "Recipe: " + ingredient.getMultiplicity() + " Database: " + ingredients.get(ingredient.getName()));
-                        if (!ingredients.containsKey(ingredient.getName()) || (ingredients.get(ingredient.getName()) < recipe.getMultiplicity())) {
+                                "Recipe: "
+                                        + ingredient.getMultiplicity()
+                                        + " Database: "
+                                        + ingredients.get(ingredient.getName()));
+                        if (!ingredients.containsKey(ingredient.getName())
+                                || (ingredients.get(ingredient.getName())
+                                < recipe.getMultiplicity())) {
                             enoughIngredients = false;
                             break;
                         }
@@ -164,7 +170,6 @@ public class RecipeViewModel extends ViewModel {
                     }
                 }
 
-                // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
                 RecipesAdapter adapter = new RecipesAdapter(recipes, availability);
                 rvRecipes.setAdapter(adapter);
                 rvRecipes.setLayoutManager(new LinearLayoutManager(context));
