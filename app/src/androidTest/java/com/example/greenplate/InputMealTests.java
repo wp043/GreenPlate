@@ -62,8 +62,8 @@ public class InputMealTests {
         Date date = new Date();
         String currDate = dateFormat.format(date);
         ref = FirebaseDatabase.getInstance()
-                .getReference(String.format("user/%s/meals/%s/", A1.getCurrentUser().getUid(),
-                        currDate));
+                .getReference(String.format("user/%s/meals/%s/",
+                        A1.getCurrentUser().getUid(), currDate));
     }
 
     @Before
