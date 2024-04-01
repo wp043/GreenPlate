@@ -1,29 +1,43 @@
 package com.example.greenplate.viewmodels.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
+import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
+import com.example.greenplate.models.RetrievableItem;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHolder> {
     private List<Recipe> recipeList;
     private List<String> availabilityList;
+    private Fragment fragment;
     private int selectedPosition = RecyclerView.NO_POSITION;
 
-    public RecipesAdapter(List<Recipe> recipes, List<String> availability) {
+    public RecipesAdapter(List<Recipe> recipes, List<String> availability, Fragment fragment) {
         recipeList = recipes;
         availabilityList = availability;
+        this.fragment = fragment;
     }
 
     @Override
@@ -77,16 +91,46 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
             }
         });
 
-        // Set the text color and toast message based on the selection status
         if (holder.getAdapterPosition() == selectedPosition) {
             if ((availabilityTextView.getText()).toString().equals("Yes")) {
                 holder.nameTextView.setTextColor(Color.rgb(50, 205, 50));
                 Toast.makeText(holder.itemView.getContext(),
-                                "View recipe " + recipe.getName(),
+                                "Viewing recipe: " + recipe.getName(),
                                 Toast.LENGTH_SHORT)
                         .show();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(fragment.getContext());
+                LayoutInflater inflater = fragment.requireActivity().getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.dialog_recipe, null);
+                TextView nameEditText = dialogView.findViewById(R.id.display_recipe_name);
+                TextView ingredientsEditText = dialogView.findViewById(R.id.display_ingredients);
+                TextView instructionsEditText = dialogView.findViewById(R.id.display_instructions);
+
+                nameEditText.setText(recipe.getName());
+                String ingredientsText = "";
+                for (Ingredient ingredient: recipe.getIngredients()) {
+                    ingredientsText = ingredientsText + ingredient.getMultiplicity() + "\t" + ingredient.getName() + "\n";
+                }
+                ingredientsEditText.setText(ingredientsText);
+                String instructionsText = "";
+                for (int i = 1; i <= recipe.getInstructions().size(); i++) {
+                    instructionsText = instructionsText + i + ". " + recipe.getInstructions().get(i - 1) + "\n";
+                }
+                instructionsEditText.setText(instructionsText);
+
+                builder.setView(dialogView)
+                    .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // Exit
+                            holder.nameTextView.setTextColor(Color.BLACK);
+                            selectedPosition = RecyclerView.NO_POSITION;
+                        }
+                    });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
             } else {
-                holder.nameTextView.setTextColor(Color.rgb(220, 20, 60));
+                // holder.nameTextView.setTextColor(Color.rgb(220, 20, 60));
                 Toast.makeText(holder.itemView.getContext(),
                                 "Not Enough Ingredients",
                                 Toast.LENGTH_SHORT)
