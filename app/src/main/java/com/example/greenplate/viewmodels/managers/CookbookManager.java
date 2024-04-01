@@ -11,7 +11,7 @@ import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.listeners.OnDataRetrievedCallback;
 import com.example.greenplate.viewmodels.listeners.OnDuplicateCheckListener;
 import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
-import com.google.firebase.Firebase;
+//import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -101,6 +101,7 @@ public class CookbookManager implements Manager {
     /**
      * Add a recipe to the database.
      * @param recipe - the recipe to add
+     * @param listener - the listener to check when to add the recipe
      * @return the status of the operation
      */
     public GreenPlateStatus addRecipe(Recipe recipe, OnRecipeAddedListener listener) {

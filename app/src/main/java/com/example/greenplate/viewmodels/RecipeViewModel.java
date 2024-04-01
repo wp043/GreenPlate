@@ -2,7 +2,6 @@ package com.example.greenplate.viewmodels;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,7 +15,6 @@ import com.example.greenplate.viewmodels.adapters.RecipesAdapter;
 import com.example.greenplate.viewmodels.listeners.OnDataRetrievedCallback;
 import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
 import com.example.greenplate.viewmodels.managers.CookbookManager;
-import com.example.greenplate.views.EnterNewRecipeActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -116,7 +114,7 @@ public class RecipeViewModel extends ViewModel {
     }
     /**
      * get all recipes in the cookbook
-     * @param callback
+     * @param callback Callback to retrieve recipes from the cookbookManager
      */
     public void getRecipes(OnDataRetrievedCallback callback) {
         cookbookManager.retrieve(callback);
@@ -167,4 +165,74 @@ public class RecipeViewModel extends ViewModel {
             });
         });
     }
+
+
+    public void retrieveAndDisplayFiltered(Context context, RecyclerView rvRecipes, String search) {
+        this.getRecipes(items -> {
+            List<Recipe> recipes = new ArrayList<>();
+            if (items != null) {
+                for (RetrievableItem item : items) {
+                    if (item instanceof Recipe) {
+                        Recipe recipe = (Recipe) item;
+                        recipes.add(recipe);
+                    }
+                }
+            }
+
+            new IngredientViewModel().getIngredients(itemsIngredient -> {
+                List<String> availability = new ArrayList<>();
+                Map<String, Double> ingredients = new HashMap<>();
+
+                for (RetrievableItem item: itemsIngredient) {
+                    ingredients.put(item.getName(), item.getMultiplicity());
+                }
+
+                for (Recipe recipe: recipes) {
+                    boolean enoughIngredients = true;
+                    for (Ingredient ingredient: recipe.getIngredients()) {
+                        Log.d(recipe.getName() + ", " + ingredient.getName(),
+                                "Recipe: " + ingredient.getMultiplicity() + " Database: " +
+                                        ingredients.get(ingredient.getName()));
+                        if (!ingredients.containsKey(ingredient.getName())
+                                || (ingredients.get(ingredient.getName())
+                                < recipe.getMultiplicity())) {
+                            enoughIngredients = false;
+                            break;
+                        }
+                    }
+                    if (enoughIngredients) {
+                        availability.add("Yes");
+                    } else {
+                        availability.add("No");
+                    }
+                }
+
+                // Filter from search
+                ArrayList<Recipe> filteredList = new ArrayList<>();
+                List<String> filteredAvailability = new ArrayList<>();
+                if (search.isEmpty()) {
+                    // If the search query is empty, show the original list
+                    filteredList = new ArrayList<>(recipes);
+                    filteredAvailability = new ArrayList<>(availability);
+                } else {
+                    filteredList = new ArrayList<>();
+                    for (int i = 0; i <= recipes.size() - 1; i++) {
+                        Recipe recipeItem = recipes.get(i);
+                        if (recipeItem.getName().toLowerCase().contains(search.toLowerCase())) {
+                            filteredList.add(recipeItem);
+                            filteredAvailability.add(availability.get(i));
+                        }
+                    }
+                }
+
+
+//                filteredList.sort((r1, r2) -> r1.getName().compareToIgnoreCase(r2.getName()));
+                // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
+                RecipesAdapter adapter = new RecipesAdapter(filteredList, filteredAvailability);
+                rvRecipes.setAdapter(adapter);
+                rvRecipes.setLayoutManager(new LinearLayoutManager(context));
+            });
+        });
+    }
+
 }
