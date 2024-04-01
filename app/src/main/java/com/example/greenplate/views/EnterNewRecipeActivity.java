@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,9 +19,6 @@ import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
 import com.example.greenplate.viewmodels.RecipeViewModel;
 import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
-
-import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

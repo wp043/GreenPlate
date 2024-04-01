@@ -9,13 +9,13 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
-import com.example.greenplate.viewmodels.RecipeViewModel;
-import androidx.appcompat.widget.SearchView;
 import com.example.greenplate.models.Recipe;
+import com.example.greenplate.viewmodels.RecipeViewModel;
 import com.example.greenplate.viewmodels.adapters.RecipesAdapter;
 
 import java.util.ArrayList;
@@ -115,6 +115,22 @@ public class RecipeFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), EnterNewRecipeActivity.class);
                 startActivity(intent);
                 getActivity().finish();
+            }
+        });
+
+        Button sortByNameButton = view.findViewById(R.id.btnSortName);
+        sortByNameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recipeViewModel.retrieveAndDisplaySortedByName(getContext(), rvRecipes);
+            }
+        });
+
+        Button sortByIngredientButton = view.findViewById(R.id.btnSortIngredient);
+        sortByIngredientButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recipeViewModel.retrieveAndDisplaySortedByIngredients(getContext(), rvRecipes);
             }
         });
     }

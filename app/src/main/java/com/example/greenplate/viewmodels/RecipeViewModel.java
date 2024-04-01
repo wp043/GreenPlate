@@ -242,4 +242,118 @@ public class RecipeViewModel extends ViewModel {
         });
     }
 
+
+    public void retrieveAndDisplaySortedByName(Context context, RecyclerView rvRecipes) {
+        this.getRecipes(itemsRecipe -> {
+            List<Recipe> recipes = new ArrayList<>();
+            if (itemsRecipe != null) {
+                for (RetrievableItem item : itemsRecipe) {
+                    if (item instanceof Recipe) {
+                        Recipe recipe = (Recipe) item;
+                        recipes.add(recipe);
+                    }
+                }
+            }
+
+            new IngredientViewModel().getIngredients(itemsIngredient -> {
+                List<String> availability = new ArrayList<>();
+                Map<String, Double> ingredients = new HashMap<>();
+
+                for (RetrievableItem item : itemsIngredient) {
+                    ingredients.put(item.getName(), item.getMultiplicity());
+                }
+
+                List<RecipeAvailability> combinedList = new ArrayList<>();
+                for (Recipe recipe : recipes) {
+                    boolean enoughIngredients = true;
+                    for (Ingredient ingredient : recipe.getIngredients()) {
+                        if (!ingredients.containsKey(ingredient.getName())
+                                || (ingredients.get(ingredient.getName())
+                                < recipe.getMultiplicity())) {
+                            enoughIngredients = false;
+                            break;
+                        }
+                    }
+                    combinedList.add(new RecipeAvailability(recipe,
+                            enoughIngredients ? "Yes" : "No"));
+                }
+
+                // Sorting the combinedList based on Recipe name
+                SortByNameStrategy sortingStrat = new SortByNameStrategy();
+                combinedList = sortingStrat.sort(combinedList);
+
+                // Extracting the sorted lists
+                List<Recipe> sortedRecipes = new ArrayList<>();
+                List<String> sortedAvailability = new ArrayList<>();
+                for (RecipeAvailability ra : combinedList) {
+                    sortedRecipes.add(ra.getRecipe());
+                    sortedAvailability.add(ra.getAvailability());
+                }
+
+                // Use RecyclerView adapter to put list of recipes into
+                // RecyclerView (scrollable list)
+                RecipesAdapter adapter = new RecipesAdapter(sortedRecipes, sortedAvailability);
+                rvRecipes.setAdapter(adapter);
+                rvRecipes.setLayoutManager(new LinearLayoutManager(context));
+            });
+        });
+    }
+
+    public void retrieveAndDisplaySortedByIngredients(Context context, RecyclerView rvRecipes) {
+        this.getRecipes(itemsRecipe -> {
+            List<Recipe> recipes = new ArrayList<>();
+            if (itemsRecipe != null) {
+                for (RetrievableItem item : itemsRecipe) {
+                    if (item instanceof Recipe) {
+                        Recipe recipe = (Recipe) item;
+                        recipes.add(recipe);
+                    }
+                }
+            }
+
+            new IngredientViewModel().getIngredients(itemsIngredient -> {
+                List<String> availability = new ArrayList<>();
+                Map<String, Double> ingredients = new HashMap<>();
+
+                for (RetrievableItem item : itemsIngredient) {
+                    ingredients.put(item.getName(), item.getMultiplicity());
+                }
+
+                List<RecipeAvailability> combinedList = new ArrayList<>();
+                for (Recipe recipe : recipes) {
+                    boolean enoughIngredients = true;
+                    for (Ingredient ingredient : recipe.getIngredients()) {
+                        if (!ingredients.containsKey(ingredient.getName())
+                                || (ingredients.get(ingredient.getName())
+                                < recipe.getMultiplicity())) {
+                            enoughIngredients = false;
+                            break;
+                        }
+                    }
+                    combinedList.add(new RecipeAvailability(recipe,
+                            enoughIngredients ? "Yes" : "No"));
+                }
+
+                // Sorting the combinedList based on Ingredient Number
+                SortByIngredientCountStrategy sortingStrat = new SortByIngredientCountStrategy();
+                combinedList = sortingStrat.sort(combinedList);
+
+                // Extracting the sorted lists
+                List<Recipe> sortedRecipes = new ArrayList<>();
+                List<String> sortedAvailability = new ArrayList<>();
+                for (RecipeAvailability ra : combinedList) {
+                    sortedRecipes.add(ra.getRecipe());
+                    sortedAvailability.add(ra.getAvailability());
+                }
+
+                // Use RecyclerView adapter to put list of recipes into
+                // RecyclerView (scrollable list)
+                RecipesAdapter adapter = new RecipesAdapter(sortedRecipes, sortedAvailability);
+                rvRecipes.setAdapter(adapter);
+                rvRecipes.setLayoutManager(new LinearLayoutManager(context));
+            });
+        });
+    }
+
+
 }
