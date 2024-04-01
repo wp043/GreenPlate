@@ -5,27 +5,19 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
-import com.example.greenplate.models.RetrievableItem;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHolder> {
@@ -109,12 +101,14 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                 nameEditText.setText(recipe.getName());
                 String ingredientsText = "";
                 for (Ingredient ingredient: recipe.getIngredients()) {
-                    ingredientsText = ingredientsText + ingredient.getMultiplicity() + "\t" + ingredient.getName() + "\n";
+                    ingredientsText = ingredientsText
+                            + ingredient.getMultiplicity() + "\t" + ingredient.getName() + "\n";
                 }
                 ingredientsEditText.setText(ingredientsText);
                 String instructionsText = "";
                 for (int i = 1; i <= recipe.getInstructions().size(); i++) {
-                    instructionsText = instructionsText + i + ". " + recipe.getInstructions().get(i - 1) + "\n";
+                    instructionsText = instructionsText
+                            + i + ". " + recipe.getInstructions().get(i - 1) + "\n";
                 }
                 instructionsEditText.setText(instructionsText);
 

@@ -3,7 +3,6 @@ package com.example.greenplate.viewmodels;
 import android.content.Context;
 import android.util.Log;
 
-import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -172,7 +171,7 @@ public class RecipeViewModel extends ViewModel {
                     }
                 }
 
-                // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
+                // Use RecyclerView adapter to put list of recipes into RecyclerView
                 RecipesAdapter adapter = new RecipesAdapter(recipes, availability, fragment);
                 rvRecipes.setAdapter(adapter);
                 rvRecipes.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
@@ -181,7 +180,8 @@ public class RecipeViewModel extends ViewModel {
     }
 
 
-    public void retrieveAndDisplayFiltered(RecyclerView rvRecipes, String search, Fragment fragment) {
+    public void retrieveAndDisplayFiltered(
+            RecyclerView rvRecipes, String search, Fragment fragment) {
         this.getRecipes(items -> {
             List<Recipe> recipes = new ArrayList<>();
             if (items != null) {
@@ -238,9 +238,10 @@ public class RecipeViewModel extends ViewModel {
                 }
 
 
-//                filteredList.sort((r1, r2) -> r1.getName().compareToIgnoreCase(r2.getName()));
-                // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
-                RecipesAdapter adapter = new RecipesAdapter(filteredList, filteredAvailability, fragment);
+                // filteredList.sort((r1, r2) -> r1.getName().compareToIgnoreCase(r2.getName()));
+                // Use RecyclerView adapter to put list of recipes into RecyclerView
+                RecipesAdapter adapter = new RecipesAdapter(
+                        filteredList, filteredAvailability, fragment);
                 rvRecipes.setAdapter(adapter);
                 rvRecipes.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
             });
@@ -248,7 +249,8 @@ public class RecipeViewModel extends ViewModel {
     }
 
 
-    public void retrieveAndDisplaySortedByName(Context context, RecyclerView rvRecipes, Fragment fragment) {
+    public void retrieveAndDisplaySortedByName(
+            Context context, RecyclerView rvRecipes, Fragment fragment) {
         this.getRecipes(itemsRecipe -> {
             List<Recipe> recipes = new ArrayList<>();
             if (itemsRecipe != null) {
@@ -297,14 +299,16 @@ public class RecipeViewModel extends ViewModel {
 
                 // Use RecyclerView adapter to put list of recipes into
                 // RecyclerView (scrollable list)
-                RecipesAdapter adapter = new RecipesAdapter(sortedRecipes, sortedAvailability, fragment);
+                RecipesAdapter adapter = new RecipesAdapter(
+                        sortedRecipes, sortedAvailability, fragment);
                 rvRecipes.setAdapter(adapter);
                 rvRecipes.setLayoutManager(new LinearLayoutManager(context));
             });
         });
     }
 
-    public void retrieveAndDisplaySortedByIngredients(Context context, RecyclerView rvRecipes, Fragment fragment) {
+    public void retrieveAndDisplaySortedByIngredients(
+            Context context, RecyclerView rvRecipes, Fragment fragment) {
         this.getRecipes(itemsRecipe -> {
             List<Recipe> recipes = new ArrayList<>();
             if (itemsRecipe != null) {
@@ -353,7 +357,8 @@ public class RecipeViewModel extends ViewModel {
 
                 // Use RecyclerView adapter to put list of recipes into
                 // RecyclerView (scrollable list)
-                RecipesAdapter adapter = new RecipesAdapter(sortedRecipes, sortedAvailability, fragment);
+                RecipesAdapter adapter = new RecipesAdapter(
+                        sortedRecipes, sortedAvailability, fragment);
                 rvRecipes.setAdapter(adapter);
                 rvRecipes.setLayoutManager(new LinearLayoutManager(context));
             });
