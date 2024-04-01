@@ -114,7 +114,7 @@ public class RecipeFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), EnterNewRecipeActivity.class);
                 startActivity(intent);
-                recipeViewModel.retrieveAndDisplayIngredients(getContext(), rvRecipes);
+                getActivity().finish();
             }
         });
     }
