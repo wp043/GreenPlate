@@ -7,7 +7,7 @@ public class SortByIngredientCountStrategy implements RecipeSortStrategy {
     @Override
     public List<RecipeAvailability> sort(List<RecipeAvailability> combinedList) {
         // Implement sorting by ingredient count
-        combinedList.sort(Comparator.comparingInt(ra -> ra.recipe.getIngredients().size()));
+        combinedList.sort(Comparator.comparingInt(ra -> ra.getRecipe().getIngredients().size()));
         return combinedList;
     }
 }

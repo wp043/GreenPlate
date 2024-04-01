@@ -7,7 +7,7 @@ public class SortByNameStrategy implements RecipeSortStrategy {
     @Override
     public List<RecipeAvailability> sort(List<RecipeAvailability> combinedList) {
         // Implement sorting by name
-        combinedList.sort(Comparator.comparing(o -> o.recipe.getName()));
+        combinedList.sort(Comparator.comparing(o -> o.getRecipe().getName()));
         return combinedList;
     }
 }

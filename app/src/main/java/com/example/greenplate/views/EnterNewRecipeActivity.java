@@ -1,5 +1,6 @@
 package com.example.greenplate.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.greenplate.R;
@@ -18,16 +19,10 @@ import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
 import com.example.greenplate.viewmodels.RecipeViewModel;
 import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
-import com.example.greenplate.viewmodels.managers.CookbookManager;
-
-import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class EnterNewRecipeActivity extends AppCompatActivity {
@@ -62,6 +57,7 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         cancelRecipeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                returnToRecipeScreen();
                 finish();
             }
         });
@@ -141,6 +137,7 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
             public void onRecipeAdded(boolean success) {
                 if (success) {
                     showToast("Recipe added successfully!");
+                    returnToRecipeScreen();
                     finish();
                 } else {
                     showToast("Failed to add recipe.");
@@ -174,7 +171,8 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
                                     + ". Please remove the duplicate.");
                             return null;
                         } else {
-                            ingredients.add(new Ingredient(ingredientName, ingredientCalorie, ingredientQuantity, null));
+                            ingredients.add(new Ingredient(ingredientName, ingredientCalorie,
+                                    ingredientQuantity, null));
                             ingredientNames.add(ingredientName);
                         }
                     }
@@ -205,5 +203,11 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
 
     private void showToast(String message) {
         Toast.makeText(EnterNewRecipeActivity.this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void returnToRecipeScreen() {
+        Intent intent = new Intent(EnterNewRecipeActivity.this, NavBarActivity.class);
+        intent.putExtra("Fragment", "Recipes");
+        startActivity(intent);
     }
 }

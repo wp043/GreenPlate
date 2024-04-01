@@ -276,8 +276,8 @@ public class RecipeViewModel extends ViewModel {
                 List<Recipe> sortedRecipes = new ArrayList<>();
                 List<String> sortedAvailability = new ArrayList<>();
                 for (RecipeAvailability ra : combinedList) {
-                    sortedRecipes.add(ra.recipe);
-                    sortedAvailability.add(ra.availability);
+                    sortedRecipes.add(ra.getRecipe());
+                    sortedAvailability.add(ra.getAvailability());
                 }
 
                 // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
@@ -328,8 +328,8 @@ public class RecipeViewModel extends ViewModel {
                 List<Recipe> sortedRecipes = new ArrayList<>();
                 List<String> sortedAvailability = new ArrayList<>();
                 for (RecipeAvailability ra : combinedList) {
-                    sortedRecipes.add(ra.recipe);
-                    sortedAvailability.add(ra.availability);
+                    sortedRecipes.add(ra.getRecipe());
+                    sortedAvailability.add(ra.getAvailability());
                 }
 
                 // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
