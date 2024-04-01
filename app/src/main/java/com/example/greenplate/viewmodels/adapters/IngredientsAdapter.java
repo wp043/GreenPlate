@@ -13,6 +13,7 @@ import com.example.greenplate.R;
 import com.example.greenplate.models.Ingredient;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +38,14 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         return viewHolder;
     }
 
+    public List<Ingredient> getRecipeList() {
+        return recipeList;
+    }
+
+    public int getSelectedPosition() {
+        return selectedPosition;
+    }
+
     // Involves populating data into the item through holder
     @Override
     public void onBindViewHolder(IngredientsAdapter.ViewHolder holder, int position) {
@@ -50,8 +59,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
         String info = String.format("Calorie: %.0f, count: %.0f, expirate date: ",
                 ingredient.getCalories(), ingredient.getMultiplicity());
-        if (ingredient.getExpirationDate().equals(new Date(Long.MAX_VALUE))) {
-            info += "forever away";
+
+        Calendar currentCalendar = Calendar.getInstance();
+        currentCalendar.setTime(new Date());
+        currentCalendar.add(Calendar.YEAR, 5);
+        if (ingredient.getExpirationDate().after(currentCalendar.getTime())) {
+            info += "long away";
         } else {
             SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
             info += sdf.format(ingredient.getExpirationDate());
