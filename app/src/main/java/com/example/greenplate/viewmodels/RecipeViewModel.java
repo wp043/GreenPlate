@@ -63,6 +63,10 @@ public class RecipeViewModel extends ViewModel {
     }
 
     public void addRecipe(Recipe recipe, OnRecipeAddedListener listener) {
+        if (recipe == null) {
+            listener.onRecipeAdded(false);
+            return;
+        }
         if (recipe.getName() == null) {
             listener.onRecipeAdded(false);
             return;

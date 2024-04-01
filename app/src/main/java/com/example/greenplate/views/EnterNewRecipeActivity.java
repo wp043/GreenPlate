@@ -116,6 +116,10 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
 
     private void submitRecipe() {
         String recipeNameStr = recipeNameEditText.getText().toString().trim();
+        if (recipeNameEditText == null) {
+            showToast("Cannot have null");
+            return;
+        }
 
         List<Ingredient> ingredients = collectIngredients();
         if (ingredients == null) {
