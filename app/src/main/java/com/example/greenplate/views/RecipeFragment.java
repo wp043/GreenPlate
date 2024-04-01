@@ -114,7 +114,23 @@ public class RecipeFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), EnterNewRecipeActivity.class);
                 startActivity(intent);
-                recipeViewModel.retrieveAndDisplayIngredients(getContext(), rvRecipes);
+                getActivity().finish();
+            }
+        });
+
+        Button sortByNameButton = view.findViewById(R.id.btnSortName);
+        sortByNameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recipeViewModel.retrieveAndDisplaySortedByName(getContext(), rvRecipes);
+            }
+        });
+
+        Button sortByIngredientButton = view.findViewById(R.id.btnSortIngredient);
+        sortByIngredientButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recipeViewModel.retrieveAndDisplaySortedByIngredients(getContext(), rvRecipes);
             }
         });
     }
