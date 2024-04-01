@@ -41,6 +41,7 @@ public class RecipeFragment extends Fragment {
     private ArrayList<Recipe> copyRecipes;
 
     private RecipesAdapter adapter;
+    private RecipeFragment fragment;
 
 
 
@@ -87,6 +88,8 @@ public class RecipeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        fragment = this;
+
         recipeViewModel = new RecipeViewModel();
         RecyclerView rvRecipes = view.findViewById(R.id.rvRecipes);
 
@@ -100,13 +103,13 @@ public class RecipeFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                recipeViewModel.retrieveAndDisplayFiltered(getContext(), rvRecipes, newText);
+                recipeViewModel.retrieveAndDisplayFiltered(rvRecipes, newText, fragment);
                 return true;
             }
         });
 
-        recipeViewModel.addDefaultRecipes(getContext(), rvRecipes);
-        recipeViewModel.retrieveAndDisplayIngredients(getContext(), rvRecipes);
+        recipeViewModel.addDefaultRecipes(rvRecipes, fragment);
+        recipeViewModel.retrieveAndDisplayIngredients(rvRecipes, fragment);
 
         Button addRecipeButton = view.findViewById(R.id.btnEnterNewRecipe);
         addRecipeButton.setOnClickListener(new View.OnClickListener() {

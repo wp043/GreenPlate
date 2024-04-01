@@ -3,6 +3,8 @@ package com.example.greenplate.viewmodels;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,7 +31,7 @@ public class RecipeViewModel extends ViewModel {
         cookbookManager = new CookbookManager();
     }
 
-    public void addDefaultRecipes(Context context, RecyclerView rvRecipes) {
+    public void addDefaultRecipes(RecyclerView rvRecipes, Fragment fragment) {
         // Add test recipe 1
         List<Ingredient> ingredients1 = new ArrayList<>();
         ingredients1.add(new Ingredient("Bun", 100, 2, null));
@@ -42,7 +44,7 @@ public class RecipeViewModel extends ViewModel {
         Recipe recipe1 = new Recipe("Cheeseburger", ingredients1, instructions1);
         addRecipe(recipe1, success -> {
             // Update RecyclerView
-            retrieveAndDisplayIngredients(context, rvRecipes);
+            retrieveAndDisplayIngredients(rvRecipes, fragment);
         });
 
         // Add test recipe 2
@@ -55,7 +57,7 @@ public class RecipeViewModel extends ViewModel {
         Recipe recipe2 = new Recipe("Hot dog", ingredients2, instructions2);
         addRecipe(recipe2, success -> {
             // Update RecyclerView
-            retrieveAndDisplayIngredients(context, rvRecipes);
+            retrieveAndDisplayIngredients(rvRecipes, fragment);
         });
         defaultRecipesInitialized = true;
     }
@@ -128,7 +130,7 @@ public class RecipeViewModel extends ViewModel {
     }
 
 
-    public void retrieveAndDisplayIngredients(Context context, RecyclerView rvRecipes) {
+    public void retrieveAndDisplayIngredients(RecyclerView rvRecipes, Fragment fragment) {
         this.getRecipes(itemsRecipe -> {
             List<Recipe> recipes = new ArrayList<>();
             if (itemsRecipe != null) {
@@ -170,15 +172,16 @@ public class RecipeViewModel extends ViewModel {
                     }
                 }
 
-                RecipesAdapter adapter = new RecipesAdapter(recipes, availability);
+                // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
+                RecipesAdapter adapter = new RecipesAdapter(recipes, availability, fragment);
                 rvRecipes.setAdapter(adapter);
-                rvRecipes.setLayoutManager(new LinearLayoutManager(context));
+                rvRecipes.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
             });
         });
     }
 
 
-    public void retrieveAndDisplayFiltered(Context context, RecyclerView rvRecipes, String search) {
+    public void retrieveAndDisplayFiltered(RecyclerView rvRecipes, String search, Fragment fragment) {
         this.getRecipes(items -> {
             List<Recipe> recipes = new ArrayList<>();
             if (items != null) {
@@ -235,9 +238,11 @@ public class RecipeViewModel extends ViewModel {
                 }
 
 
-                RecipesAdapter adapter = new RecipesAdapter(filteredList, filteredAvailability);
+//                filteredList.sort((r1, r2) -> r1.getName().compareToIgnoreCase(r2.getName()));
+                // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
+                RecipesAdapter adapter = new RecipesAdapter(filteredList, filteredAvailability, fragment);
                 rvRecipes.setAdapter(adapter);
-                rvRecipes.setLayoutManager(new LinearLayoutManager(context));
+                rvRecipes.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
             });
         });
     }
