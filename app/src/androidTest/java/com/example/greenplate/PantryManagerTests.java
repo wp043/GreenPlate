@@ -10,8 +10,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
-import com.example.greenplate.viewmodels.managers.PantryManager;
 import com.example.greenplate.viewmodels.listeners.OnIngredientRemoveListener;
+import com.example.greenplate.viewmodels.managers.PantryManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,15 +62,15 @@ public class PantryManagerTests {
                 .getReference(String.format("user/%s/pantries/", A1.getCurrentUser().getUid()));
     }
 
-    // @Before
-    // public void clearDB() {
-    // // Remove all records for the user
-    // ref.removeValue()
-    // .addOnSuccessListener(e -> { })
-    // .addOnFailureListener(e -> {
-    // throw new RuntimeException("Clear DB: " + e.getMessage());
-    // });
-    // }
+    @Before
+    public void clearDB() {
+        // Remove all records for the user
+        ref.removeValue()
+            .addOnSuccessListener(e -> { })
+            .addOnFailureListener(e -> {
+                throw new RuntimeException("Clear DB: " + e.getMessage());
+            });
+    }
 
     @Test
     public void testLogin() {
