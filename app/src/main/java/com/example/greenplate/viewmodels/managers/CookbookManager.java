@@ -98,7 +98,7 @@ public class CookbookManager implements Manager {
     /**
      * Add a recipe to the database.
      * @param recipe - the recipe to add
-     * @param listener - for callback
+     * @param listener - the listener to check when to add the recipe
      * @return the status of the operation
      */
     public GreenPlateStatus addRecipe(Recipe recipe, OnRecipeAddedListener listener) {
