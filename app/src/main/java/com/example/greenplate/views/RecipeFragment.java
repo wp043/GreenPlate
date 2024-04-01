@@ -11,10 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
@@ -122,6 +118,22 @@ public class RecipeFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), EnterNewRecipeActivity.class);
                 startActivity(intent);
                 getActivity().finish();
+            }
+        });
+
+        Button sortByNameButton = view.findViewById(R.id.btnSortName);
+        sortByNameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recipeViewModel.retrieveAndDisplaySortedByName(getContext(), rvRecipes);
+            }
+        });
+
+        Button sortByIngredientButton = view.findViewById(R.id.btnSortIngredient);
+        sortByIngredientButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recipeViewModel.retrieveAndDisplaySortedByIngredients(getContext(), rvRecipes);
             }
         });
     }

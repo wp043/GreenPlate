@@ -16,14 +16,14 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:hint="Quantity"
-        android:inputType="number" />
+        android:inputType="numberDecimal" />
 
     <EditText
         android:id="@+id/ingredient_calories"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:hint="Calories per Serving"
-        android:inputType="number" />
+        android:inputType="numberDecimal" />
 
     <EditText
         android:id="@+id/ingredient_expiration"
