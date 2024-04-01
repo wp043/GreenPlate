@@ -18,11 +18,12 @@ import java.util.List;
 
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHolder> {
     private List<Recipe> recipeList;
-
+    private List<String> availabilityList;
     private int selectedPosition = RecyclerView.NO_POSITION;
 
-    public RecipesAdapter(List<Recipe> recipes) {
+    public RecipesAdapter(List<Recipe> recipes, List<String> availability) {
         recipeList = recipes;
+        availabilityList = availability;
     }
 
     @Override
@@ -43,6 +44,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
     public void onBindViewHolder(RecipesAdapter.ViewHolder holder, int position) {
         // Get the data model based on position
         Recipe recipe = recipeList.get(position);
+        String availability = availabilityList.get(position);
 
         // Set item views based on your views and data model
         TextView nameTextView = holder.nameTextView;
@@ -54,7 +56,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
         numIngredientsTextView.setText("Ingredients: " + recipe.getIngredients().size());
         numInstructionsTextView.setText("Instructions: " + recipe.getInstructions().size());
         String availabilityText;
-        if (recipe.isAvailable()) {
+        if (availability.equals("Yes")) {
             availabilityText = "<font color=\"#32CD32\">Yes</font>";
         } else {
             availabilityText = "<font color=\"#DC143C\">No</font>";

@@ -10,7 +10,6 @@ import java.util.Map;
 public class Recipe extends RetrievableItem {
     private List<Ingredient> ingredients;
     private List<String> instructions;
-    boolean available;
 
     /**
      * Constructor for a Recipe.
@@ -23,7 +22,6 @@ public class Recipe extends RetrievableItem {
         super(name, Recipe.calculateTotalCalorie(ingredients), 1);
         this.ingredients = ingredients;
         this.instructions = instructions;
-        available = false;
     }
 
     /**
@@ -148,14 +146,6 @@ public class Recipe extends RetrievableItem {
 
 
     /**
-     * Set availability of Recipe
-     * @param available availability of Recipe
-     */
-    public void setAvailable(boolean available) {
-        this.available = available;
-    }
-
-    /**
      * Getter for ingredient list within a recipe
      * @return a list containing ingredients
      */
@@ -169,13 +159,5 @@ public class Recipe extends RetrievableItem {
      */
     public List<String> getInstructions() {
         return instructions;
-    }
-
-    /**
-     * Getter for Recipe availability.
-     * @return true if user has enough ingredients for the Recipe, false if not
-     */
-    public boolean isAvailable() {
-        return available;
     }
 }
