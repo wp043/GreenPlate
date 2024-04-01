@@ -61,9 +61,9 @@ public class PantryManager implements Manager {
                         String name = childSnapshot.child("name")
                                 .getValue(String.class);
                         double calories = childSnapshot.child("calories")
-                                .getValue(Integer.class);
-                        int multiplicity = childSnapshot.child("multiplicity")
-                                .getValue(Integer.class);
+                                .getValue(Double.class);
+                        double multiplicity = childSnapshot.child("multiplicity")
+                                .getValue(Double.class);
                         String expirationDateString = childSnapshot
                                 .child("expirationDate").getValue(String.class);
                         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
@@ -208,8 +208,7 @@ public class PantryManager implements Manager {
                             .getValue(String.class);
 
                     if (calories == ingredient.getCalories()
-                            && name.equals(ingredient.getName())
-                            && expirationDateString.equals(formattedDate)) {
+                            && name.equals(ingredient.getName())) {
                         String key = childSnapshot.getKey();
                         myRef.child(key).child("multiplicity")
                                 .setValue(ingredient.getMultiplicity())

@@ -57,7 +57,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         TextView infoTextView = holder.infoTextView;
         nameTextView.setText(ingredient.getName());
 
-        String info = String.format("Calorie: %.0f, count: %.0f, expirate date: ",
+        String info = String.format("Calorie: %.2f, count: %.2f, expirate date: ",
                 ingredient.getCalories(), ingredient.getMultiplicity());
 
         Calendar currentCalendar = Calendar.getInstance();
@@ -113,8 +113,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
                     nameTextView.setTextColor(Color.RED);
                 }
             });
-            nameTextView = (TextView) itemView.findViewById(R.id.ingredient_name);
-            infoTextView = (TextView) itemView.findViewById(R.id.ingredient_info);
+            nameTextView = itemView.findViewById(R.id.ingredient_name);
+            infoTextView = itemView.findViewById(R.id.ingredient_info);
         }
     }
 }
