@@ -19,7 +19,6 @@ import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
 import com.example.greenplate.viewmodels.RecipeViewModel;
 import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -115,6 +114,10 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
     /** @noinspection checkstyle:TodoComment*/
     private void submitRecipe() {
         String recipeNameStr = recipeNameEditText.getText().toString().trim();
+        if (recipeNameEditText == null) {
+            showToast("Cannot have null");
+            return;
+        }
 
         List<Ingredient> ingredients = collectIngredients();
         if (ingredients == null) {

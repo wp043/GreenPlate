@@ -105,7 +105,6 @@ public class CookbookManager implements Manager {
         try {
             DatabaseReference recipeRef = myRef.child("Cookbook").child(recipe.getName());
 
-            // Add ingredients of recipe to database
             DatabaseReference ingredientsRef = recipeRef.child("ingredients");
             for (Ingredient ingredient: recipe.getIngredients()) {
                 String ingredientKey = ingredientsRef.push().getKey();
