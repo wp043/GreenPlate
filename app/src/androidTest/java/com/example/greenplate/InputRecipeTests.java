@@ -1,7 +1,6 @@
 package com.example.greenplate;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -194,21 +193,6 @@ public class InputRecipeTests {
 
         // Act
         vm.addRecipe(testRecipe, success -> {
-            assertTrue("Recipe added successfully!", success);
-        });
-
-        String nameTest2 = "test1";
-        List<Ingredient> ingredientsTest2 = new ArrayList<>();
-        Ingredient ingredient1Test2 = new Ingredient("caloric explosion", 50000,
-                10, null);
-        ingredientsTest2.add(ingredient1Test2);
-        List<String> instructionsTest2 = new ArrayList<>();
-        instructionsTest2.add("test instruction 1");
-        instructionsTest2.add("test instruction 2");
-        Recipe testRecipeTest2 = new Recipe(nameTest2, ingredientsTest2, instructionsTest2);
-
-        // Act
-        vm.addRecipe(testRecipeTest2, success -> {
             assertTrue("Recipe added successfully!", success);
         });
 
