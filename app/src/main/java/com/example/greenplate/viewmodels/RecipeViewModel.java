@@ -248,7 +248,7 @@ public class RecipeViewModel extends ViewModel {
     }
 
 
-    public void retrieveAndDisplaySortedByName(Context context, RecyclerView rvRecipes) {
+    public void retrieveAndDisplaySortedByName(Context context, RecyclerView rvRecipes, Fragment fragment) {
         this.getRecipes(itemsRecipe -> {
             List<Recipe> recipes = new ArrayList<>();
             if (itemsRecipe != null) {
@@ -297,14 +297,14 @@ public class RecipeViewModel extends ViewModel {
 
                 // Use RecyclerView adapter to put list of recipes into
                 // RecyclerView (scrollable list)
-                RecipesAdapter adapter = new RecipesAdapter(sortedRecipes, sortedAvailability);
+                RecipesAdapter adapter = new RecipesAdapter(sortedRecipes, sortedAvailability, fragment);
                 rvRecipes.setAdapter(adapter);
                 rvRecipes.setLayoutManager(new LinearLayoutManager(context));
             });
         });
     }
 
-    public void retrieveAndDisplaySortedByIngredients(Context context, RecyclerView rvRecipes) {
+    public void retrieveAndDisplaySortedByIngredients(Context context, RecyclerView rvRecipes, Fragment fragment) {
         this.getRecipes(itemsRecipe -> {
             List<Recipe> recipes = new ArrayList<>();
             if (itemsRecipe != null) {
@@ -353,7 +353,7 @@ public class RecipeViewModel extends ViewModel {
 
                 // Use RecyclerView adapter to put list of recipes into
                 // RecyclerView (scrollable list)
-                RecipesAdapter adapter = new RecipesAdapter(sortedRecipes, sortedAvailability);
+                RecipesAdapter adapter = new RecipesAdapter(sortedRecipes, sortedAvailability, fragment);
                 rvRecipes.setAdapter(adapter);
                 rvRecipes.setLayoutManager(new LinearLayoutManager(context));
             });
