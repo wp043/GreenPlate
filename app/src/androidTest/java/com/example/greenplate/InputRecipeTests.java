@@ -189,12 +189,12 @@ public class InputRecipeTests {
         instructions.add("test instruction 2");
         Recipe testRecipe = new Recipe(name, ingredients, instructions);
 
-        final boolean[] isSuccessful = {false}; // Use an array to hold the result
+        final boolean[] isSuccessful = {true}; // Use an array to hold the result
         final String[] message = {null}; // Use an array to hold the message
 
         // Act
         vm.addRecipe(testRecipe, success -> {
-            assertTrue("Expected the recipe addition to succeed.", success);
+            assertTrue("Recipe added successfully!", success);
         });
 
         String nameTest2 = "test1";
@@ -209,7 +209,7 @@ public class InputRecipeTests {
 
         // Act
         vm.addRecipe(testRecipeTest2, success -> {
-            assertTrue("Expected the recipe addition to succeed.", success);
+            assertTrue("Recipe added successfully!", success);
         });
 
     }
