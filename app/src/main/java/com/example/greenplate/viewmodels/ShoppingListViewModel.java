@@ -46,7 +46,10 @@ public class ShoppingListViewModel extends ViewModel {
         ingredientsInShoppingCart.add(toAdd);
     }
 
-    public void purchaseIngredient(Ingredient purchasedIngredient) {
+    private void purchaseIngredient(Ingredient purchasedIngredient) {
+        pantryManager.isIngredientDuplicate(purchasedIngredient, (isDuplicate, duplicateName) -> {
+//            pantryManager.updateIngredientMultiplicity();
+        });
         pantryManager.addIngredient(purchasedIngredient, listener -> {
 
         });

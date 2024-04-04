@@ -149,15 +149,15 @@ public class CookbookManager implements Manager {
     public void isRecipeDuplicate(Recipe recipe, OnDuplicateCheckListener listener) {
         retrieve(items -> {
             boolean isDuplicate = false;
-            String duplicateName = null;
+            RetrievableItem duplicate = null;
             for (RetrievableItem item : items) {
                 if (item.getName().equals(recipe.getName())) {
                     isDuplicate = true;
-                    duplicateName = item.getName();
+                    duplicate = item;
                     break;
                 }
             }
-            listener.onDuplicateCheckCompleted(isDuplicate, duplicateName);
+            listener.onDuplicateCheckCompleted(isDuplicate, duplicate);
         });
     }
 }

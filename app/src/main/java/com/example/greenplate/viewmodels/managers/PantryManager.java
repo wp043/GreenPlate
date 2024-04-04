@@ -146,15 +146,15 @@ public class PantryManager implements Manager {
     public void isIngredientDuplicate(Ingredient ingredient, OnDuplicateCheckListener listener) {
         retrieve(items -> {
             boolean isDuplicate = false;
-            String duplicateName = null;
+            RetrievableItem duplicate = null;
             for (RetrievableItem item : items) {
                 if (item.equals(ingredient)) {
                     isDuplicate = true;
-                    duplicateName = item.getName();
+                    duplicate = item;
                     break;
                 }
             }
-            listener.onDuplicateCheckCompleted(isDuplicate, duplicateName);
+            listener.onDuplicateCheckCompleted(isDuplicate, duplicate);
         });
     }
 
