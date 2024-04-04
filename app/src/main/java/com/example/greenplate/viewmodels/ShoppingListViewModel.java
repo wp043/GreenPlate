@@ -16,6 +16,7 @@ import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.adapters.RecipesAdapter;
 import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
 import com.example.greenplate.viewmodels.listeners.OnDataRetrievedCallback;
+import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
 import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
 import com.example.greenplate.viewmodels.listeners.OnReportGeneratedCallback;
 import com.example.greenplate.viewmodels.managers.CookbookManager;
@@ -42,16 +43,41 @@ public class ShoppingListViewModel extends ViewModel {
                 AvailabilityReportGenerator::logReport);
     }
 
-    public void addIngredient(Ingredient toAdd) {
+    public void addToShoppingCart(Ingredient toAdd) {
+        if (ingredientsInShoppingCart.contains(toAdd)) {
+            // TODO: Give an error message
+            return;
+        }
         ingredientsInShoppingCart.add(toAdd);
     }
 
-    private void purchaseIngredient(Ingredient purchasedIngredient) {
-        pantryManager.isIngredientDuplicate(purchasedIngredient, (isDuplicate, duplicateName) -> {
-//            pantryManager.updateIngredientMultiplicity();
-        });
-        pantryManager.addIngredient(purchasedIngredient, listener -> {
+    private void purchaseIngredient(Ingredient newItem) {
+        pantryManager.isIngredientDuplicate(newItem, (isDuplicate, duplicate) -> {
+            if (isDuplicate) {
+                pantryManager.updateIngredientMultiplicity(duplicate.getName(),
+                        duplicate.getMultiplicity() + newItem.getMultiplicity(),
+                        new OnMultiplicityUpdateListener() {
+                            @Override
+                            public void onMultiplicityUpdateSuccess(GreenPlateStatus status) {
+                                // TODO
+                            }
 
+                            @Override
+                            public void onMultiplicityUpdateFailure(GreenPlateStatus status) {
+                                // TODO
+                            }
+                        });
+                return;
+            }
+            pantryManager.addIngredient(newItem, listener -> {
+                // TODO
+            });
         });
     }
+
+    public void purchaseItems(List<Ingredient> items) {
+        items.forEach(this::purchaseIngredient);
+    }
+
+
 }
