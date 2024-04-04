@@ -19,6 +19,10 @@ public abstract class RetrievableItem {
         this.multiplicity = multiplicity;
     }
 
+    public RetrievableItem(RetrievableItem toCopy) {
+        this(toCopy.name, toCopy.calories, toCopy.multiplicity);
+    }
+
     @Override
     public String toString() {
         return "name='" + name + '\''

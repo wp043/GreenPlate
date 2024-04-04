@@ -1,5 +1,5 @@
 package com.example.greenplate.viewmodels.listeners;
 
 public interface OnDuplicateCheckListener {
-    void onDuplicateCheckCompleted(boolean isDuplicate);
+    void onDuplicateCheckCompleted(boolean isDuplicate, String duplicateName);
 }

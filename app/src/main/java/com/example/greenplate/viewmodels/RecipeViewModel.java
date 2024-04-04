@@ -13,14 +13,18 @@ import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
 import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.adapters.RecipesAdapter;
+import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
 import com.example.greenplate.viewmodels.listeners.OnDataRetrievedCallback;
 import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
 import com.example.greenplate.viewmodels.managers.CookbookManager;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class RecipeViewModel extends ViewModel {
     private CookbookManager cookbookManager;
@@ -83,7 +87,7 @@ public class RecipeViewModel extends ViewModel {
             }
         }
 
-        cookbookManager.isRecipeDuplicate(recipe, isDuplicate -> {
+        cookbookManager.isRecipeDuplicate(recipe, (isDuplicate, duplicateName) -> {
             if (isDuplicate) {
                 listener.onRecipeAdded(false);
             } else {
@@ -120,58 +124,25 @@ public class RecipeViewModel extends ViewModel {
 
         return new GreenPlateStatus(true, null);
     }
+
     /**
      * get all recipes in the cookbook
+     *
      * @param callback Callback to retrieve recipes from the cookbookManager
      */
     public void getRecipes(OnDataRetrievedCallback callback) {
         cookbookManager.retrieve(callback);
     }
 
-
     public void retrieveAndDisplayIngredients(RecyclerView rvRecipes, Fragment fragment) {
         this.getRecipes(itemsRecipe -> {
-            List<Recipe> recipes = new ArrayList<>();
-            if (itemsRecipe != null) {
-                for (RetrievableItem item : itemsRecipe) {
-                    if (item instanceof Recipe) {
-                        Recipe recipe = (Recipe) item;
-                        recipes.add(recipe);
-                    }
-                }
-            }
+            List<Recipe> recipes = itemsRecipe.stream().map(e -> (Recipe) e)
+                    .collect(Collectors.toList());
 
-            new IngredientViewModel().getIngredients(itemsIngredient -> {
-                List<String> availability = new ArrayList<>();
-                Map<String, Double> ingredients = new HashMap<>();
-
-                for (RetrievableItem item: itemsIngredient) {
-                    ingredients.put(item.getName(), item.getMultiplicity());
-                }
-
-                for (Recipe recipe: recipes) {
-                    boolean enoughIngredients = true;
-                    for (Ingredient ingredient: recipe.getIngredients()) {
-                        Log.d(recipe.getName() + ", " + ingredient.getName(),
-                                "Recipe: "
-                                        + ingredient.getMultiplicity()
-                                        + " Database: "
-                                        + ingredients.get(ingredient.getName()));
-                        if (!ingredients.containsKey(ingredient.getName())
-                                || (ingredients.get(ingredient.getName())
-                                < recipe.getMultiplicity())) {
-                            enoughIngredients = false;
-                            break;
-                        }
-                    }
-                    if (enoughIngredients) {
-                        availability.add("Yes");
-                    } else {
-                        availability.add("No");
-                    }
-                }
-
-                // Use RecyclerView adapter to put list of recipes into RecyclerView
+            List<String> availability = new ArrayList<>();
+            AvailabilityReportGenerator.getInstance().getMissingElementsForShopping(report -> {
+                recipes.forEach(recipe -> availability.add(
+                        report.containsKey(recipe.getName()) ? "No" : "Yes"));
                 RecipesAdapter adapter = new RecipesAdapter(recipes, availability, fragment);
                 rvRecipes.setAdapter(adapter);
                 rvRecipes.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
@@ -182,44 +153,14 @@ public class RecipeViewModel extends ViewModel {
 
     public void retrieveAndDisplayFiltered(
             RecyclerView rvRecipes, String search, Fragment fragment) {
-        this.getRecipes(items -> {
-            List<Recipe> recipes = new ArrayList<>();
-            if (items != null) {
-                for (RetrievableItem item : items) {
-                    if (item instanceof Recipe) {
-                        Recipe recipe = (Recipe) item;
-                        recipes.add(recipe);
-                    }
-                }
-            }
+        this.getRecipes(itemsRecipe -> {
+            List<Recipe> recipes = itemsRecipe.stream().map(e -> (Recipe) e)
+                    .collect(Collectors.toList());
 
-            new IngredientViewModel().getIngredients(itemsIngredient -> {
-                List<String> availability = new ArrayList<>();
-                Map<String, Double> ingredients = new HashMap<>();
-
-                for (RetrievableItem item: itemsIngredient) {
-                    ingredients.put(item.getName(), item.getMultiplicity());
-                }
-
-                for (Recipe recipe: recipes) {
-                    boolean enoughIngredients = true;
-                    for (Ingredient ingredient: recipe.getIngredients()) {
-                        Log.d(recipe.getName() + ", " + ingredient.getName(),
-                                "Recipe: " + ingredient.getMultiplicity() + " Database: "
-                                        + ingredients.get(ingredient.getName()));
-                        if (!ingredients.containsKey(ingredient.getName())
-                                || (ingredients.get(ingredient.getName())
-                                < recipe.getMultiplicity())) {
-                            enoughIngredients = false;
-                            break;
-                        }
-                    }
-                    if (enoughIngredients) {
-                        availability.add("Yes");
-                    } else {
-                        availability.add("No");
-                    }
-                }
+            List<String> availability = new ArrayList<>();
+            AvailabilityReportGenerator.getInstance().getMissingElementsForShopping(report -> {
+                recipes.forEach(recipe -> availability.add(
+                        report.containsKey(recipe.getName()) ? "No" : "Yes"));
 
                 ArrayList<Recipe> filteredList = new ArrayList<>();
                 List<String> filteredAvailability = new ArrayList<>();
@@ -227,8 +168,7 @@ public class RecipeViewModel extends ViewModel {
                     filteredList = new ArrayList<>(recipes);
                     filteredAvailability = new ArrayList<>(availability);
                 } else {
-                    filteredList = new ArrayList<>();
-                    for (int i = 0; i <= recipes.size() - 1; i++) {
+                    for (int i = 0; i < recipes.size(); i++) {
                         Recipe recipeItem = recipes.get(i);
                         if (recipeItem.getName().toLowerCase().contains(search.toLowerCase())) {
                             filteredList.add(recipeItem);
@@ -236,8 +176,6 @@ public class RecipeViewModel extends ViewModel {
                         }
                     }
                 }
-
-
                 // filteredList.sort((r1, r2) -> r1.getName().compareToIgnoreCase(r2.getName()));
                 // Use RecyclerView adapter to put list of recipes into RecyclerView
                 RecipesAdapter adapter = new RecipesAdapter(
@@ -248,122 +186,42 @@ public class RecipeViewModel extends ViewModel {
         });
     }
 
-
-    public void retrieveAndDisplaySortedByName(
-            Context context, RecyclerView rvRecipes, Fragment fragment) {
+    private void retrieveAndDisplaySorted(Context context, RecyclerView rvRecipes,
+                                          Fragment fragment, RecipeSortStrategy sorter) {
         this.getRecipes(itemsRecipe -> {
-            List<Recipe> recipes = new ArrayList<>();
-            if (itemsRecipe != null) {
-                for (RetrievableItem item : itemsRecipe) {
-                    if (item instanceof Recipe) {
-                        Recipe recipe = (Recipe) item;
-                        recipes.add(recipe);
-                    }
-                }
-            }
+            List<Recipe> recipes = itemsRecipe.stream().map(e -> (Recipe) e)
+                    .collect(Collectors.toList());
 
-            new IngredientViewModel().getIngredients(itemsIngredient -> {
-                List<String> availability = new ArrayList<>();
-                Map<String, Double> ingredients = new HashMap<>();
+            List<String> availability = new ArrayList<>();
+            AvailabilityReportGenerator.getInstance().getMissingElementsForShopping(report -> {
+                recipes.forEach(recipe -> availability.add(
+                        report.containsKey(recipe.getName()) ? "No" : "Yes"));
 
-                for (RetrievableItem item : itemsIngredient) {
-                    ingredients.put(item.getName(), item.getMultiplicity());
-                }
+                List<RecipeAvailability> combinedList = IntStream.range(0, recipes.size())
+                        .mapToObj(i -> new RecipeAvailability(recipes.get(i), availability.get(i)))
+                        .collect(Collectors.toList());
 
-                List<RecipeAvailability> combinedList = new ArrayList<>();
-                for (Recipe recipe : recipes) {
-                    boolean enoughIngredients = true;
-                    for (Ingredient ingredient : recipe.getIngredients()) {
-                        if (!ingredients.containsKey(ingredient.getName())
-                                || (ingredients.get(ingredient.getName())
-                                < recipe.getMultiplicity())) {
-                            enoughIngredients = false;
-                            break;
-                        }
-                    }
-                    combinedList.add(new RecipeAvailability(recipe,
-                            enoughIngredients ? "Yes" : "No"));
-                }
+                combinedList = sorter.sort(combinedList);
+                List<Recipe> sortedRecipes = combinedList.stream()
+                        .map(RecipeAvailability::getRecipe).collect(Collectors.toList());
+                List<String> sortedAvailability = combinedList.stream()
+                        .map(RecipeAvailability::getAvailability).collect(Collectors.toList());
 
-                // Sorting the combinedList based on Recipe name
-                SortByNameStrategy sortingStrat = new SortByNameStrategy();
-                combinedList = sortingStrat.sort(combinedList);
-
-                // Extracting the sorted lists
-                List<Recipe> sortedRecipes = new ArrayList<>();
-                List<String> sortedAvailability = new ArrayList<>();
-                for (RecipeAvailability ra : combinedList) {
-                    sortedRecipes.add(ra.getRecipe());
-                    sortedAvailability.add(ra.getAvailability());
-                }
-
-                // Use RecyclerView adapter to put list of recipes into
-                // RecyclerView (scrollable list)
-                RecipesAdapter adapter = new RecipesAdapter(
-                        sortedRecipes, sortedAvailability, fragment);
+                RecipesAdapter adapter = new RecipesAdapter(sortedRecipes,
+                        sortedAvailability, fragment);
                 rvRecipes.setAdapter(adapter);
                 rvRecipes.setLayoutManager(new LinearLayoutManager(context));
             });
         });
+    }
+
+    public void retrieveAndDisplaySortedByName(
+            Context context, RecyclerView rvRecipes, Fragment fragment) {
+        retrieveAndDisplaySorted(context, rvRecipes, fragment, new SortByNameStrategy());
     }
 
     public void retrieveAndDisplaySortedByIngredients(
             Context context, RecyclerView rvRecipes, Fragment fragment) {
-        this.getRecipes(itemsRecipe -> {
-            List<Recipe> recipes = new ArrayList<>();
-            if (itemsRecipe != null) {
-                for (RetrievableItem item : itemsRecipe) {
-                    if (item instanceof Recipe) {
-                        Recipe recipe = (Recipe) item;
-                        recipes.add(recipe);
-                    }
-                }
-            }
-
-            new IngredientViewModel().getIngredients(itemsIngredient -> {
-                List<String> availability = new ArrayList<>();
-                Map<String, Double> ingredients = new HashMap<>();
-
-                for (RetrievableItem item : itemsIngredient) {
-                    ingredients.put(item.getName(), item.getMultiplicity());
-                }
-
-                List<RecipeAvailability> combinedList = new ArrayList<>();
-                for (Recipe recipe : recipes) {
-                    boolean enoughIngredients = true;
-                    for (Ingredient ingredient : recipe.getIngredients()) {
-                        if (!ingredients.containsKey(ingredient.getName())
-                                || (ingredients.get(ingredient.getName())
-                                < recipe.getMultiplicity())) {
-                            enoughIngredients = false;
-                            break;
-                        }
-                    }
-                    combinedList.add(new RecipeAvailability(recipe,
-                            enoughIngredients ? "Yes" : "No"));
-                }
-
-                // Sorting the combinedList based on Ingredient Number
-                SortByIngredientCountStrategy sortingStrat = new SortByIngredientCountStrategy();
-                combinedList = sortingStrat.sort(combinedList);
-
-                // Extracting the sorted lists
-                List<Recipe> sortedRecipes = new ArrayList<>();
-                List<String> sortedAvailability = new ArrayList<>();
-                for (RecipeAvailability ra : combinedList) {
-                    sortedRecipes.add(ra.getRecipe());
-                    sortedAvailability.add(ra.getAvailability());
-                }
-
-                // Use RecyclerView adapter to put list of recipes into
-                // RecyclerView (scrollable list)
-                RecipesAdapter adapter = new RecipesAdapter(
-                        sortedRecipes, sortedAvailability, fragment);
-                rvRecipes.setAdapter(adapter);
-                rvRecipes.setLayoutManager(new LinearLayoutManager(context));
-            });
-        });
+        retrieveAndDisplaySorted(context, rvRecipes, fragment, new SortByIngredientCountStrategy());
     }
-
-
 }

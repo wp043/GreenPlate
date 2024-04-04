@@ -66,7 +66,10 @@ public class CookbookManager implements Manager {
                                     .getValue(String.class);
                             double quantity = ingredientSnapshot.child("quantity")
                                     .getValue(Double.class);
-                            ingredients.add(new Ingredient(ingredientName));
+                            double calories = ingredientSnapshot.child("quantity")
+                                    .getValue(Double.class);
+                            ingredients.add(new Ingredient(ingredientName, calories,
+                                    quantity, null));
                         }
 
                         // Query instructions of recipe from database
@@ -114,7 +117,7 @@ public class CookbookManager implements Manager {
                 ingredientsRef.child(ingredientKey).child("name")
                         .setValue(ingredient.getName());
                 ingredientsRef.child(ingredientKey).child("quantity")
-                        .setValue((double) ingredient.getMultiplicity());
+                        .setValue(ingredient.getMultiplicity());
                 ingredientsRef.child(ingredientKey).child("calories")
                         .setValue(ingredient.getCalories());
             }
@@ -146,13 +149,15 @@ public class CookbookManager implements Manager {
     public void isRecipeDuplicate(Recipe recipe, OnDuplicateCheckListener listener) {
         retrieve(items -> {
             boolean isDuplicate = false;
+            String duplicateName = null;
             for (RetrievableItem item : items) {
                 if (item.getName().equals(recipe.getName())) {
                     isDuplicate = true;
+                    duplicateName = item.getName();
                     break;
                 }
             }
-            listener.onDuplicateCheckCompleted(isDuplicate);
+            listener.onDuplicateCheckCompleted(isDuplicate, duplicateName);
         });
     }
 }

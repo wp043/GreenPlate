@@ -73,7 +73,7 @@ public class IngredientViewModel extends ViewModel {
     // });
     // }
     public void addIngredient(Ingredient ingredient, OnIngredientUpdatedListener listener) {
-        pantryManager.isIngredientDuplicate(ingredient, isDuplicate -> {
+        pantryManager.isIngredientDuplicate(ingredient, (isDuplicate, duplicateName) -> {
             if (isDuplicate) {
                 Log.d("Information", "Duplicate found");
                 listener.onIngredientUpdated(false);
@@ -91,10 +91,10 @@ public class IngredientViewModel extends ViewModel {
         });
     }
 
-
     // updated accordingly.
     public void updateIngredient(Ingredient ingredient, OnIngredientUpdatedListener listener) {
-        pantryManager.updateIngredientMultiplicity(ingredient, new OnMultiplicityUpdateListener() {
+        pantryManager.updateIngredientMultiplicity(ingredient.getName(),
+                ingredient.getMultiplicity(), new OnMultiplicityUpdateListener() {
             @Override
             public void onMultiplicityUpdateSuccess(GreenPlateStatus status) {
                 Log.d("Success", status.getMessage());
@@ -112,7 +112,7 @@ public class IngredientViewModel extends ViewModel {
 
     // updated accordingly.
     public void removeIngredient(Ingredient ingredient) {
-        pantryManager.removeIngredient(ingredient, new OnIngredientRemoveListener() {
+        pantryManager.removeIngredient(ingredient.getName(), new OnIngredientRemoveListener() {
             @Override
             public void onIngredientRemoveSuccess(GreenPlateStatus status) {
                 Log.d("Success", status.getMessage());
