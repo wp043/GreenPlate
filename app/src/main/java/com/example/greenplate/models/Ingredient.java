@@ -1,7 +1,10 @@
 package com.example.greenplate.models;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class Ingredient extends RetrievableItem {
@@ -60,6 +63,13 @@ public class Ingredient extends RetrievableItem {
             return false;
         }
         Ingredient that = (Ingredient) obj;
-        return that.expirationDate.equals(this.expirationDate);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(this.expirationDate);
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        calendar.setTime(that.expirationDate);
+        return year == calendar.get(Calendar.YEAR) && month == calendar.get(Calendar.MONTH)
+                && day == calendar.get(Calendar.DAY_OF_MONTH);
     }
 }
