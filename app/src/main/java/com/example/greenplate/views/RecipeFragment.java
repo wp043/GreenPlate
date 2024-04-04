@@ -108,7 +108,7 @@ public class RecipeFragment extends Fragment {
             }
         });
 
-//        recipeViewModel.addDefaultRecipes(rvRecipes, fragment);
+        // recipeViewModel.addDefaultRecipes(rvRecipes, fragment);
         recipeViewModel.retrieveAndDisplayIngredients(rvRecipes, fragment);
 
         Button addRecipeButton = view.findViewById(R.id.btnEnterNewRecipe);

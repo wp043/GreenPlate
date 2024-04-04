@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
-import com.example.greenplate.viewmodels.IngredientViewModel;
 import com.example.greenplate.viewmodels.UserInfoViewModel;
 import com.example.greenplate.viewmodels.listeners.OnReportGeneratedCallback;
 import com.example.greenplate.viewmodels.managers.CookbookManager;
@@ -71,7 +70,8 @@ public class AvailabilityReportGenerator {
 
     public static void logReport(Map<String, Map<Ingredient, Double>> availabilityReport) {
         StringBuilder sb = new StringBuilder("Report:\n");
-        for (Map.Entry<String, Map<Ingredient, Double>> reportEntry : availabilityReport.entrySet()) {
+        for (Map.Entry<String, Map<Ingredient, Double>> reportEntry
+                : availabilityReport.entrySet()) {
             sb.append("Missing ingredients for ").append(reportEntry.getKey()).append(":\n");
             Map<Ingredient, Double> missingElements = reportEntry.getValue();
             for (Map.Entry<Ingredient, Double> entry : missingElements.entrySet()) {

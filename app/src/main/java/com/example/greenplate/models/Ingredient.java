@@ -1,10 +1,7 @@
 package com.example.greenplate.models;
 
-import android.util.Log;
-
 import androidx.annotation.Nullable;
 
-import java.util.Calendar;
 import java.util.Date;
 
 public class Ingredient extends RetrievableItem {

@@ -45,18 +45,18 @@ public class IngredientViewModel extends ViewModel {
     public void updateIngredient(Ingredient ingredient, OnIngredientUpdatedListener listener) {
         pantryManager.updateIngredientMultiplicity(ingredient.getName(),
                 ingredient.getMultiplicity(), new OnMultiplicityUpdateListener() {
-            @Override
-            public void onMultiplicityUpdateSuccess(GreenPlateStatus status) {
-                Log.d("Success", status.getMessage());
-                listener.onIngredientUpdated(true);
-            }
+                    @Override
+                    public void onMultiplicityUpdateSuccess(GreenPlateStatus status) {
+                        Log.d("Success", status.getMessage());
+                        listener.onIngredientUpdated(true);
+                    }
 
-            @Override
-            public void onMultiplicityUpdateFailure(GreenPlateStatus status) {
-                Log.d("Failure", status.getMessage());
-                listener.onIngredientUpdated(false);
-            }
-        });
+                    @Override
+                    public void onMultiplicityUpdateFailure(GreenPlateStatus status) {
+                        Log.d("Failure", status.getMessage());
+                        listener.onIngredientUpdated(false);
+                    }
+                });
     }
 
 

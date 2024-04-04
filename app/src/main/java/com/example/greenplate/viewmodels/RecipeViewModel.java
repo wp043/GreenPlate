@@ -1,7 +1,6 @@
 package com.example.greenplate.viewmodels;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
@@ -11,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
-import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.adapters.RecipesAdapter;
 import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
 import com.example.greenplate.viewmodels.listeners.OnDataRetrievedCallback;
@@ -19,10 +17,7 @@ import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
 import com.example.greenplate.viewmodels.managers.CookbookManager;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
