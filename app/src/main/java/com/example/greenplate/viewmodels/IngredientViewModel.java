@@ -15,44 +15,6 @@ import com.example.greenplate.viewmodels.managers.PantryManager;
 public class IngredientViewModel extends ViewModel {
     private PantryManager pantryManager;
 
-    /*
-     * Test w/o UI: insert in the constructor to test
-     * pantryManager.retrieve(items -> {
-     * if (items != null) {
-     * Log.d("Items", items.toString());
-     * }
-     * });
-     * Calendar calendar = Calendar.getInstance();
-     * 
-     * // Set the year, month, and day
-     * calendar.set(Calendar.YEAR, 2024);
-     * calendar.set(Calendar.MONTH, Calendar.MARCH);
-     * calendar.set(Calendar.DAY_OF_MONTH, 21);
-     * 
-     * // Set the hour, minute, second, and millisecond to zero
-     * calendar.set(Calendar.HOUR_OF_DAY, 0);
-     * calendar.set(Calendar.MINUTE, 0);
-     * calendar.set(Calendar.SECOND, 0);
-     * calendar.set(Calendar.MILLISECOND, 0);
-     * 
-     * Ingredient newIngredient = new Ingredient(
-     * "Test Ingredient 2",
-     * 125,
-     * 2,
-     * calendar.getTime()
-     * );
-     * Ingredient updatedIngredient = new Ingredient(
-     * "Test Ingredient",
-     * 125,
-     * 3,
-     * calendar.getTime()
-     * );
-     * addIngredient(newIngredient);
-     * addIngredient(updatedIngredient);
-     * updateIngredient(updatedIngredient);
-     * removeIngredient(updatedIngredient);
-     */
-
     /**
      * Constructor for IngredientViewModel
      */
@@ -60,20 +22,8 @@ public class IngredientViewModel extends ViewModel {
         pantryManager = new PantryManager();
     }
 
-
-    // updated accordingly.
-    // public void addIngredient(Ingredient ingredient) {
-    // pantryManager.isIngredientDuplicate(ingredient, isDuplicate -> {
-    // if (isDuplicate) {
-    // Log.d("Information", "Duplicate found");
-    // } else {
-    // pantryManager.addIngredient(ingredient);
-    // Log.d("Information", "Ingredient added");
-    // }
-    // });
-    // }
     public void addIngredient(Ingredient ingredient, OnIngredientUpdatedListener listener) {
-        pantryManager.isIngredientDuplicate(ingredient, isDuplicate -> {
+        pantryManager.isIngredientDuplicate(ingredient, (isDuplicate, duplicateName) -> {
             if (isDuplicate) {
                 Log.d("Information", "Duplicate found");
                 listener.onIngredientUpdated(false);
@@ -91,28 +41,28 @@ public class IngredientViewModel extends ViewModel {
         });
     }
 
-
     // updated accordingly.
     public void updateIngredient(Ingredient ingredient, OnIngredientUpdatedListener listener) {
-        pantryManager.updateIngredientMultiplicity(ingredient, new OnMultiplicityUpdateListener() {
-            @Override
-            public void onMultiplicityUpdateSuccess(GreenPlateStatus status) {
-                Log.d("Success", status.getMessage());
-                listener.onIngredientUpdated(true);
-            }
+        pantryManager.updateIngredientMultiplicity(ingredient.getName(),
+                ingredient.getMultiplicity(), new OnMultiplicityUpdateListener() {
+                    @Override
+                    public void onMultiplicityUpdateSuccess(GreenPlateStatus status) {
+                        Log.d("Success", status.getMessage());
+                        listener.onIngredientUpdated(true);
+                    }
 
-            @Override
-            public void onMultiplicityUpdateFailure(GreenPlateStatus status) {
-                Log.d("Failure", status.getMessage());
-                listener.onIngredientUpdated(false);
-            }
-        });
+                    @Override
+                    public void onMultiplicityUpdateFailure(GreenPlateStatus status) {
+                        Log.d("Failure", status.getMessage());
+                        listener.onIngredientUpdated(false);
+                    }
+                });
     }
 
 
     // updated accordingly.
     public void removeIngredient(Ingredient ingredient) {
-        pantryManager.removeIngredient(ingredient, new OnIngredientRemoveListener() {
+        pantryManager.removeIngredient(ingredient.getName(), new OnIngredientRemoveListener() {
             @Override
             public void onIngredientRemoveSuccess(GreenPlateStatus status) {
                 Log.d("Success", status.getMessage());

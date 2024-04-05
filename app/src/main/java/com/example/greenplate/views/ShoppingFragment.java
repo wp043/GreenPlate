@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import com.example.greenplate.R;
+import com.example.greenplate.viewmodels.ShoppingListViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,18 +16,10 @@ import com.example.greenplate.R;
  * create an instance of this fragment.
  */
 public class ShoppingFragment extends Fragment {
-
-    // Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private ShoppingListViewModel shoppingListVM;
 
     public ShoppingFragment() {
-        // Required empty public constructor
+        shoppingListVM = new ShoppingListViewModel();
     }
 
     /**
@@ -41,8 +34,6 @@ public class ShoppingFragment extends Fragment {
     public static ShoppingFragment newInstance(String param1, String param2) {
         ShoppingFragment fragment = new ShoppingFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,10 +41,6 @@ public class ShoppingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override

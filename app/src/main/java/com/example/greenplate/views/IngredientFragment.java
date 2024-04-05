@@ -3,7 +3,6 @@ package com.example.greenplate.views;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +93,6 @@ public class IngredientFragment extends Fragment {
                     getContext());
             LayoutInflater inflater = requireActivity().getLayoutInflater();
             View dialogView = inflater.inflate(R.layout.dialog_ingredient, null);
-            Log.d("TAG", "-1");
             // Expiration date window
             EditText expirationEditText = dialogView.findViewById(R.id.ingredient_expiration);
             expirationEditText.setOnClickListener(v1 -> {
@@ -136,7 +134,6 @@ public class IngredientFragment extends Fragment {
                         refreshRecycleView();
                     });
                 } catch (Exception e) {
-                    Log.d("TAG", e.getLocalizedMessage());
                     Toast.makeText(requireContext(),
                             "Failed. All fields must be filled in.",
                             Toast.LENGTH_SHORT).show();
@@ -217,7 +214,6 @@ public class IngredientFragment extends Fragment {
                                 refreshRecycleView();
                             });
                         } catch (Exception e) {
-                            Log.d("TAG", e.getMessage());
                             Toast.makeText(requireContext(),
                                     "Failed. All fields must be filled in.",
                                     Toast.LENGTH_SHORT).show();

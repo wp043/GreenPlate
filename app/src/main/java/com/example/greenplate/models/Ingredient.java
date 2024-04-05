@@ -20,6 +20,11 @@ public class Ingredient extends RetrievableItem {
         this.expirationDate = expirationDate != null ? expirationDate : new Date(Long.MAX_VALUE);
     }
 
+    public Ingredient(Ingredient toCopy) {
+        super(toCopy);
+        this.expirationDate = toCopy.expirationDate;
+    }
+
     /**
      * 1-arg constructor for an ingredient
      * @param name - name of the ingredient
@@ -56,10 +61,10 @@ public class Ingredient extends RetrievableItem {
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        if (!super.equals(obj)) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         Ingredient that = (Ingredient) obj;
-        return that.expirationDate.equals(this.expirationDate);
+        return this.getName().equals(that.getName());
     }
 }
