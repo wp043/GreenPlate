@@ -45,11 +45,14 @@ public class ShoppingListViewModel extends ViewModel {
                 listener.onIngredientUpdated(true);
             } else {
                 shoppingListManager.addIngredient(ingredient, success -> {
+                    Log.d("TAG", "1");
                     if (success) {
                         Log.d("Information", "Ingredient added");
+                        Log.d("TAG", "2");
                         listener.onIngredientUpdated(true);
                     } else {
                         listener.onIngredientUpdated(false);
+                        Log.d("TAG", "3");
                     }
                 });
 

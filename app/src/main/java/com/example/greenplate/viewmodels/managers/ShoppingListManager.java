@@ -117,8 +117,7 @@ public class ShoppingListManager implements Manager {
             listener.onIngredientUpdated(false);
             return new GreenPlateStatus(false, "Add meal: " + e.getLocalizedMessage());
         }
-        return new GreenPlateStatus(true,
-                String.format("%s added to database successfully", ingredient));
+        return new GreenPlateStatus(true, "success");
     }
 
     /**
