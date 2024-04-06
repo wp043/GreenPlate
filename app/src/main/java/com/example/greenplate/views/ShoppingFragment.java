@@ -1,6 +1,7 @@
 package com.example.greenplate.views;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import com.example.greenplate.viewmodels.IngredientViewModel;
 import com.example.greenplate.viewmodels.ShoppingListViewModel;
 import com.example.greenplate.viewmodels.adapters.IngredientsAdapter;
 import com.example.greenplate.viewmodels.adapters.ShoppingListAdapter;
+import com.example.greenplate.viewmodels.listeners.OnIngredientUpdatedListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -258,60 +260,22 @@ public class ShoppingFragment extends Fragment {
             }
 
             for (Ingredient ingredient : selectedIngredients) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(
-                        getContext());
-                LayoutInflater inflater = requireActivity().getLayoutInflater();
-                View dialogView = inflater.inflate(R.layout.dialog_ingredient, null);
-                // Expiration date window
-                EditText expirationEditText = dialogView.findViewById(R.id.ingredient_expiration);
-                expirationEditText.setOnClickListener(v1 -> {
-                    Calendar calendar = Calendar.getInstance();
-                    int year = calendar.get(Calendar.YEAR);
-                    int month = calendar.get(Calendar.MONTH);
-                    int day = calendar.get(Calendar.DAY_OF_MONTH);
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-                            (view, year1, month1, dayOfMonth) -> {
-                                String date = (month1 + 1) + "/" + dayOfMonth + "/" + year1;
-                                expirationEditText.setText(date);
-                            }, year, month, day);
-                    datePickerDialog.show();
-                });
-
-                builder.setView(dialogView).setPositiveButton("Add", (dialog, id) -> {
-                    // Get user input
-                    EditText nameEditText =
-                            dialogView.findViewById(R.id.ingredient_name);
-                    EditText quantityEditText =
-                            dialogView.findViewById(R.id.ingredient_quantity);
-                    EditText caloriesEditText =
-                            dialogView.findViewById(R.id.ingredient_calories);
-
-                    try {
-                        String name = nameEditText.getText().toString();
-                        double quantity = Double.parseDouble(quantityEditText.getText().toString());
-                        double calories = Double.parseDouble(caloriesEditText.getText().toString());
-                        Date expirationDate = str2Date(expirationEditText.getText().toString());
-                        Ingredient newIngredient = new Ingredient(name,
-                                calories, quantity, expirationDate);
-
-                        ingredientVM.addIngredient(newIngredient, success -> {
-                            if (!success) {
-                                Toast.makeText(requireContext(), "Failed to add ingredient",
-                                        Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            refreshRecycleView();
-                        });
-                    } catch (Exception e) {
-                        Toast.makeText(requireContext(),
-                                "Failed. All fields must be filled in.",
-                                Toast.LENGTH_SHORT).show();
+                setupBuyToIngredient(ingredient, new OnIngredientUpdatedListener() {
+                    @Override
+                    public void onIngredientUpdated(boolean success) {
+                        if (success) {
+                            // Ingredient addition was successful
+                            // Handle success scenario
+                            Log.d("IngredientAddition", "Ingredient added successfully.");
+                            shoppingListVM.removeIngredient(ingredient);
+                        } else {
+                            // Ingredient addition failed
+                            // Handle failure scenario
+                            Log.d("IngredientAddition", "Failed to add ingredient.");
+                        }
                     }
                 });
-//                        .setNegativeButton("Cancel", (dialog, id) -> { });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                shoppingListVM.removeIngredient(ingredient);
+
             }
 
             refreshRecycleView();
@@ -349,4 +313,64 @@ public class ShoppingFragment extends Fragment {
         String formattedDate = sdf.format(date);
         return formattedDate;
     }
+
+    private void setupBuyToIngredient(Ingredient ingredient, OnIngredientUpdatedListener listener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_ingredient, null);
+
+        // Expiration date window
+        EditText expirationEditText = dialogView.findViewById(R.id.ingredient_expiration);
+        expirationEditText.setOnClickListener(v1 -> {
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                    (view, year1, month1, dayOfMonth) -> {
+                        String date = (month1 + 1) + "/" + dayOfMonth + "/" + year1;
+                        expirationEditText.setText(date);
+                    }, year, month, day);
+            datePickerDialog.show();
+        });
+
+        // Get user input fields
+        EditText nameEditText = dialogView.findViewById(R.id.ingredient_name);
+        EditText quantityEditText = dialogView.findViewById(R.id.ingredient_quantity);
+        EditText caloriesEditText = dialogView.findViewById(R.id.ingredient_calories);
+
+        // Set default values and disable editing
+        nameEditText.setText(ingredient.getName());
+        nameEditText.setEnabled(false);
+
+        quantityEditText.setText(String.valueOf(ingredient.getMultiplicity()));
+        quantityEditText.setEnabled(false);
+
+        builder.setView(dialogView).setPositiveButton("Add", (dialog, id) -> {
+            try {
+                String name = nameEditText.getText().toString();
+                double quantity = Double.parseDouble(quantityEditText.getText().toString());
+                double calories = Double.parseDouble(caloriesEditText.getText().toString());
+                Date expirationDate = str2Date(expirationEditText.getText().toString());
+                Ingredient newIngredient = new Ingredient(name, calories, quantity, expirationDate);
+
+                ingredientVM.addIngredient(newIngredient, success -> {
+                    if (success) {
+                        listener.onIngredientUpdated(true);
+                        refreshRecycleView();
+                    } else {
+                        listener.onIngredientUpdated(false);
+                        Toast.makeText(requireContext(), "Failed to add ingredient", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } catch (Exception e) {
+                Toast.makeText(requireContext(), "Failed. All fields must be filled in.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
 }
