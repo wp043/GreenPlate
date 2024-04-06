@@ -28,13 +28,11 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView nameTextView;
         TextView infoTextView;
         CheckBox checkBox;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            nameTextView = itemView.findViewById(R.id.ingredient_name);
             infoTextView = itemView.findViewById(R.id.ingredient_info);
             checkBox = itemView.findViewById(R.id.checkboxIngredient);
         }
@@ -68,12 +66,12 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
 
         // Set item views based on your views and data model
         CheckBox checkBox = holder.checkBox;
-        TextView nameTextView = holder.nameTextView;
         TextView infoTextView = holder.infoTextView;
-        nameTextView.setText(ingredient.getName());
 
-        String info = String.format("count: %.2f",
-                ingredient.getMultiplicity());
+
+
+        String info = String.format("%s, count: %.2f",
+                ingredient.getName(), ingredient.getMultiplicity());
 
         infoTextView.setText(info);
 
@@ -90,12 +88,6 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
             }
         });
 
-        // Set the text color based on the selection status
-        if (holder.getAdapterPosition() == selectedPosition) {
-            holder.nameTextView.setTextColor(Color.RED);
-        } else {
-            holder.nameTextView.setTextColor(Color.BLACK);
-        }
     }
 
     @Override
