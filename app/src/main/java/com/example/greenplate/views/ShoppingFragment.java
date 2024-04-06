@@ -340,7 +340,7 @@ public class ShoppingFragment extends Fragment {
                 Date expirationDate = str2Date(expirationEditText.getText().toString());
                 Ingredient newIngredient = new Ingredient(name, calories, quantity, expirationDate);
 
-                ingredientVM.addIngredient(newIngredient, success -> {
+                ingredientVM.addIngredientFromShoppingList(newIngredient, success -> {
                     if (success) {
                         listener.onIngredientUpdated(true);
                         refreshRecycleView();
