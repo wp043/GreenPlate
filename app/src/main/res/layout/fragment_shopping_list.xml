@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="16dp"
-            android:text="Ingredient Screen"
+            android:text="Shopping List Screen"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Your ingredients"
+                android:text="Your Shopping List"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -69,10 +69,10 @@
             android:padding="16dp">
 
             <Button
-                android:id="@+id/editButton"
+                android:id="@+id/buyButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Edit" />
+                android:text="Buy" />
 
             <Button
                 android:id="@+id/addButton"
