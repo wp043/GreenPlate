@@ -20,11 +20,13 @@ import java.util.List;
 
 public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapter.ViewHolder> {
     private List<Ingredient> shoppingList;
+    private boolean[] selectedItems;
 
     private int selectedPosition = RecyclerView.NO_POSITION;
 
     public ShoppingListAdapter(List<Ingredient> shoppingList) {
         this.shoppingList = shoppingList;
+        this.selectedItems = new boolean[shoppingList.size()];
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -75,6 +77,13 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
 
         infoTextView.setText(info);
 
+        checkBox.setChecked(selectedItems[position]);
+        checkBox.setOnClickListener(v -> {
+            selectedItems[position] = !selectedItems[position];
+            notifyItemChanged(position);
+        });
+
+
         holder.itemView.setOnClickListener(v -> {
             int clickedPosition = holder.getAdapterPosition();
             if (clickedPosition != RecyclerView.NO_POSITION) {
@@ -88,6 +97,10 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
             }
         });
 
+    }
+
+    public boolean isSelected(int position) {
+        return selectedItems[position];
     }
 
     @Override

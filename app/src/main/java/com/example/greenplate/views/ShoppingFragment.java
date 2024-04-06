@@ -238,6 +238,25 @@ public class ShoppingFragment extends Fragment {
 //        });
 //    }
 //
+    private void setBuyButton(){
+        buyButton.setOnClickListener(v -> {
+            ShoppingListAdapter adapter = (ShoppingListAdapter) rvRecipes.getAdapter();
+            List<Ingredient> ingredients = adapter.getShoppingList();
+            List<Ingredient> selectedIngredients = new ArrayList<>();
+
+            for (int i = 0; i < ingredients.size(); i++) {
+                if (adapter.isSelected(i)) {
+                    selectedIngredients.add(ingredients.get(i));
+                }
+            }
+
+            for (Ingredient ingredient : selectedIngredients) {
+                shoppingListVM.removeIngredient(ingredient);
+            }
+
+            refreshRecycleView();
+        });
+    }
     private void refreshRecycleView() {
         shoppingListVM.getIngredients(items -> {
             List<Ingredient> ingredients = items
