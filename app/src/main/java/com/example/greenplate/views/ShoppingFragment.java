@@ -10,6 +10,40 @@ import androidx.fragment.app.Fragment;
 import com.example.greenplate.R;
 import com.example.greenplate.viewmodels.ShoppingListViewModel;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.greenplate.R;
+import com.example.greenplate.models.Ingredient;
+import com.example.greenplate.models.RetrievableItem;
+import com.example.greenplate.viewmodels.IngredientViewModel;
+import com.example.greenplate.viewmodels.ShoppingListViewModel;
+import com.example.greenplate.viewmodels.adapters.IngredientsAdapter;
+import com.example.greenplate.viewmodels.adapters.ShoppingListAdapter;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ShoppingFragment#newInstance} factory method to
@@ -17,6 +51,9 @@ import com.example.greenplate.viewmodels.ShoppingListViewModel;
  */
 public class ShoppingFragment extends Fragment {
     private ShoppingListViewModel shoppingListVM;
+    private Button addButton;
+    private Button buyButton;
+    private RecyclerView rvRecipes;
 
     public ShoppingFragment() {
         shoppingListVM = new ShoppingListViewModel();
@@ -40,6 +77,7 @@ public class ShoppingFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
     }
 
@@ -49,4 +87,187 @@ public class ShoppingFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_shopping, container, false);
     }
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        shoppingListVM = new ShoppingListViewModel();
+        rvRecipes = (RecyclerView) view.findViewById(R.id.rvIngredients);
+        addButton = view.findViewById(R.id.addButton);
+        buyButton = view.findViewById(R.id.buyButton);
+
+        // Retrieve and display the list of ingredients
+        retrieveAndDisplayIngredients(rvRecipes);
+        setupAddButton();
+//        setupEditButton();
+    }
+
+    private void retrieveAndDisplayIngredients(RecyclerView rvRecipes) {
+        shoppingListVM.getIngredients(items -> {
+            List<Ingredient> ingredients = new ArrayList<>();
+            if (items != null) {
+                for (RetrievableItem item : items) {
+                    if (item instanceof Ingredient) {
+                        Ingredient ingredient = (Ingredient) item;
+                        ingredients.add(ingredient);
+                    }
+                }
+            }
+            ShoppingListAdapter adapter = new ShoppingListAdapter(ingredients);
+            rvRecipes.setAdapter(adapter);
+            rvRecipes.setLayoutManager(new LinearLayoutManager(requireContext()));
+        });
+    }
+
+    private void setupAddButton() {
+        addButton.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(
+                    getContext());
+            LayoutInflater inflater = requireActivity().getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.dialog_shoppinglist_ingredient, null);
+            // Expiration date window
+
+
+            builder.setView(dialogView).setPositiveButton("Add", (dialog, id) -> {
+                // Get user input
+                EditText nameEditText =
+                        dialogView.findViewById(R.id.ingredient_name);
+                EditText quantityEditText =
+                        dialogView.findViewById(R.id.ingredient_quantity);
+
+
+                try {
+                    String name = nameEditText.getText().toString();
+                    double quantity = Double.parseDouble(quantityEditText.getText().toString());
+                    Ingredient newIngredient = new Ingredient(name, quantity);
+
+                    shoppingListVM.addIngredient(newIngredient, success -> {
+                        if (!success) {
+                            Toast.makeText(requireContext(), "Failed to add ingredient",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        refreshRecycleView();
+                    });
+                } catch (Exception e) {
+                    Toast.makeText(requireContext(),
+                            "Failed. All fields must be filled in.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }).setNegativeButton("Cancel", (dialog, id) -> { });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        });
+    }
+
+    //    private void setupEditButton() {
+//        editButton.setOnClickListener(v -> {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//            LayoutInflater inflater = requireActivity().getLayoutInflater();
+//            View dialogView = inflater.inflate(R.layout.dialog_ingredient, null);
+//
+//            IngredientsAdapter oldAdapter = (IngredientsAdapter) rvRecipes.getAdapter();
+//            if (oldAdapter.getSelectedPosition() < 0
+//                    || oldAdapter.getSelectedPosition() >= oldAdapter.getRecipeList().size()) {
+//                Toast.makeText(requireContext(),
+//                        "Please select an item to update!",
+//                        Toast.LENGTH_LONG).show();
+//                return;
+//            }
+//            Ingredient selectedIngredient = oldAdapter.getRecipeList()
+//                    .get(oldAdapter.getSelectedPosition());
+//
+//            // Expiration date window
+//            EditText expirationEditText = dialogView.findViewById(R.id.ingredient_expiration);
+//            EditText nameEditText = dialogView.findViewById(R.id.ingredient_name);
+//            EditText quantityEditText = dialogView.findViewById(R.id.ingredient_quantity);
+//            EditText caloriesEditText = dialogView.findViewById(R.id.ingredient_calories);
+//
+//            nameEditText.setText(selectedIngredient.getName());
+//            nameEditText.setEnabled(false);
+//
+//            caloriesEditText.setText(String.valueOf(selectedIngredient.getCalories()));
+//            caloriesEditText.setEnabled(false);
+//
+//            expirationEditText.setText(date2Str(selectedIngredient.getExpirationDate()));
+//            expirationEditText.setEnabled(false);
+//
+//            expirationEditText.setOnClickListener(v1 -> {
+//                Calendar calendar = Calendar.getInstance();
+//
+//                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+//                    (view, year1, month1, dayOfMonth) -> {
+//                        String date = (month1 + 1) + "/" + dayOfMonth + "/" + year1;
+//                        expirationEditText.setText(date);
+//                    }, calendar.get(Calendar.YEAR),
+//                        calendar.get(Calendar.MONTH),
+//                        calendar.get(Calendar.DAY_OF_MONTH));
+//                datePickerDialog.show();
+//            });
+//
+//            builder.setView(dialogView)
+//                    .setPositiveButton("Edit", (dialog, id) -> {
+//                        try {
+//                            String name = nameEditText.getText().toString();
+//                            double quantity =
+//                                    Double.parseDouble(quantityEditText.getText().toString());
+//                            double calories =
+//                                    Double.parseDouble(caloriesEditText.getText().toString());
+//                            Date expirationDate = str2Date(expirationEditText.getText().toString());
+//
+//                            Ingredient newIngredient = new Ingredient(name, calories, quantity,
+//                                    expirationDate);
+//
+//                            shoppingListVM.updateIngredient(newIngredient, success -> {
+//                                if (!success) {
+//                                    Toast.makeText(requireContext(),
+//                                            "Failed. Name, Calorie, "
+//                                                    + "expiration date must match "
+//                                                    + "the ingredient to be edited.",
+//                                            Toast.LENGTH_SHORT).show();
+//                                    return;
+//                                }
+//                                refreshRecycleView();
+//                            });
+//                        } catch (Exception e) {
+//                            Toast.makeText(requireContext(),
+//                                    "Failed. All fields must be filled in.",
+//                                    Toast.LENGTH_SHORT).show();
+//                        }
+//                    }).setNegativeButton("Cancel", (dialog, id) -> { });
+//            AlertDialog dialog = builder.create();
+//            dialog.show();
+//        });
+//    }
+//
+    private void refreshRecycleView() {
+        shoppingListVM.getIngredients(items -> {
+            List<Ingredient> ingredients = items
+                    .stream()
+                    .filter(e -> !(e instanceof Ingredient))
+                    .collect(Collectors.toList())
+                    .stream().
+                    map(e -> (Ingredient) e)
+                    .collect(Collectors.toList());
+
+            rvRecipes.setAdapter(new ShoppingListAdapter(ingredients));
+            this.retrieveAndDisplayIngredients(rvRecipes);
+        });
+    }
+
+//    private static Date str2Date(String str) throws ParseException {
+//        Date d = null;
+//        if (!str.isEmpty()) {
+//            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+//            d = sdf.parse(str);
+//        }
+//        return d == null ? new Date(Long.MAX_VALUE) : d;
+//    }
+
+//    private static String date2Str(Date date) {
+//        if (date.getTime() == Long.MAX_VALUE) {
+//            return "forever away";
+//        }
+//        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+//        String formattedDate = sdf.format(date);
+//        return formattedDate;
+//    }
 }

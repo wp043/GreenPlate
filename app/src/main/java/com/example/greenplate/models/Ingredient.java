@@ -20,6 +20,10 @@ public class Ingredient extends RetrievableItem {
         this.expirationDate = expirationDate != null ? expirationDate : new Date(Long.MAX_VALUE);
     }
 
+    public Ingredient(String name, double multiplicity){
+        super(name, multiplicity);
+    }
+
     public Ingredient(Ingredient toCopy) {
         super(toCopy);
         this.expirationDate = toCopy.expirationDate;
