@@ -51,12 +51,17 @@ import java.util.stream.Collectors;
  */
 public class ShoppingFragment extends Fragment {
     private ShoppingListViewModel shoppingListVM;
+
+    private IngredientViewModel ingredientVM;
     private Button addButton;
     private Button buyButton;
     private RecyclerView rvRecipes;
 
     public ShoppingFragment() {
+
         shoppingListVM = new ShoppingListViewModel();
+        ingredientVM = new IngredientViewModel();
+
     }
 
     /**
@@ -90,6 +95,7 @@ public class ShoppingFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         shoppingListVM = new ShoppingListViewModel();
+        ingredientVM=new IngredientViewModel();
         rvRecipes = (RecyclerView) view.findViewById(R.id.rvIngredients);
         addButton = view.findViewById(R.id.addButton);
         buyButton = view.findViewById(R.id.buyButton);
@@ -98,6 +104,7 @@ public class ShoppingFragment extends Fragment {
         retrieveAndDisplayIngredients(rvRecipes);
         setupAddButton();
 //        setupEditButton();
+        setupBuyButton();
     }
 
     private void retrieveAndDisplayIngredients(RecyclerView rvRecipes) {
@@ -238,7 +245,7 @@ public class ShoppingFragment extends Fragment {
 //        });
 //    }
 //
-    private void setBuyButton(){
+    private void setupBuyButton(){
         buyButton.setOnClickListener(v -> {
             ShoppingListAdapter adapter = (ShoppingListAdapter) rvRecipes.getAdapter();
             List<Ingredient> ingredients = adapter.getShoppingList();
@@ -251,6 +258,59 @@ public class ShoppingFragment extends Fragment {
             }
 
             for (Ingredient ingredient : selectedIngredients) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(
+                        getContext());
+                LayoutInflater inflater = requireActivity().getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.dialog_ingredient, null);
+                // Expiration date window
+                EditText expirationEditText = dialogView.findViewById(R.id.ingredient_expiration);
+                expirationEditText.setOnClickListener(v1 -> {
+                    Calendar calendar = Calendar.getInstance();
+                    int year = calendar.get(Calendar.YEAR);
+                    int month = calendar.get(Calendar.MONTH);
+                    int day = calendar.get(Calendar.DAY_OF_MONTH);
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                            (view, year1, month1, dayOfMonth) -> {
+                                String date = (month1 + 1) + "/" + dayOfMonth + "/" + year1;
+                                expirationEditText.setText(date);
+                            }, year, month, day);
+                    datePickerDialog.show();
+                });
+
+                builder.setView(dialogView).setPositiveButton("Add", (dialog, id) -> {
+                    // Get user input
+                    EditText nameEditText =
+                            dialogView.findViewById(R.id.ingredient_name);
+                    EditText quantityEditText =
+                            dialogView.findViewById(R.id.ingredient_quantity);
+                    EditText caloriesEditText =
+                            dialogView.findViewById(R.id.ingredient_calories);
+
+                    try {
+                        String name = nameEditText.getText().toString();
+                        double quantity = Double.parseDouble(quantityEditText.getText().toString());
+                        double calories = Double.parseDouble(caloriesEditText.getText().toString());
+                        Date expirationDate = str2Date(expirationEditText.getText().toString());
+                        Ingredient newIngredient = new Ingredient(name,
+                                calories, quantity, expirationDate);
+
+                        ingredientVM.addIngredient(newIngredient, success -> {
+                            if (!success) {
+                                Toast.makeText(requireContext(), "Failed to add ingredient",
+                                        Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            refreshRecycleView();
+                        });
+                    } catch (Exception e) {
+                        Toast.makeText(requireContext(),
+                                "Failed. All fields must be filled in.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+//                        .setNegativeButton("Cancel", (dialog, id) -> { });
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 shoppingListVM.removeIngredient(ingredient);
             }
 
@@ -272,21 +332,21 @@ public class ShoppingFragment extends Fragment {
         });
     }
 
-//    private static Date str2Date(String str) throws ParseException {
-//        Date d = null;
-//        if (!str.isEmpty()) {
-//            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-//            d = sdf.parse(str);
-//        }
-//        return d == null ? new Date(Long.MAX_VALUE) : d;
-//    }
+    private static Date str2Date(String str) throws ParseException {
+        Date d = null;
+        if (!str.isEmpty()) {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+            d = sdf.parse(str);
+        }
+        return d == null ? new Date(Long.MAX_VALUE) : d;
+    }
 
-//    private static String date2Str(Date date) {
-//        if (date.getTime() == Long.MAX_VALUE) {
-//            return "forever away";
-//        }
-//        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-//        String formattedDate = sdf.format(date);
-//        return formattedDate;
-//    }
+    private static String date2Str(Date date) {
+        if (date.getTime() == Long.MAX_VALUE) {
+            return "forever away";
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        String formattedDate = sdf.format(date);
+        return formattedDate;
+    }
 }
