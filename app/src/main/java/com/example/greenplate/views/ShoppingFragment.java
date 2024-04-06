@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import com.example.greenplate.R;
+import com.example.greenplate.viewmodels.RecipeViewModel;
 import com.example.greenplate.viewmodels.ShoppingListViewModel;
 
 import android.app.AlertDialog;
@@ -53,14 +54,14 @@ import java.util.stream.Collectors;
  */
 public class ShoppingFragment extends Fragment {
     private ShoppingListViewModel shoppingListVM;
-
+    private RecipeViewModel recipeVM;
     private IngredientViewModel ingredientVM;
     private Button addButton;
     private Button buyButton;
-    private RecyclerView rvRecipes;
+    private RecyclerView rvShopping;
 
     public ShoppingFragment() {
-
+        recipeVM = new RecipeViewModel();
         shoppingListVM = new ShoppingListViewModel();
         ingredientVM = new IngredientViewModel();
 
@@ -98,12 +99,13 @@ public class ShoppingFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         shoppingListVM = new ShoppingListViewModel();
         ingredientVM=new IngredientViewModel();
-        rvRecipes = (RecyclerView) view.findViewById(R.id.rvIngredients);
+        recipeVM = new RecipeViewModel();
+        rvShopping = (RecyclerView) view.findViewById(R.id.rvIngredients);
         addButton = view.findViewById(R.id.addButton);
         buyButton = view.findViewById(R.id.buyButton);
 
         // Retrieve and display the list of ingredients
-        retrieveAndDisplayIngredients(rvRecipes);
+        retrieveAndDisplayIngredients(rvShopping);
         setupAddButton();
 //        setupEditButton();
         setupBuyButton();
@@ -249,7 +251,7 @@ public class ShoppingFragment extends Fragment {
 //
     private void setupBuyButton(){
         buyButton.setOnClickListener(v -> {
-            ShoppingListAdapter adapter = (ShoppingListAdapter) rvRecipes.getAdapter();
+            ShoppingListAdapter adapter = (ShoppingListAdapter) rvShopping.getAdapter();
             List<Ingredient> ingredients = adapter.getShoppingList();
             List<Ingredient> selectedIngredients = new ArrayList<>();
 
@@ -279,39 +281,23 @@ public class ShoppingFragment extends Fragment {
             }
 
             refreshRecycleView();
+
+            if (getActivity() != null) {
+                RecipeFragment recipeFragment = (RecipeFragment) getActivity()
+                        .getSupportFragmentManager()
+                        .findFragmentByTag("YourRecipeFragmentTag");
+                if (recipeFragment != null) {
+                    RecyclerView rvRecipes = recipeFragment.getRvRecipes();
+                    RecipeFragment fragment = recipeFragment.getFragment();
+
+                    // Now you can use rvRecipes and fragment as needed
+                    recipeVM.updateRecipeAvailability(rvRecipes, fragment);
+                }
+            }
+
+
         });
-    }
-    private void refreshRecycleView() {
-        shoppingListVM.getIngredients(items -> {
-            List<Ingredient> ingredients = items
-                    .stream()
-                    .filter(e -> !(e instanceof Ingredient))
-                    .collect(Collectors.toList())
-                    .stream().
-                    map(e -> (Ingredient) e)
-                    .collect(Collectors.toList());
 
-            rvRecipes.setAdapter(new ShoppingListAdapter(ingredients));
-            this.retrieveAndDisplayIngredients(rvRecipes);
-        });
-    }
-
-    private static Date str2Date(String str) throws ParseException {
-        Date d = null;
-        if (!str.isEmpty()) {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-            d = sdf.parse(str);
-        }
-        return d == null ? new Date(Long.MAX_VALUE) : d;
-    }
-
-    private static String date2Str(Date date) {
-        if (date.getTime() == Long.MAX_VALUE) {
-            return "forever away";
-        }
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        String formattedDate = sdf.format(date);
-        return formattedDate;
     }
 
     private void setupBuyToIngredient(Ingredient ingredient, OnIngredientUpdatedListener listener) {
@@ -354,7 +340,7 @@ public class ShoppingFragment extends Fragment {
                 Date expirationDate = str2Date(expirationEditText.getText().toString());
                 Ingredient newIngredient = new Ingredient(name, calories, quantity, expirationDate);
 
-                ingredientVM.addIngredient(newIngredient, success -> {
+                ingredientVM.addIngredientFromShoppingList(newIngredient, success -> {
                     if (success) {
                         listener.onIngredientUpdated(true);
                         refreshRecycleView();
@@ -371,6 +357,42 @@ public class ShoppingFragment extends Fragment {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+
+    private void refreshRecycleView() {
+        shoppingListVM.getIngredients(items -> {
+            List<Ingredient> ingredients = items
+                    .stream()
+                    .filter(e -> !(e instanceof Ingredient))
+                    .collect(Collectors.toList())
+                    .stream().
+                    map(e -> (Ingredient) e)
+                    .collect(Collectors.toList());
+
+            rvShopping.setAdapter(new ShoppingListAdapter(ingredients));
+            this.retrieveAndDisplayIngredients(rvShopping);
+        });
+    }
+
+    private static Date str2Date(String str) throws ParseException {
+        Date d = null;
+        if (!str.isEmpty()) {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+            d = sdf.parse(str);
+        }
+        return d == null ? new Date(Long.MAX_VALUE) : d;
+    }
+
+    private static String date2Str(Date date) {
+        if (date.getTime() == Long.MAX_VALUE) {
+            return "forever away";
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        String formattedDate = sdf.format(date);
+        return formattedDate;
+    }
+
+
 
 
 }
