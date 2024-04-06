@@ -102,8 +102,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView nameTextView;
-        private TextView infoTextView;
+        TextView nameTextView;
+        TextView infoTextView;
         public ViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(v -> {
