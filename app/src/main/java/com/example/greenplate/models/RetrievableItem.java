@@ -9,13 +9,19 @@ public abstract class RetrievableItem {
 
     /**
      * Constructor for a general RetrievableItem.
-     * @param name - name of the item
-     * @param calories - calories of the item
+     * 
+     * @param name         - name of the item
+     * @param calories     - calories of the item
      * @param multiplicity - multiplicity of the item
      */
     public RetrievableItem(String name, double calories, double multiplicity) {
         this.name = name;
         this.calories = calories;
+        this.multiplicity = multiplicity;
+    }
+
+    public RetrievableItem(String name, double multiplicity) {
+        this.name = name;
         this.multiplicity = multiplicity;
     }
 
@@ -32,6 +38,7 @@ public abstract class RetrievableItem {
 
     /**
      * Getter for name.
+     * 
      * @return name
      */
     public String getName() {
@@ -40,6 +47,7 @@ public abstract class RetrievableItem {
 
     /**
      * Setter for name.
+     * 
      * @param name - name to set to
      */
     public void setName(String name) {
@@ -48,6 +56,7 @@ public abstract class RetrievableItem {
 
     /**
      * Getter for calories.
+     * 
      * @return calories
      */
     public double getCalories() {
@@ -56,6 +65,7 @@ public abstract class RetrievableItem {
 
     /**
      * Setter for calories.
+     * 
      * @param calories - calories to set to
      */
     public void setCalories(double calories) {
@@ -64,6 +74,7 @@ public abstract class RetrievableItem {
 
     /**
      * Getter for multiplicity.
+     * 
      * @return multiplicity
      */
     public double getMultiplicity() {
@@ -72,6 +83,7 @@ public abstract class RetrievableItem {
 
     /**
      * Setter for multiplicity.
+     * 
      * @param multiplicity - multiplicity to set to
      */
     public void setMultiplicity(double multiplicity) {
