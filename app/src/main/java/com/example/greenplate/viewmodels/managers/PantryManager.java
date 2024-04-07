@@ -158,6 +158,28 @@ public class PantryManager implements Manager {
         });
     }
 
+    /**
+     * Check whether the input ingredient is duplicate.
+     *
+     * @param ingredient - the ingredient to check
+     * @param listener   - the listener to update
+     */
+    public void isWrongCalorie(Ingredient ingredient, OnDuplicateCheckListener listener) {
+        retrieve(items -> {
+            boolean isDuplicate = false;
+            RetrievableItem duplicate = null;
+            for (RetrievableItem item : items) {
+                if (item.getName().equals(ingredient.getName())
+                        && item.getCalories() != ingredient.getCalories()) {
+                    isDuplicate = true;
+                    duplicate = item;
+                    break;
+                }
+            }
+            listener.onDuplicateCheckCompleted(isDuplicate, duplicate);
+        });
+    }
+
 
     public void updateIngredientMultiplicity(String ingredientName, double updatedMultiplicity,
             OnMultiplicityUpdateListener listener) {

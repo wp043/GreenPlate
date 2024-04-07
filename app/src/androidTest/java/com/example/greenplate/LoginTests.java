@@ -52,9 +52,4 @@ public class LoginTests {
         assertTrue(viewModel.isInputDataValidForTest("test@example.com", "password123"));
         assertFalse(viewModel.isInputDataValidForTest("test@example.com", "123"));
     }
-
-
-
-
-
 }

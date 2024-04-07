@@ -62,5 +62,7 @@ public class ShoppingListViewModel extends ViewModel {
         items.forEach(this::purchaseIngredient);
     }
 
-
+    public void removeFromCart(Ingredient toRemove) {
+        ingredientsInShoppingCart.remove(toRemove);
+    }
 }
