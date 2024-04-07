@@ -150,10 +150,9 @@ public class ShoppingFragment extends Fragment {
                     double quantity = Double.parseDouble(quantityEditText.getText().toString());
                     Ingredient newIngredient = new Ingredient(name, quantity);
 
-                    shoppingListVM.addIngredient(newIngredient, success -> {
+                    shoppingListVM.addIngredient(newIngredient, (success, message) -> {
                         if (!success) {
-                            Toast.makeText(requireContext(), "Failed to add ingredient",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
                             return;
                         }
                         refreshRecycleView();
@@ -262,19 +261,12 @@ public class ShoppingFragment extends Fragment {
             }
 
             for (Ingredient ingredient : selectedIngredients) {
-                setupBuyToIngredient(ingredient, new OnIngredientUpdatedListener() {
-                    @Override
-                    public void onIngredientUpdated(boolean success) {
-                        if (success) {
-                            // Ingredient addition was successful
-                            // Handle success scenario
-                            Log.d("IngredientAddition", "Ingredient added successfully.");
-                            shoppingListVM.removeIngredient(ingredient);
-                        } else {
-                            // Ingredient addition failed
-                            // Handle failure scenario
-                            Log.d("IngredientAddition", "Failed to add ingredient.");
-                        }
+                setupBuyToIngredient(ingredient, (success, message) -> {
+                    if (success) {
+                        // Ingredient addition was successful
+                        // Handle success scenario
+                        Log.d("IngredientAddition", "Ingredient added successfully.");
+                        shoppingListVM.removeIngredient(ingredient);
                     }
                 });
 
@@ -340,15 +332,7 @@ public class ShoppingFragment extends Fragment {
                 Date expirationDate = str2Date(expirationEditText.getText().toString());
                 Ingredient newIngredient = new Ingredient(name, calories, quantity, expirationDate);
 
-                ingredientVM.addIngredientFromShoppingList(newIngredient, success -> {
-                    if (success) {
-                        listener.onIngredientUpdated(true);
-                        refreshRecycleView();
-                    } else {
-                        listener.onIngredientUpdated(false);
-                        Toast.makeText(requireContext(), "Failed to add ingredient", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                ingredientVM.addIngredientFromShoppingList(newIngredient, listener);
             } catch (Exception e) {
                 Toast.makeText(requireContext(), "Failed. All fields must be filled in.", Toast.LENGTH_SHORT).show();
             }

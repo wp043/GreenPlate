@@ -125,9 +125,9 @@ public class IngredientFragment extends Fragment {
                     Ingredient newIngredient = new Ingredient(name,
                             calories, quantity, expirationDate);
 
-                    ingredientVM.addIngredient(newIngredient, success -> {
+                    ingredientVM.addIngredient(newIngredient, (success, message) -> {
                         if (!success) {
-                            Toast.makeText(requireContext(), "Failed to add ingredient",
+                            Toast.makeText(requireContext(), message,
                                     Toast.LENGTH_SHORT).show();
                             return;
                         }
@@ -202,7 +202,7 @@ public class IngredientFragment extends Fragment {
                             Ingredient newIngredient = new Ingredient(name, calories, quantity,
                                     expirationDate);
 
-                            ingredientVM.updateIngredient(newIngredient, success -> {
+                            ingredientVM.updateIngredient(newIngredient, (success, message) -> {
                                 if (!success) {
                                     Toast.makeText(requireContext(),
                                             "Failed. Name, Calorie, "

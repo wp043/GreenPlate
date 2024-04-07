@@ -25,57 +25,40 @@ public class IngredientViewModel extends ViewModel {
     }
 
     public void addIngredient(Ingredient ingredient, OnIngredientUpdatedListener listener) {
-        pantryManager.isIngredientDuplicate(ingredient, (isDuplicate, duplicateName) -> {
-            if (isDuplicate) {
-                Log.d("Information", "Duplicate found");
-                listener.onIngredientUpdated(false);
-            } else {
-                pantryManager.addIngredient(ingredient, success -> {
-                    if (success) {
-                        Log.d("Information", "Ingredient added");
-                        listener.onIngredientUpdated(true);
-                    } else {
-                        listener.onIngredientUpdated(false);
-                    }
-                });
-
+        pantryManager.isWrongCalorie(ingredient, (isWrongCalorie, dup) -> {
+            if (isWrongCalorie) {
+                listener.onIngredientUpdated(false, "Ingredients of "
+                        + "the same name must have the same calorie.");
+                return;
             }
+            pantryManager.isIngredientDuplicate(ingredient, (isDuplicate, duplicateName) -> {
+                if (isDuplicate) {
+                    listener.onIngredientUpdated(false, "You can't add a "
+                            + "duplicate ingredient.");
+                    return;
+                }
+                pantryManager.addIngredient(ingredient, listener);
+            });
         });
     }
 
     public void addIngredientFromShoppingList(Ingredient ingredient, OnIngredientUpdatedListener listener) {
         pantryManager.isIngredientDuplicate(ingredient, (isDuplicate, duplicateName) -> {
-            if (isDuplicate) {
-                pantryManager.retrieve(items -> {
-
-                    RetrievableItem duplicate = null;
-                    for (RetrievableItem item : items) {
-                        if (item.equals(ingredient)) {
-
-                            duplicate = item;
-                            break;
-                        }
-                    }
-                    duplicate.setMultiplicity(duplicate.getMultiplicity()+ingredient.getMultiplicity());
-                    updateIngredient((Ingredient) duplicate, success -> {
-                        if (success){
-                            listener.onIngredientUpdated(true);
-                        } else{
-                            listener.onIngredientUpdated(false);
-                        }
-                    });
-                });
-            } else {
-                pantryManager.addIngredient(ingredient, success -> {
-                    if (success) {
-                        Log.d("Information", "Ingredient added");
-                        listener.onIngredientUpdated(true);
-                    } else {
-                        listener.onIngredientUpdated(false);
-                    }
-                });
-
+            if (!isDuplicate) {
+                pantryManager.addIngredient(ingredient, listener);
+                return;
             }
+            pantryManager.retrieve(items -> {
+                RetrievableItem duplicate = null;
+                for (RetrievableItem item : items) {
+                    if (item.equals(ingredient)) {
+                        duplicate = item;
+                        break;
+                    }
+                }
+                duplicate.setMultiplicity(duplicate.getMultiplicity() + ingredient.getMultiplicity());
+                updateIngredient((Ingredient) duplicate, listener);
+            });
         });
     }
 
@@ -85,14 +68,13 @@ public class IngredientViewModel extends ViewModel {
                 ingredient.getMultiplicity(), new OnMultiplicityUpdateListener() {
                     @Override
                     public void onMultiplicityUpdateSuccess(GreenPlateStatus status) {
-                        Log.d("Success", status.getMessage());
-                        listener.onIngredientUpdated(true);
+                        listener.onIngredientUpdated(true, "Successful update");
                     }
 
                     @Override
                     public void onMultiplicityUpdateFailure(GreenPlateStatus status) {
                         Log.d("Failure", status.getMessage());
-                        listener.onIngredientUpdated(false);
+                        listener.onIngredientUpdated(false, "Error during update");
                     }
                 });
     }

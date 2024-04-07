@@ -27,35 +27,9 @@ public class ShoppingListViewModel extends ViewModel {
         shoppingListManager.isIngredientDuplicate(ingredient, (isDuplicate, duplicateName) -> {
             if (isDuplicate) {
                 Log.d("Information", "Duplicate found");
-//                shoppingListManager.updateIngredientMultiplicity(ingredient.getName(),ingredient.getMultiplicity(),);
-                this.updateIngredient(ingredient, new OnIngredientUpdatedListener() {
-                    @Override
-                    public void onIngredientUpdated(boolean success) {
-                        if (success) {
-                            // Update was successful
-                            // Handle success scenario
-                            Log.d("IngredientUpdate", "Ingredient updated successfully.");
-                        } else {
-                            // Update failed
-                            // Handle failure scenario
-                            Log.d("IngredientUpdate", "Failed to update ingredient.");
-                        }
-                    }
-                });
-                listener.onIngredientUpdated(true);
+                this.updateIngredient(ingredient, listener);
             } else {
-                shoppingListManager.addIngredient(ingredient, success -> {
-                    Log.d("TAG", "1");
-                    if (success) {
-                        Log.d("Information", "Ingredient added");
-                        Log.d("TAG", "2");
-                        listener.onIngredientUpdated(true);
-                    } else {
-                        listener.onIngredientUpdated(false);
-                        Log.d("TAG", "3");
-                    }
-                });
-
+                shoppingListManager.addIngredient(ingredient, listener);
             }
         });
     }
@@ -67,13 +41,13 @@ public class ShoppingListViewModel extends ViewModel {
                     @Override
                     public void onMultiplicityUpdateSuccess(GreenPlateStatus status) {
                         Log.d("Success", status.getMessage());
-                        listener.onIngredientUpdated(true);
+                        listener.onIngredientUpdated(true, status.getMessage());
                     }
 
                     @Override
                     public void onMultiplicityUpdateFailure(GreenPlateStatus status) {
                         Log.d("Failure", status.getMessage());
-                        listener.onIngredientUpdated(false);
+                        listener.onIngredientUpdated(false, status.getMessage());
                     }
                 });
     }

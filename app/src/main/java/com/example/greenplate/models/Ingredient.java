@@ -2,6 +2,7 @@ package com.example.greenplate.models;
 
 import androidx.annotation.Nullable;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class Ingredient extends RetrievableItem {
@@ -65,10 +66,21 @@ public class Ingredient extends RetrievableItem {
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        if (obj == null || getClass() != obj.getClass()) {
+        if (super.equals(obj)) {
             return false;
         }
         Ingredient that = (Ingredient) obj;
-        return this.getName().equals(that.getName());
+        return isSameDate(that.expirationDate, this.expirationDate);
+    }
+
+    private static boolean isSameDate(Date date1, Date date2) {
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(date1);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(date2);
+
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
+                cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
     }
 }
