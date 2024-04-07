@@ -138,4 +138,12 @@ public class RecipeFragment extends Fragment {
             }
         });
     }
+
+    public RecyclerView getRvRecipes() {
+        return getView().findViewById(R.id.rvRecipes);
+    }
+
+    public RecipeFragment getFragment() {
+        return fragment;
+    }
 }

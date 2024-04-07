@@ -219,4 +219,10 @@ public class RecipeViewModel extends ViewModel {
             Context context, RecyclerView rvRecipes, Fragment fragment) {
         retrieveAndDisplaySorted(context, rvRecipes, fragment, new SortByIngredientCountStrategy());
     }
+    public void updateRecipeAvailability(RecyclerView rvRecipes, Fragment fragment) {
+        AvailabilityReportGenerator.getInstance().getMissingElementsForShopping(report -> {
+            retrieveAndDisplayIngredients(rvRecipes, fragment);
+        });
+    }
+
 }
