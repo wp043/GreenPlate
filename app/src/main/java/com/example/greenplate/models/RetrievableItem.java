@@ -107,6 +107,6 @@ public abstract class RetrievableItem {
             return false;
         }
         RetrievableItem that = (RetrievableItem) obj;
-        return this.name.equals(that.name) && this.calories == that.calories;
+        return this.name.equals(that.name);
     }
 }

@@ -88,20 +88,19 @@ public class ShoppingListManager implements Manager {
      * @return the status of the operation
      *
      */
-    public GreenPlateStatus addIngredient(Ingredient ingredient, OnIngredientUpdatedListener
+    public void addIngredient(Ingredient ingredient, OnIngredientUpdatedListener
             listener) {
         if (ingredient == null) {
-            listener.onIngredientUpdated(false);
-            return new GreenPlateStatus(false, "Can't add a null ingredient.");
+            listener.onIngredientUpdated(false, "Can't add a null ingredient.");
+            return;
         }
         if (ingredient.getName() == null || TextUtils.isEmpty(ingredient.getName().trim())) {
-            listener.onIngredientUpdated(false);
-            return new GreenPlateStatus(false, "Can't add a ingredient with empty name.");
+            listener.onIngredientUpdated(false, "Can't add a ingredient with empty name.");
+            return;
         }
         if (ingredient.getMultiplicity() <= 0) {
-            listener.onIngredientUpdated(false);
-            return new GreenPlateStatus(false,
-                    "Can't add a ingredient with non-positive multiplicity.");
+            listener.onIngredientUpdated(false, "Can't add a ingredient with non-positive multiplicity.");
+            return;
         }
         try {
             String ingredientKey = myRef.push().getKey();
@@ -111,13 +110,11 @@ public class ShoppingListManager implements Manager {
 
             myRef.child(ingredientKey).child("name").setValue(ingredient.getName());
             myRef.child(ingredientKey).child("multiplicity").setValue(ingredient.getMultiplicity());
-            listener.onIngredientUpdated(true);
+            listener.onIngredientUpdated(true, "Success");
         } catch (Exception e) {
             Log.d("Failure", "ShoppingListManager failure due to: " + e.getLocalizedMessage());
-            listener.onIngredientUpdated(false);
-            return new GreenPlateStatus(false, "Add meal: " + e.getLocalizedMessage());
+            listener.onIngredientUpdated(false, "An error occurred");
         }
-        return new GreenPlateStatus(true, "success");
     }
 
     /**

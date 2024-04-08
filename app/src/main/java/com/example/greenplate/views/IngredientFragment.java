@@ -60,7 +60,7 @@ public class IngredientFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ingredientVM = new IngredientViewModel();
-        rvRecipes = (RecyclerView) view.findViewById(R.id.rvIngredients);
+        rvRecipes = view.findViewById(R.id.rvIngredients);
         addButton = view.findViewById(R.id.addButton);
         editButton = view.findViewById(R.id.editButton);
 
@@ -125,9 +125,9 @@ public class IngredientFragment extends Fragment {
                     Ingredient newIngredient = new Ingredient(name,
                             calories, quantity, expirationDate);
 
-                    ingredientVM.addIngredient(newIngredient, success -> {
+                    ingredientVM.addIngredient(newIngredient, (success, message) -> {
                         if (!success) {
-                            Toast.makeText(requireContext(), "Failed to add ingredient",
+                            Toast.makeText(requireContext(), message,
                                     Toast.LENGTH_SHORT).show();
                             return;
                         }
@@ -202,12 +202,9 @@ public class IngredientFragment extends Fragment {
                             Ingredient newIngredient = new Ingredient(name, calories, quantity,
                                     expirationDate);
 
-                            ingredientVM.updateIngredient(newIngredient, success -> {
+                            ingredientVM.updateIngredient(newIngredient, (success, message) -> {
                                 if (!success) {
-                                    Toast.makeText(requireContext(),
-                                            "Failed. Name, Calorie, "
-                                                    + "expiration date must match "
-                                                    + "the ingredient to be edited.",
+                                    Toast.makeText(requireContext(), message,
                                             Toast.LENGTH_SHORT).show();
                                     return;
                                 }
@@ -253,7 +250,6 @@ public class IngredientFragment extends Fragment {
             return "forever away";
         }
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        String formattedDate = sdf.format(date);
-        return formattedDate;
+        return sdf.format(date);
     }
 }

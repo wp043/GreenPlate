@@ -6,13 +6,19 @@
     android:padding="48dp">
 
     <EditText
-        android:id="@+id/ingredient_name"
+        android:id="@+id/shopping_ingredient_name"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:hint="Ingredient Name" />
 
     <EditText
-        android:id="@+id/ingredient_quantity"
+        android:id="@+id/shopping_ingredient_calorie"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Ingredient Calories" />
+
+    <EditText
+        android:id="@+id/shopping_ingredient_quantity"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:hint="Quantity"
