@@ -1,5 +1,7 @@
 package com.example.greenplate.models;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 
 import java.util.Calendar;
@@ -66,21 +68,29 @@ public class Ingredient extends RetrievableItem {
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        if (super.equals(obj)) {
+        if (!super.equals(obj)) {
             return false;
         }
         Ingredient that = (Ingredient) obj;
-        return isSameDate(that.expirationDate, this.expirationDate);
+
+        return isSameDate(this.expirationDate, that.expirationDate);
     }
 
     private static boolean isSameDate(Date date1, Date date2) {
         Calendar cal1 = Calendar.getInstance();
         cal1.setTime(date1);
+        int year1 = cal1.get(Calendar.YEAR);
+        int month1 = cal1.get(Calendar.MONTH);
+        int day1 = cal1.get(Calendar.DAY_OF_MONTH);
         Calendar cal2 = Calendar.getInstance();
         cal2.setTime(date2);
 
-        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-                cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
-                cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
+//        Log.d("AvaReport", String.format("date1=%d/%d/%d, date2=%d/%d/%d",
+//                month1, day1, year1, cal2.get(Calendar.MONTH), cal2.get(Calendar.DAY_OF_MONTH),
+//                cal2.get(Calendar.YEAR)));
+
+        return year1 == cal2.get(Calendar.YEAR)
+                && month1 == cal2.get(Calendar.MONTH)
+                && day1 == cal2.get(Calendar.DAY_OF_MONTH);
     }
 }

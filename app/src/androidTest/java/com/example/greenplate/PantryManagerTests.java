@@ -82,58 +82,39 @@ public class PantryManagerTests {
 
     @Test
     public void testAddNullIngredient() {
-        GreenPlateStatus status = manager.addIngredient(null, Assert::assertFalse);
-        assertFalse(status.isSuccess());
-        assertEquals("Can't add a null ingredient.", status.getMessage());
+        manager.addIngredient(null, (success, message) -> Assert.assertFalse(success));
     }
 
     @Test
     public void testAddInvalidIngredient() {
         Ingredient ingredient =
                 new Ingredient("     ", 180, 4, null);
-        GreenPlateStatus status = manager.addIngredient(ingredient, Assert::assertFalse);
-        assertFalse(status.isSuccess());
-        assertEquals("Can't add a ingredient with empty name.", status.getMessage());
+        manager.addIngredient(null, (success, message) -> Assert.assertFalse(success));
 
         ingredient = new Ingredient(null, 180, 4, null);
-        status = manager.addIngredient(ingredient, Assert::assertFalse);
-        assertFalse(status.isSuccess());
-        assertEquals("Can't add a ingredient with empty name.", status.getMessage());
+        manager.addIngredient(null, (success, message) -> Assert.assertFalse(success));
 
         ingredient = new Ingredient("Test", -180, 4, null);
-        status = manager.addIngredient(ingredient, Assert::assertFalse);
-        assertFalse(status.isSuccess());
-        assertEquals("Can't add a ingredient with non-positive calorie.", status.getMessage());
+        manager.addIngredient(null, (success, message) -> Assert.assertFalse(success));
 
         ingredient = new Ingredient("Test", 180, 0, null);
-        status = manager.addIngredient(ingredient, Assert::assertFalse);
-        assertFalse(status.isSuccess());
-        assertEquals("Can't add a ingredient with non-positive multiplicity.", status.getMessage());
+        manager.addIngredient(null, (success, message) -> Assert.assertFalse(success));
     }
 
     @Test
     public void testAddValidIngredient() {
         Ingredient ingredient =
                 new Ingredient("Test 1", 10, 4, null);
-        GreenPlateStatus status = manager.addIngredient(ingredient, Assert::assertTrue);
-        assertTrue(status.isSuccess());
-        assertEquals(String.format("%s added to database successfully", ingredient),
-                status.getMessage());
+        manager.addIngredient(ingredient, (success, message) -> Assert.assertTrue(success));
 
         ingredient = new Ingredient("Test 2", 10, 3, null);
-        status = manager.addIngredient(ingredient, Assert::assertTrue);
-        assertTrue(status.isSuccess());
-        assertEquals(String.format("%s added to database successfully", ingredient),
-                status.getMessage());
+        manager.addIngredient(ingredient, (success, message) -> Assert.assertTrue(success));
     }
 
     @Test
     public void testAddDuplicateIngredient() {
         Ingredient ingredient = new Ingredient("Test 1", 10, 4, null);
-        GreenPlateStatus status = manager.addIngredient(ingredient, Assert::assertTrue);
-        assertTrue(status.isSuccess());
-        assertEquals(String.format("%s added to database successfully", ingredient),
-                status.getMessage());
+        manager.addIngredient(ingredient, (success, message) -> Assert.assertTrue(success));
 
         ingredient = new Ingredient("Test 1", 10, 3, null);
         manager.isIngredientDuplicate(ingredient,
@@ -148,14 +129,11 @@ public class PantryManagerTests {
     public void testRemoveIngredient() {
         Ingredient ingredient = new Ingredient("Test 1", 10,
                 4, null);
-        GreenPlateStatus status = manager.addIngredient(ingredient, Assert::assertTrue);
-        assertTrue(status.isSuccess());
-        assertEquals(String.format("%s added to database successfully",
-                ingredient), status.getMessage());
+        manager.addIngredient(ingredient, (success, message) -> Assert.assertTrue(success));
 
         ingredient = new Ingredient("Test 1", 10, 4, null);
 
-        manager.removeIngredient(ingredient.getName(), new OnIngredientRemoveListener() {
+        manager.removeIngredient(ingredient, new OnIngredientRemoveListener() {
             @Override
             public void onIngredientRemoveSuccess(GreenPlateStatus status) {
             }

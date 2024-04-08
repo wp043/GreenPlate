@@ -41,18 +41,7 @@ public class InputMealTests {
     public static void setUp() {
         final CountDownLatch latch = new CountDownLatch(1);
         A1.signInWithEmailAndPassword(TEST_EMAIL, TEST_PASSWORD)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> signInTask) {
-                        if (signInTask.isSuccessful()) {
-                            // Sign in successful
-                            latch.countDown(); // Release the latch
-                        } else {
-                            // Handle sign in failure
-                            latch.countDown(); // Release the latch even in failure case
-                        }
-                    }
-                });
+                .addOnCompleteListener(signInTask -> latch.countDown());
         try {
             latch.await(); // Wait until the latch is released
         } catch (InterruptedException e) {

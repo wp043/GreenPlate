@@ -10,7 +10,6 @@ import com.example.greenplate.viewmodels.listeners.OnDataRetrievedCallback;
 import com.example.greenplate.viewmodels.listeners.OnIngredientRemoveListener;
 import com.example.greenplate.viewmodels.listeners.OnIngredientUpdatedListener;
 import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
-import com.example.greenplate.viewmodels.managers.PantryManager;
 import com.example.greenplate.viewmodels.managers.ShoppingListManager;
 
 public class ShoppingListViewModel extends ViewModel {

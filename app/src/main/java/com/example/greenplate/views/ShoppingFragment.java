@@ -1,20 +1,9 @@
 package com.example.greenplate.views;
 
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.fragment.app.Fragment;
-
-import com.example.greenplate.R;
-import com.example.greenplate.viewmodels.RecipeViewModel;
-import com.example.greenplate.viewmodels.ShoppingListViewModel;
-
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,9 +21,10 @@ import com.example.greenplate.R;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.IngredientViewModel;
+import com.example.greenplate.viewmodels.RecipeViewModel;
 import com.example.greenplate.viewmodels.ShoppingListViewModel;
-import com.example.greenplate.viewmodels.adapters.IngredientsAdapter;
 import com.example.greenplate.viewmodels.adapters.ShoppingListAdapter;
+import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
 import com.example.greenplate.viewmodels.listeners.OnIngredientUpdatedListener;
 
 import java.text.ParseException;
@@ -97,8 +87,10 @@ public class ShoppingFragment extends Fragment {
     }
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        AvailabilityReportGenerator.getInstance()
+                .getMissingElementsForShopping(AvailabilityReportGenerator::logReport);
         shoppingListVM = new ShoppingListViewModel();
-        ingredientVM=new IngredientViewModel();
+        ingredientVM = new IngredientViewModel();
         recipeVM = new RecipeViewModel();
         rvShopping = (RecyclerView) view.findViewById(R.id.rvIngredients);
         addButton = view.findViewById(R.id.addButton);
@@ -140,15 +132,17 @@ public class ShoppingFragment extends Fragment {
             builder.setView(dialogView).setPositiveButton("Add", (dialog, id) -> {
                 // Get user input
                 EditText nameEditText =
-                        dialogView.findViewById(R.id.ingredient_name);
+                        dialogView.findViewById(R.id.shopping_ingredient_name);
                 EditText quantityEditText =
-                        dialogView.findViewById(R.id.ingredient_quantity);
-
+                        dialogView.findViewById(R.id.shopping_ingredient_quantity);
+                EditText caloriesEditText =
+                        dialogView.findViewById(R.id.shopping_ingredient_calorie);
 
                 try {
                     String name = nameEditText.getText().toString();
                     double quantity = Double.parseDouble(quantityEditText.getText().toString());
-                    Ingredient newIngredient = new Ingredient(name, quantity);
+                    double calories = Double.parseDouble(caloriesEditText.getText().toString());
+                    Ingredient newIngredient = new Ingredient(name, quantity, calories, null);
 
                     shoppingListVM.addIngredient(newIngredient, (success, message) -> {
                         if (!success) {
@@ -168,87 +162,7 @@ public class ShoppingFragment extends Fragment {
         });
     }
 
-    //    private void setupEditButton() {
-//        editButton.setOnClickListener(v -> {
-//            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//            LayoutInflater inflater = requireActivity().getLayoutInflater();
-//            View dialogView = inflater.inflate(R.layout.dialog_ingredient, null);
-//
-//            IngredientsAdapter oldAdapter = (IngredientsAdapter) rvRecipes.getAdapter();
-//            if (oldAdapter.getSelectedPosition() < 0
-//                    || oldAdapter.getSelectedPosition() >= oldAdapter.getRecipeList().size()) {
-//                Toast.makeText(requireContext(),
-//                        "Please select an item to update!",
-//                        Toast.LENGTH_LONG).show();
-//                return;
-//            }
-//            Ingredient selectedIngredient = oldAdapter.getRecipeList()
-//                    .get(oldAdapter.getSelectedPosition());
-//
-//            // Expiration date window
-//            EditText expirationEditText = dialogView.findViewById(R.id.ingredient_expiration);
-//            EditText nameEditText = dialogView.findViewById(R.id.ingredient_name);
-//            EditText quantityEditText = dialogView.findViewById(R.id.ingredient_quantity);
-//            EditText caloriesEditText = dialogView.findViewById(R.id.ingredient_calories);
-//
-//            nameEditText.setText(selectedIngredient.getName());
-//            nameEditText.setEnabled(false);
-//
-//            caloriesEditText.setText(String.valueOf(selectedIngredient.getCalories()));
-//            caloriesEditText.setEnabled(false);
-//
-//            expirationEditText.setText(date2Str(selectedIngredient.getExpirationDate()));
-//            expirationEditText.setEnabled(false);
-//
-//            expirationEditText.setOnClickListener(v1 -> {
-//                Calendar calendar = Calendar.getInstance();
-//
-//                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-//                    (view, year1, month1, dayOfMonth) -> {
-//                        String date = (month1 + 1) + "/" + dayOfMonth + "/" + year1;
-//                        expirationEditText.setText(date);
-//                    }, calendar.get(Calendar.YEAR),
-//                        calendar.get(Calendar.MONTH),
-//                        calendar.get(Calendar.DAY_OF_MONTH));
-//                datePickerDialog.show();
-//            });
-//
-//            builder.setView(dialogView)
-//                    .setPositiveButton("Edit", (dialog, id) -> {
-//                        try {
-//                            String name = nameEditText.getText().toString();
-//                            double quantity =
-//                                    Double.parseDouble(quantityEditText.getText().toString());
-//                            double calories =
-//                                    Double.parseDouble(caloriesEditText.getText().toString());
-//                            Date expirationDate = str2Date(expirationEditText.getText().toString());
-//
-//                            Ingredient newIngredient = new Ingredient(name, calories, quantity,
-//                                    expirationDate);
-//
-//                            shoppingListVM.updateIngredient(newIngredient, success -> {
-//                                if (!success) {
-//                                    Toast.makeText(requireContext(),
-//                                            "Failed. Name, Calorie, "
-//                                                    + "expiration date must match "
-//                                                    + "the ingredient to be edited.",
-//                                            Toast.LENGTH_SHORT).show();
-//                                    return;
-//                                }
-//                                refreshRecycleView();
-//                            });
-//                        } catch (Exception e) {
-//                            Toast.makeText(requireContext(),
-//                                    "Failed. All fields must be filled in.",
-//                                    Toast.LENGTH_SHORT).show();
-//                        }
-//                    }).setNegativeButton("Cancel", (dialog, id) -> { });
-//            AlertDialog dialog = builder.create();
-//            dialog.show();
-//        });
-//    }
-//
-    private void setupBuyButton(){
+    private void setupBuyButton() {
         buyButton.setOnClickListener(v -> {
             ShoppingListAdapter adapter = (ShoppingListAdapter) rvShopping.getAdapter();
             List<Ingredient> ingredients = adapter.getShoppingList();
@@ -263,9 +177,7 @@ public class ShoppingFragment extends Fragment {
             for (Ingredient ingredient : selectedIngredients) {
                 setupBuyToIngredient(ingredient, (success, message) -> {
                     if (success) {
-                        // Ingredient addition was successful
-                        // Handle success scenario
-                        Log.d("IngredientAddition", "Ingredient added successfully.");
+                        Log.d("IngredientAddition", message);
                         shoppingListVM.removeIngredient(ingredient);
                     }
                 });
@@ -279,17 +191,11 @@ public class ShoppingFragment extends Fragment {
                         .getSupportFragmentManager()
                         .findFragmentByTag("YourRecipeFragmentTag");
                 if (recipeFragment != null) {
-                    RecyclerView rvRecipes = recipeFragment.getRvRecipes();
-                    RecipeFragment fragment = recipeFragment.getFragment();
-
-                    // Now you can use rvRecipes and fragment as needed
-                    recipeVM.updateRecipeAvailability(rvRecipes, fragment);
+                    recipeVM.updateRecipeAvailability(recipeFragment.getRvRecipes(),
+                            recipeFragment.getFragment());
                 }
             }
-
-
         });
-
     }
 
     private void setupBuyToIngredient(Ingredient ingredient, OnIngredientUpdatedListener listener) {
@@ -305,10 +211,10 @@ public class ShoppingFragment extends Fragment {
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
             DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-                    (view, year1, month1, dayOfMonth) -> {
-                        String date = (month1 + 1) + "/" + dayOfMonth + "/" + year1;
-                        expirationEditText.setText(date);
-                    }, year, month, day);
+                (view, year1, month1, dayOfMonth) -> {
+                    String date = (month1 + 1) + "/" + dayOfMonth + "/" + year1;
+                    expirationEditText.setText(date);
+                }, year, month, day);
             datePickerDialog.show();
         });
 
@@ -375,8 +281,4 @@ public class ShoppingFragment extends Fragment {
         String formattedDate = sdf.format(date);
         return formattedDate;
     }
-
-
-
-
 }

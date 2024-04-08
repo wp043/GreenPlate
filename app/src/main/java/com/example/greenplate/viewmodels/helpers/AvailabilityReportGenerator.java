@@ -52,7 +52,7 @@ public class AvailabilityReportGenerator {
                         double requiredNum = requiredIngredient.getMultiplicity();
                         double numInPantry = currentIngredientsInPantry.stream()
                                 .filter(e -> e.getName().equals(requiredIngredient.getName())
-                                        && requiredIngredient.getExpirationDate().after(new Date()))
+                                        && e.getExpirationDate().after(new Date()))
                                 .mapToDouble(e -> e.getMultiplicity()).sum();
                         if (numInPantry < requiredNum) {
                             missingIngredients.put(new Ingredient(requiredIngredient),
