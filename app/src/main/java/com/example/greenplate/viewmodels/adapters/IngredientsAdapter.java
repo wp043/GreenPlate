@@ -12,9 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.greenplate.R;
 import com.example.greenplate.models.Ingredient;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.ViewHolder> {
@@ -57,21 +54,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         TextView infoTextView = holder.infoTextView;
         nameTextView.setText(ingredient.getName());
 
-        String info = String.format("Calorie: %.2f, count: %.2f, expirate date: ",
-                ingredient.getCalories(), ingredient.getMultiplicity());
-
-        Calendar currentCalendar = Calendar.getInstance();
-        currentCalendar.setTime(new Date());
-        currentCalendar.add(Calendar.YEAR, 5);
-        if (ingredient.getExpirationDate().after(currentCalendar.getTime())) {
-            info += "long away";
-        } else {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-            info += sdf.format(ingredient.getExpirationDate());
-            if (ingredient.getExpirationDate().before(new Date())) {
-                info += " \u26A0\uFE0F";
-            }
-        }
+        String info = ingredient.displayInfo();
         infoTextView.setText(info);
 
         holder.itemView.setOnClickListener(v -> {
@@ -102,8 +85,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView nameTextView;
-        TextView infoTextView;
+        private TextView nameTextView;
+        private TextView infoTextView;
         public ViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(v -> {

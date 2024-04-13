@@ -99,7 +99,6 @@ public class ShoppingFragment extends Fragment {
         // Retrieve and display the list of ingredients
         retrieveAndDisplayIngredients(rvShopping);
         setupAddButton();
-//        setupEditButton();
         setupBuyButton();
     }
 
@@ -240,7 +239,8 @@ public class ShoppingFragment extends Fragment {
 
                 ingredientVM.addIngredientFromShoppingList(newIngredient, listener);
             } catch (Exception e) {
-                Toast.makeText(requireContext(), "Failed. All fields must be filled in.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(),
+                        "Failed. All fields must be filled in.", Toast.LENGTH_SHORT).show();
             }
         });
 

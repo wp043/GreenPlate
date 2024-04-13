@@ -20,10 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ShoppingListManager implements Manager {
@@ -85,8 +82,6 @@ public class ShoppingListManager implements Manager {
      * 
      * @param ingredient - the ingredient to add
      * @param listener - listener
-     * @return the status of the operation
-     *
      */
     public void addIngredient(Ingredient ingredient, OnIngredientUpdatedListener
             listener) {
@@ -99,7 +94,8 @@ public class ShoppingListManager implements Manager {
             return;
         }
         if (ingredient.getMultiplicity() <= 0) {
-            listener.onIngredientUpdated(false, "Can't add a ingredient with non-positive multiplicity.");
+            listener.onIngredientUpdated(false,
+                    "Can't add a ingredient with non-positive multiplicity.");
             return;
         }
         try {

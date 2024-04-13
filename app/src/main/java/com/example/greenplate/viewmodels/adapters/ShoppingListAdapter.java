@@ -1,7 +1,6 @@
 package com.example.greenplate.viewmodels.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.greenplate.R;
 import com.example.greenplate.models.Ingredient;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapter.ViewHolder> {
@@ -29,17 +25,6 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         this.selectedItems = new boolean[shoppingList.size()];
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView infoTextView;
-        CheckBox checkBox;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            infoTextView = itemView.findViewById(R.id.ingredient_info);
-            checkBox = itemView.findViewById(R.id.checkboxIngredient);
-        }
-    }
-
     @Override
     public ShoppingListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -49,7 +34,8 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         View shoppingListView = inflater.inflate(R.layout.item_shopping_list, parent, false);
 
         // Return a new holder instance
-        ShoppingListAdapter.ViewHolder viewHolder = new ShoppingListAdapter.ViewHolder(shoppingListView);
+        ShoppingListAdapter.ViewHolder viewHolder =
+                new ShoppingListAdapter.ViewHolder(shoppingListView);
         return viewHolder;
     }
 
@@ -106,6 +92,17 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
     @Override
     public int getItemCount() {
         return shoppingList.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private TextView infoTextView;
+        private CheckBox checkBox;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            infoTextView = itemView.findViewById(R.id.ingredient_info);
+            checkBox = itemView.findViewById(R.id.checkboxIngredient);
+        }
     }
 
 }

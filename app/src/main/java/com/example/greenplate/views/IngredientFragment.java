@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -17,14 +18,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
+import com.example.greenplate.models.ExpirationWarningIngredientDecorator;
 import com.example.greenplate.models.Ingredient;
-import com.example.greenplate.models.RetrievableItem;
+import com.example.greenplate.models.Recipe;
+import com.example.greenplate.models.UsageIngredientDecorator;
 import com.example.greenplate.viewmodels.IngredientViewModel;
 import com.example.greenplate.viewmodels.adapters.IngredientsAdapter;
+import com.example.greenplate.viewmodels.managers.CookbookManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +43,7 @@ public class IngredientFragment extends Fragment {
     private Button addButton;
     private Button editButton;
     private RecyclerView rvRecipes;
+    private CheckBox showRecipe;
 
     public IngredientFragment() {
         ingredientVM = new IngredientViewModel();
@@ -63,24 +67,42 @@ public class IngredientFragment extends Fragment {
         rvRecipes = view.findViewById(R.id.rvIngredients);
         addButton = view.findViewById(R.id.addButton);
         editButton = view.findViewById(R.id.editButton);
+        showRecipe = view.findViewById(R.id.show_recipe_checkBox);
+
+        showRecipe.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            retrieveAndDisplayIngredients(rvRecipes, isChecked);
+        });
 
         // Retrieve and display the list of ingredients
-        retrieveAndDisplayIngredients(rvRecipes);
+        retrieveAndDisplayIngredients(rvRecipes, showRecipe.isChecked());
         setupAddButton();
         setupEditButton();
     }
 
-    private void retrieveAndDisplayIngredients(RecyclerView rvRecipes) {
+    private void retrieveAndDisplayIngredients(RecyclerView rvRecipes, boolean includeRecipe) {
+        if (!includeRecipe) {
+            setBasicIngredients(rvRecipes, null);
+        } else {
+            new CookbookManager().retrieve(recipeItems -> {
+                List<Recipe> allRecipes = recipeItems.stream().map(e -> (Recipe) e)
+                        .collect(Collectors.toList());
+                setBasicIngredients(rvRecipes, allRecipes);
+            });
+        }
+    }
+
+    private void setBasicIngredients(RecyclerView rvRecipes, List<Recipe> allRecipes) {
         ingredientVM.getIngredients(items -> {
-            List<Ingredient> ingredients = new ArrayList<>();
-            if (items != null) {
-                for (RetrievableItem item : items) {
-                    if (item instanceof Ingredient) {
-                        Ingredient ingredient = (Ingredient) item;
-                        ingredients.add(ingredient);
-                    }
-                }
+            List<Ingredient> ingredients = items.stream()
+                    .map(e -> (Ingredient) e).collect(Collectors.toList());
+
+            ingredients.replaceAll(ExpirationWarningIngredientDecorator::new);
+
+            if (allRecipes != null) {
+                ingredients.replaceAll(ingredient ->
+                        new UsageIngredientDecorator(ingredient, allRecipes));
             }
+
             IngredientsAdapter adapter = new IngredientsAdapter(ingredients);
             rvRecipes.setAdapter(adapter);
             rvRecipes.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -232,7 +254,7 @@ public class IngredientFragment extends Fragment {
                     .collect(Collectors.toList());
 
             rvRecipes.setAdapter(new IngredientsAdapter(ingredients));
-            this.retrieveAndDisplayIngredients(rvRecipes);
+            this.retrieveAndDisplayIngredients(rvRecipes, showRecipe.isChecked());
         });
     }
 

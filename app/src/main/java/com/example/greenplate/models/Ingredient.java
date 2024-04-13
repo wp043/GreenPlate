@@ -1,13 +1,12 @@
 package com.example.greenplate.models;
 
-import android.util.Log;
-
 import androidx.annotation.Nullable;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class Ingredient extends RetrievableItem {
+public class Ingredient extends RetrievableItem implements Displayable {
     private Date expirationDate;
 
 
@@ -23,7 +22,7 @@ public class Ingredient extends RetrievableItem {
         this.expirationDate = expirationDate != null ? expirationDate : new Date(Long.MAX_VALUE);
     }
 
-    public Ingredient(String name, double multiplicity){
+    public Ingredient(String name, double multiplicity) {
         super(name, multiplicity);
     }
 
@@ -85,12 +84,28 @@ public class Ingredient extends RetrievableItem {
         Calendar cal2 = Calendar.getInstance();
         cal2.setTime(date2);
 
-//        Log.d("AvaReport", String.format("date1=%d/%d/%d, date2=%d/%d/%d",
-//                month1, day1, year1, cal2.get(Calendar.MONTH), cal2.get(Calendar.DAY_OF_MONTH),
-//                cal2.get(Calendar.YEAR)));
-
         return year1 == cal2.get(Calendar.YEAR)
                 && month1 == cal2.get(Calendar.MONTH)
                 && day1 == cal2.get(Calendar.DAY_OF_MONTH);
+    }
+
+    @Override
+    public String displayInfo() {
+        return String.format("Calorie: %.2f, count: %.2f, expirate date: %s",
+                this.getCalories(),
+                this.getMultiplicity(),
+                date2Str(this.getExpirationDate()));
+    }
+
+    private static String date2Str(Date date) {
+        Calendar currentCalendar = Calendar.getInstance();
+        currentCalendar.setTime(new Date());
+        currentCalendar.add(Calendar.YEAR, 5);
+
+        if (date.after(currentCalendar.getTime())) {
+            return "forever away";
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        return sdf.format(date);
     }
 }
