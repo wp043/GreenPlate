@@ -93,7 +93,7 @@
                 android:id="@+id/show_recipe_checkBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Show involved recipes for ingredients" />
+                android:text="Show involved recipes for items" />
         </LinearLayout>
 
     </LinearLayout>

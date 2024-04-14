@@ -1,10 +1,13 @@
 package com.example.greenplate.models;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.text.SimpleDateFormat;
+import com.example.greenplate.viewmodels.helpers.DateUtils;
+
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class Ingredient extends RetrievableItem implements Displayable {
     private Date expirationDate;
@@ -47,19 +50,12 @@ public class Ingredient extends RetrievableItem implements Displayable {
         return expirationDate;
     }
 
-    /**
-     * Setter for expiration Date.
-     * @param expirationDate the expiration date to set to
-     */
-    public void setExpirationDate(Date expirationDate) {
-        this.expirationDate = expirationDate;
-    }
-
     @Override
     public int hashCode() {
         return super.hashCode() + (expirationDate == null ? 0 : expirationDate.hashCode());
     }
 
+    @NonNull
     @Override
     public String toString() {
         return super.toString() + ", expire date: " + expirationDate.toString();
@@ -91,21 +87,6 @@ public class Ingredient extends RetrievableItem implements Displayable {
 
     @Override
     public String displayInfo() {
-        return String.format("Calorie: %.2f, count: %.2f, expirate date: %s",
-                this.getCalories(),
-                this.getMultiplicity(),
-                date2Str(this.getExpirationDate()));
-    }
-
-    private static String date2Str(Date date) {
-        Calendar currentCalendar = Calendar.getInstance();
-        currentCalendar.setTime(new Date());
-        currentCalendar.add(Calendar.YEAR, 5);
-
-        if (date.after(currentCalendar.getTime())) {
-            return "forever away";
-        }
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        return sdf.format(date);
+        return String.format(Locale.US, "count: %.2f", this.getMultiplicity());
     }
 }

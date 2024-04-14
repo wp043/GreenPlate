@@ -18,12 +18,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
+import com.example.greenplate.models.CalorieExpIngredientDecorator;
 import com.example.greenplate.models.ExpirationWarningIngredientDecorator;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
 import com.example.greenplate.models.UsageIngredientDecorator;
 import com.example.greenplate.viewmodels.IngredientViewModel;
 import com.example.greenplate.viewmodels.adapters.IngredientsAdapter;
+import com.example.greenplate.viewmodels.helpers.DateUtils;
 import com.example.greenplate.viewmodels.managers.CookbookManager;
 
 import java.text.ParseException;
@@ -96,6 +98,7 @@ public class IngredientFragment extends Fragment {
             List<Ingredient> ingredients = items.stream()
                     .map(e -> (Ingredient) e).collect(Collectors.toList());
 
+            ingredients.replaceAll(CalorieExpIngredientDecorator::new);
             ingredients.replaceAll(ExpirationWarningIngredientDecorator::new);
 
             if (allRecipes != null) {
@@ -143,7 +146,7 @@ public class IngredientFragment extends Fragment {
                     String name = nameEditText.getText().toString();
                     double quantity = Double.parseDouble(quantityEditText.getText().toString());
                     double calories = Double.parseDouble(caloriesEditText.getText().toString());
-                    Date expirationDate = str2Date(expirationEditText.getText().toString());
+                    Date expirationDate = DateUtils.str2Date(expirationEditText.getText().toString());
                     Ingredient newIngredient = new Ingredient(name,
                             calories, quantity, expirationDate);
 
@@ -195,7 +198,7 @@ public class IngredientFragment extends Fragment {
             caloriesEditText.setText(String.valueOf(selectedIngredient.getCalories()));
             caloriesEditText.setEnabled(false);
 
-            expirationEditText.setText(date2Str(selectedIngredient.getExpirationDate()));
+            expirationEditText.setText(DateUtils.date2Str(selectedIngredient.getExpirationDate()));
             expirationEditText.setEnabled(false);
 
             expirationEditText.setOnClickListener(v1 -> {
@@ -219,7 +222,7 @@ public class IngredientFragment extends Fragment {
                                     Double.parseDouble(quantityEditText.getText().toString());
                             double calories =
                                     Double.parseDouble(caloriesEditText.getText().toString());
-                            Date expirationDate = str2Date(expirationEditText.getText().toString());
+                            Date expirationDate = DateUtils.str2Date(expirationEditText.getText().toString());
 
                             Ingredient newIngredient = new Ingredient(name, calories, quantity,
                                     expirationDate);
@@ -256,22 +259,5 @@ public class IngredientFragment extends Fragment {
             rvRecipes.setAdapter(new IngredientsAdapter(ingredients));
             this.retrieveAndDisplayIngredients(rvRecipes, showRecipe.isChecked());
         });
-    }
-
-    private static Date str2Date(String str) throws ParseException {
-        Date d = null;
-        if (!str.isEmpty()) {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-            d = sdf.parse(str);
-        }
-        return d == null ? new Date(Long.MAX_VALUE) : d;
-    }
-
-    private static String date2Str(Date date) {
-        if (date.getTime() == Long.MAX_VALUE) {
-            return "forever away";
-        }
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        return sdf.format(date);
     }
 }

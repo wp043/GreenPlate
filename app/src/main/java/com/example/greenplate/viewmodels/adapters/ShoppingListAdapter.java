@@ -13,6 +13,7 @@ import com.example.greenplate.R;
 import com.example.greenplate.models.Ingredient;
 
 import java.util.List;
+import java.util.Locale;
 
 public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapter.ViewHolder> {
     private List<Ingredient> shoppingList;
@@ -56,10 +57,8 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         CheckBox checkBox = holder.checkBox;
         TextView infoTextView = holder.infoTextView;
 
-
-
-        String info = String.format("%s, count: %.2f",
-                ingredient.getName(), ingredient.getMultiplicity());
+        String info = String.format(Locale.US, "%s, %s",
+                ingredient.getName(), ingredient.displayInfo());
 
         infoTextView.setText(info);
 
@@ -68,7 +67,6 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
             selectedItems[position] = !selectedItems[position];
             notifyItemChanged(position);
         });
-
 
         holder.itemView.setOnClickListener(v -> {
             int clickedPosition = holder.getAdapterPosition();
@@ -104,5 +102,4 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
             checkBox = itemView.findViewById(R.id.checkboxIngredient);
         }
     }
-
 }

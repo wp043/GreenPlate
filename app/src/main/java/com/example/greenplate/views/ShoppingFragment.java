@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -18,14 +19,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
+import com.example.greenplate.models.ExpirationWarningIngredientDecorator;
 import com.example.greenplate.models.Ingredient;
+import com.example.greenplate.models.Recipe;
 import com.example.greenplate.models.RetrievableItem;
+import com.example.greenplate.models.UsageIngredientDecorator;
 import com.example.greenplate.viewmodels.IngredientViewModel;
 import com.example.greenplate.viewmodels.RecipeViewModel;
 import com.example.greenplate.viewmodels.ShoppingListViewModel;
+import com.example.greenplate.viewmodels.adapters.IngredientsAdapter;
 import com.example.greenplate.viewmodels.adapters.ShoppingListAdapter;
 import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
+import com.example.greenplate.viewmodels.helpers.DateUtils;
 import com.example.greenplate.viewmodels.listeners.OnIngredientUpdatedListener;
+import com.example.greenplate.viewmodels.managers.CookbookManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,12 +56,12 @@ public class ShoppingFragment extends Fragment {
     private Button addButton;
     private Button buyButton;
     private RecyclerView rvShopping;
+    private CheckBox showRecipeCheckBox;
 
     public ShoppingFragment() {
         recipeVM = new RecipeViewModel();
         shoppingListVM = new ShoppingListViewModel();
         ingredientVM = new IngredientViewModel();
-
     }
 
     /**
@@ -75,7 +82,6 @@ public class ShoppingFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
     }
 
@@ -87,35 +93,48 @@ public class ShoppingFragment extends Fragment {
     }
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        AvailabilityReportGenerator.getInstance()
-                .getMissingElementsForShopping(AvailabilityReportGenerator::logReport);
         shoppingListVM = new ShoppingListViewModel();
         ingredientVM = new IngredientViewModel();
         recipeVM = new RecipeViewModel();
         rvShopping = (RecyclerView) view.findViewById(R.id.rvIngredients);
         addButton = view.findViewById(R.id.addButton);
         buyButton = view.findViewById(R.id.buyButton);
+        showRecipeCheckBox = view.findViewById(R.id.show_recipe_shoppinglist);
+
+        showRecipeCheckBox.setOnCheckedChangeListener((buttonView, isChecked) ->
+                retrieveAndDisplayIngredients(rvShopping, isChecked));
 
         // Retrieve and display the list of ingredients
-        retrieveAndDisplayIngredients(rvShopping);
+        retrieveAndDisplayIngredients(rvShopping, showRecipeCheckBox.isChecked());
         setupAddButton();
         setupBuyButton();
     }
 
-    private void retrieveAndDisplayIngredients(RecyclerView rvRecipes) {
+    private void retrieveAndDisplayIngredients(RecyclerView rvRecipes, boolean showRecipe) {
+        if (!showRecipe) {
+            setBasicItems(rvRecipes, null);
+        } else {
+            new CookbookManager().retrieve(recipeItems -> {
+                List<Recipe> allRecipes = recipeItems.stream().map(e -> (Recipe) e)
+                        .collect(Collectors.toList());
+                setBasicItems(rvShopping, allRecipes);
+            });
+        }
+    }
+
+    private void setBasicItems(RecyclerView rvShopping, List<Recipe> allRecipes) {
         shoppingListVM.getIngredients(items -> {
-            List<Ingredient> ingredients = new ArrayList<>();
-            if (items != null) {
-                for (RetrievableItem item : items) {
-                    if (item instanceof Ingredient) {
-                        Ingredient ingredient = (Ingredient) item;
-                        ingredients.add(ingredient);
-                    }
-                }
+            List<Ingredient> ingredients = items.stream()
+                    .map(e -> (Ingredient) e).collect(Collectors.toList());
+
+            if (allRecipes != null) {
+                ingredients.replaceAll(ingredient ->
+                        new UsageIngredientDecorator(ingredient, allRecipes));
             }
+
             ShoppingListAdapter adapter = new ShoppingListAdapter(ingredients);
-            rvRecipes.setAdapter(adapter);
-            rvRecipes.setLayoutManager(new LinearLayoutManager(requireContext()));
+            rvShopping.setAdapter(adapter);
+            rvShopping.setLayoutManager(new LinearLayoutManager(requireContext()));
         });
     }
 
@@ -126,22 +145,17 @@ public class ShoppingFragment extends Fragment {
             LayoutInflater inflater = requireActivity().getLayoutInflater();
             View dialogView = inflater.inflate(R.layout.dialog_shoppinglist_ingredient, null);
             // Expiration date window
-
-
             builder.setView(dialogView).setPositiveButton("Add", (dialog, id) -> {
                 // Get user input
                 EditText nameEditText =
                         dialogView.findViewById(R.id.shopping_ingredient_name);
                 EditText quantityEditText =
                         dialogView.findViewById(R.id.shopping_ingredient_quantity);
-                EditText caloriesEditText =
-                        dialogView.findViewById(R.id.shopping_ingredient_calorie);
 
                 try {
                     String name = nameEditText.getText().toString();
                     double quantity = Double.parseDouble(quantityEditText.getText().toString());
-                    double calories = Double.parseDouble(caloriesEditText.getText().toString());
-                    Ingredient newIngredient = new Ingredient(name, quantity, calories, null);
+                    Ingredient newIngredient = new Ingredient(name, 0., quantity, null);
 
                     shoppingListVM.addIngredient(newIngredient, (success, message) -> {
                         if (!success) {
@@ -174,16 +188,8 @@ public class ShoppingFragment extends Fragment {
             }
 
             for (Ingredient ingredient : selectedIngredients) {
-                setupBuyToIngredient(ingredient, (success, message) -> {
-                    if (success) {
-                        Log.d("IngredientAddition", message);
-                        shoppingListVM.removeIngredient(ingredient);
-                    }
-                });
-
+                setupBuyToIngredient(ingredient, (success, message) -> refreshRecycleView());
             }
-
-            refreshRecycleView();
 
             if (getActivity() != null) {
                 RecipeFragment recipeFragment = (RecipeFragment) getActivity()
@@ -234,10 +240,17 @@ public class ShoppingFragment extends Fragment {
                 String name = nameEditText.getText().toString();
                 double quantity = Double.parseDouble(quantityEditText.getText().toString());
                 double calories = Double.parseDouble(caloriesEditText.getText().toString());
-                Date expirationDate = str2Date(expirationEditText.getText().toString());
+                Date expirationDate = DateUtils.str2Date(expirationEditText.getText().toString());
                 Ingredient newIngredient = new Ingredient(name, calories, quantity, expirationDate);
 
-                ingredientVM.addIngredientFromShoppingList(newIngredient, listener);
+                ingredientVM.addIngredientFromShoppingList(newIngredient, (success, message) -> {
+                    if (!success) {
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    shoppingListVM.removeIngredient(ingredient);
+                    refreshRecycleView();
+                });
             } catch (Exception e) {
                 Toast.makeText(requireContext(),
                         "Failed. All fields must be filled in.", Toast.LENGTH_SHORT).show();
@@ -260,25 +273,7 @@ public class ShoppingFragment extends Fragment {
                     .collect(Collectors.toList());
 
             rvShopping.setAdapter(new ShoppingListAdapter(ingredients));
-            this.retrieveAndDisplayIngredients(rvShopping);
+            this.retrieveAndDisplayIngredients(rvShopping, showRecipeCheckBox.isChecked());
         });
-    }
-
-    private static Date str2Date(String str) throws ParseException {
-        Date d = null;
-        if (!str.isEmpty()) {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-            d = sdf.parse(str);
-        }
-        return d == null ? new Date(Long.MAX_VALUE) : d;
-    }
-
-    private static String date2Str(Date date) {
-        if (date.getTime() == Long.MAX_VALUE) {
-            return "forever away";
-        }
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        String formattedDate = sdf.format(date);
-        return formattedDate;
     }
 }
