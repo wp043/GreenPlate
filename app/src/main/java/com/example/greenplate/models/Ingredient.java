@@ -1,13 +1,15 @@
 package com.example.greenplate.models;
 
-import android.util.Log;
-
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.example.greenplate.viewmodels.helpers.DateUtils;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
-public class Ingredient extends RetrievableItem {
+public class Ingredient extends RetrievableItem implements Displayable {
     private Date expirationDate;
 
 
@@ -23,7 +25,7 @@ public class Ingredient extends RetrievableItem {
         this.expirationDate = expirationDate != null ? expirationDate : new Date(Long.MAX_VALUE);
     }
 
-    public Ingredient(String name, double multiplicity){
+    public Ingredient(String name, double multiplicity) {
         super(name, multiplicity);
     }
 
@@ -48,19 +50,12 @@ public class Ingredient extends RetrievableItem {
         return expirationDate;
     }
 
-    /**
-     * Setter for expiration Date.
-     * @param expirationDate the expiration date to set to
-     */
-    public void setExpirationDate(Date expirationDate) {
-        this.expirationDate = expirationDate;
-    }
-
     @Override
     public int hashCode() {
         return super.hashCode() + (expirationDate == null ? 0 : expirationDate.hashCode());
     }
 
+    @NonNull
     @Override
     public String toString() {
         return super.toString() + ", expire date: " + expirationDate.toString();
@@ -85,12 +80,13 @@ public class Ingredient extends RetrievableItem {
         Calendar cal2 = Calendar.getInstance();
         cal2.setTime(date2);
 
-//        Log.d("AvaReport", String.format("date1=%d/%d/%d, date2=%d/%d/%d",
-//                month1, day1, year1, cal2.get(Calendar.MONTH), cal2.get(Calendar.DAY_OF_MONTH),
-//                cal2.get(Calendar.YEAR)));
-
         return year1 == cal2.get(Calendar.YEAR)
                 && month1 == cal2.get(Calendar.MONTH)
                 && day1 == cal2.get(Calendar.DAY_OF_MONTH);
+    }
+
+    @Override
+    public String displayInfo() {
+        return String.format(Locale.US, "count: %.2f", this.getMultiplicity());
     }
 }

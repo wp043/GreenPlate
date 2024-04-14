@@ -92,8 +92,6 @@ public class PantryManager implements Manager {
      * 
      * @param ingredient - the ingredient to add
      * @param listener - listener
-     * @return the status of the operation
-     *
      */
     public void addIngredient(Ingredient ingredient, OnIngredientUpdatedListener
             listener) {
@@ -159,7 +157,8 @@ public class PantryManager implements Manager {
     public void isWrongCalorie(Ingredient ingredient, OnDuplicateCheckListener listener) {
         retrieve(items -> {
             RetrievableItem duplicate = items.stream()
-                    .filter(item -> item.getName().equals(ingredient.getName()) && item.getCalories() != ingredient.getCalories())
+                    .filter(item -> item.getName().equals(ingredient.getName())
+                            && item.getCalories() != ingredient.getCalories())
                     .findFirst()
                     .orElse(null);
             boolean isDuplicate = duplicate != null;

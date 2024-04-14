@@ -53,17 +53,18 @@ public class ShoppingListViewModel extends ViewModel {
 
     // updated accordingly.
     public void removeIngredient(Ingredient ingredient) {
-        shoppingListManager.removeIngredient(ingredient.getName(), new OnIngredientRemoveListener() {
-            @Override
-            public void onIngredientRemoveSuccess(GreenPlateStatus status) {
-                Log.d("Success", status.getMessage());
-            }
+        shoppingListManager.removeIngredient(ingredient.getName(),
+                new OnIngredientRemoveListener() {
+                @Override
+                public void onIngredientRemoveSuccess(GreenPlateStatus status) {
+                    Log.d("Success", status.getMessage());
+                }
 
-            @Override
-            public void onIngredientRemoveFailure(GreenPlateStatus status) {
-                Log.d("Failure", status.getMessage());
-            }
-        });
+                @Override
+                public void onIngredientRemoveFailure(GreenPlateStatus status) {
+                    Log.d("Failure", status.getMessage());
+                }
+            });
     }
 
     /**

@@ -1,18 +1,15 @@
 package com.example.greenplate.viewmodels;
 
-import android.util.Log;
-
 import androidx.lifecycle.ViewModel;
 
 import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
-import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.listeners.OnDataRetrievedCallback;
-import com.example.greenplate.viewmodels.listeners.OnIngredientRemoveListener;
 import com.example.greenplate.viewmodels.listeners.OnIngredientUpdatedListener;
 import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
 import com.example.greenplate.viewmodels.managers.PantryManager;
-import com.example.greenplate.viewmodels.listeners.OnDuplicateCheckListener;
+
+import java.util.Locale;
 
 public class IngredientViewModel extends ViewModel {
     private PantryManager pantryManager;
@@ -42,15 +39,24 @@ public class IngredientViewModel extends ViewModel {
         });
     }
 
-    public void addIngredientFromShoppingList(Ingredient ingredient, OnIngredientUpdatedListener listener) {
-        pantryManager.isIngredientDuplicate(ingredient, (isDuplicate, duplicateItem) -> {
-            if (!isDuplicate) {
-                pantryManager.addIngredient(ingredient, listener);
+    public void addIngredientFromShoppingList(Ingredient ingredient,
+                                              OnIngredientUpdatedListener listener) {
+        pantryManager.isWrongCalorie(ingredient, (isWrongCal, wrongCalItem) -> {
+            if (isWrongCal) {
+                listener.onIngredientUpdated(false,
+                        String.format(Locale.US, "%s should have calorie %.2f",
+                                wrongCalItem.getName(), wrongCalItem.getCalories()));
                 return;
             }
-            duplicateItem.setMultiplicity(duplicateItem.getMultiplicity()
-                    + ingredient.getMultiplicity());
-            updateIngredient((Ingredient) duplicateItem, listener);
+            pantryManager.isIngredientDuplicate(ingredient, (isDuplicate, duplicateItem) -> {
+                if (!isDuplicate) {
+                    pantryManager.addIngredient(ingredient, listener);
+                    return;
+                }
+                duplicateItem.setMultiplicity(duplicateItem.getMultiplicity()
+                        + ingredient.getMultiplicity());
+                updateIngredient((Ingredient) duplicateItem, listener);
+            });
         });
     }
 
