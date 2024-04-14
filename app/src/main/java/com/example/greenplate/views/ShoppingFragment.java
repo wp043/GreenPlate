@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 
@@ -156,13 +157,21 @@ public class ShoppingFragment extends Fragment {
                     String name = nameEditText.getText().toString();
                     double quantity = Double.parseDouble(quantityEditText.getText().toString());
                     Ingredient newIngredient = new Ingredient(name, 0., quantity, null);
-
-                    shoppingListVM.addIngredient(newIngredient, (success, message) -> {
-                        if (!success) {
-                            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                    shoppingListVM.isItemDuplicate(name, (isDup, dupItem) -> {
+                        if (isDup) {
+                            Toast.makeText(requireContext(),
+                                    String.format(Locale.US,
+                                            "%s is already inside the shopping list.",
+                                            dupItem.getName()), Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        refreshRecycleView();
+                        shoppingListVM.addIngredient(newIngredient, (success, message) -> {
+                            if (!success) {
+                                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            refreshRecycleView();
+                        });
                     });
                 } catch (Exception e) {
                     Toast.makeText(requireContext(),
@@ -242,7 +251,6 @@ public class ShoppingFragment extends Fragment {
                 double calories = Double.parseDouble(caloriesEditText.getText().toString());
                 Date expirationDate = DateUtils.str2Date(expirationEditText.getText().toString());
                 Ingredient newIngredient = new Ingredient(name, calories, quantity, expirationDate);
-
                 ingredientVM.addIngredientFromShoppingList(newIngredient, (success, message) -> {
                     if (!success) {
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
