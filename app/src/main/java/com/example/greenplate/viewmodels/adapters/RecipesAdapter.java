@@ -8,6 +8,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -97,6 +98,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                 TextView nameEditText = dialogView.findViewById(R.id.display_recipe_name);
                 TextView ingredientsEditText = dialogView.findViewById(R.id.display_ingredients);
                 TextView instructionsEditText = dialogView.findViewById(R.id.display_instructions);
+//                Button cookButton = dialogView.findViewById(R.id.button_cook);
+
 
                 nameEditText.setText(recipe.getName());
                 String ingredientsText = "";
@@ -112,6 +115,22 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                 }
                 instructionsEditText.setText(instructionsText);
 
+                builder.setNeutralButton("Cook", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Implement your "Cook" action here
+                        // Update the meal database
+                        // Subtract ingredients from the pantry
+                        // Any other related actions
+
+                        // After cooking, reset the selected position so the recipe can be reselected
+                        selectedPosition = RecyclerView.NO_POSITION;
+                        // Optionally, update the UI or notify other parts of the app that cooking has occurred
+                        // notifyDataSetChanged(); // If you want to refresh the whole list
+                        // notifyItemChanged(position); // If you just want to refresh the cooked item
+                    }
+                });
+
                 builder.setView(dialogView)
                     .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -120,8 +139,25 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                             selectedPosition = RecyclerView.NO_POSITION;
                         }
                     });
+
                 AlertDialog dialog = builder.create();
                 dialog.show();
+
+//                cookButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        // Perform the necessary actions to "cook" the recipe
+//                        // For example, update the meal database and subtract ingredients from the pantry
+//                        // You may need to create a new method in your ViewModel or activity to handle this logic
+//
+//                        Toast.makeText(fragment.getContext(), "Cooked " + recipe.getName(), Toast.LENGTH_SHORT).show();
+//
+//                        // Close the dialog after cooking
+//                        dialog.dismiss();
+//
+//                        // Optionally, you can update the UI or notify other parts of the app that cooking has occurred
+//                    }
+//                });
 
             } else {
                 // holder.nameTextView.setTextColor(Color.rgb(220, 20, 60));
