@@ -15,10 +15,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
+import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
 import com.example.greenplate.viewmodels.ShoppingListViewModel;
 import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
+import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
+import com.example.greenplate.viewmodels.managers.ShoppingListManager;
 
 import java.util.List;
 import java.util.Locale;
@@ -161,10 +164,18 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                                 Ingredient newIngredient = new Ingredient(name, 0., quantity, null);
                                 shoppingListVM.isItemDuplicate(name, (isDup, dupItem) -> {
                                     if (isDup) {
-                                        Toast.makeText(holder.itemView.getContext(),
-                                                String.format(Locale.US,
-                                                        "%s is already inside the shopping list.",
-                                                        dupItem.getName()), Toast.LENGTH_SHORT).show();
+                                        ShoppingListManager shoppingListManager = new ShoppingListManager();
+                                        shoppingListManager.addIngredientMultiplicity(name, quantity, new OnMultiplicityUpdateListener() {
+                                            @Override
+                                            public void onMultiplicityUpdateSuccess(GreenPlateStatus status) {
+
+                                            }
+
+                                            @Override
+                                            public void onMultiplicityUpdateFailure(GreenPlateStatus status) {
+
+                                            }
+                                        });
                                         return;
                                     }
                                     shoppingListVM.addIngredient(newIngredient, (success, message) -> {
