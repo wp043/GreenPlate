@@ -80,6 +80,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:text="Add" />
+            <Button
+                android:id="@+id/editButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Edit" />
         </LinearLayout>
 
         <LinearLayout

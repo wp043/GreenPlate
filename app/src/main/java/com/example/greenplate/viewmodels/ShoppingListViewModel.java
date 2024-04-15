@@ -6,11 +6,16 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
+import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.listeners.OnDataRetrievedCallback;
+import com.example.greenplate.viewmodels.listeners.OnDuplicateCheckListener;
 import com.example.greenplate.viewmodels.listeners.OnIngredientRemoveListener;
 import com.example.greenplate.viewmodels.listeners.OnIngredientUpdatedListener;
 import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
 import com.example.greenplate.viewmodels.managers.ShoppingListManager;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ShoppingListViewModel extends ViewModel {
     private ShoppingListManager shoppingListManager;
@@ -74,5 +79,20 @@ public class ShoppingListViewModel extends ViewModel {
      */
     public void getIngredients(OnDataRetrievedCallback callback) {
         shoppingListManager.retrieve(callback);
+    }
+
+    public void isItemDuplicate(String name, OnDuplicateCheckListener listener) {
+        getIngredients(items -> {
+            boolean isDup = false;
+            RetrievableItem dupItem = null;
+            for (RetrievableItem item : items) {
+                Log.d("Ava", item.getName() + ", " + name);
+                if (item.getName().equals(name)) {
+                    isDup = true;
+                    dupItem = item;
+                }
+            }
+            listener.onDuplicateCheckCompleted(isDup, dupItem);
+        });
     }
 }
