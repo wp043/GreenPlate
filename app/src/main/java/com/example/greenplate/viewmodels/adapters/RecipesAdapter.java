@@ -17,19 +17,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.greenplate.R;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
+import com.example.greenplate.viewmodels.ShoppingListViewModel;
+import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHolder> {
     private List<Recipe> recipeList;
     private List<String> availabilityList;
     private Fragment fragment;
     private int selectedPosition = RecyclerView.NO_POSITION;
+    private AvailabilityReportGenerator availabilityReportGenerator;
 
     public RecipesAdapter(List<Recipe> recipes, List<String> availability, Fragment fragment) {
         recipeList = recipes;
         availabilityList = availability;
         this.fragment = fragment;
+        availabilityReportGenerator = AvailabilityReportGenerator.getInstance();
     }
 
     @Override
@@ -95,7 +101,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                 LayoutInflater inflater = fragment.requireActivity().getLayoutInflater();
                 View dialogView = inflater.inflate(R.layout.dialog_recipe, null);
                 TextView nameEditText = dialogView.findViewById(R.id.display_recipe_name);
-                TextView ingredientsEditText = dialogView.findViewById(R.id.display_ingredients);
+                TextView ingredientsEditText = dialogView.findViewById(R.id.display_missing_ingredients);
                 TextView instructionsEditText = dialogView.findViewById(R.id.display_instructions);
 
                 nameEditText.setText(recipe.getName());
@@ -129,6 +135,66 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                                 "Not Enough Ingredients",
                                 Toast.LENGTH_SHORT)
                         .show();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(fragment.getContext());
+                LayoutInflater inflater = fragment.requireActivity().getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.dialog_recipe_missing, null);
+                TextView nameEditText = dialogView.findViewById(R.id.display_recipe_name);
+                TextView missingIngredientsEditText = dialogView.findViewById(R.id.display_missing_ingredients);
+
+                nameEditText.setText(recipe.getName());
+
+                availabilityReportGenerator.getMissingElementsForShopping(availabilityReport -> {
+                    String missingIngredientsText = "";
+                    for (Map.Entry<Ingredient, Double> entry: availabilityReport.get(recipe.getName()).entrySet()) {
+                        missingIngredientsText += entry.getValue() + "\t" + entry.getKey().getName() + "\n";
+                    }
+                    missingIngredientsEditText.setText(missingIngredientsText);
+
+                    builder.setView(dialogView).setPositiveButton("Add to shopping list", (dialog, id) -> {
+                        ShoppingListViewModel shoppingListVM = new ShoppingListViewModel();
+
+                        for (Map.Entry<Ingredient, Double> entry: availabilityReport.get(recipe.getName()).entrySet()) {
+                            try {
+                                String name = entry.getKey().getName();
+                                double quantity = entry.getValue();
+                                Ingredient newIngredient = new Ingredient(name, 0., quantity, null);
+                                shoppingListVM.isItemDuplicate(name, (isDup, dupItem) -> {
+                                    if (isDup) {
+                                        Toast.makeText(holder.itemView.getContext(),
+                                                String.format(Locale.US,
+                                                        "%s is already inside the shopping list.",
+                                                        dupItem.getName()), Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                    shoppingListVM.addIngredient(newIngredient, (success, message) -> {
+                                        if (!success) {
+                                            Toast.makeText(holder.itemView.getContext(),
+                                                    message, Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(holder.itemView.getContext(),
+                                                    "Successfully added missing ingredients",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                });
+                            } catch (Exception e) {
+                                Toast.makeText(holder.itemView.getContext(),
+                                        "Failed to add ingredients.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    })
+                        .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Exit
+                                holder.nameTextView.setTextColor(Color.BLACK);
+                                selectedPosition = RecyclerView.NO_POSITION;
+                            }
+                        });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                });
             }
         } else {
             holder.nameTextView.setTextColor(Color.BLACK);
