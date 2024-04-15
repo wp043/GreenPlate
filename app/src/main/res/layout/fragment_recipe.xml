@@ -38,12 +38,12 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="391dp">
+            android:layout_height="340dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvRecipes"
                 android:layout_width="340dp"
-                android:layout_height="294dp"
+                android:layout_height="260dp"
                 app:layout_constraintStart_toStartOf="@+id/textView4"
                 app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -94,8 +94,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="0dp"
             android:text="Sort by Name" />
 
         <Button
@@ -104,7 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="0dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="0dp"
             android:text="Sort by Ingredient Number" />
 
         <Button
