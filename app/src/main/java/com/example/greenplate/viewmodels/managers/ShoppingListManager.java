@@ -203,6 +203,63 @@ public class ShoppingListManager implements Manager {
         });
     }
 
+
+    public void addIngredientMultiplicity(String ingredientName, double additionalMultiplicity,
+                                             OnMultiplicityUpdateListener listener) {
+        if (ingredientName == null) {
+            listener.onMultiplicityUpdateFailure(
+                    new GreenPlateStatus(false, "Can't update null ingredient."));
+            return;
+        }
+
+        if (additionalMultiplicity < 0) {
+            listener.onMultiplicityUpdateFailure(
+                    new GreenPlateStatus(false,
+                            "Can't update ingredient with negative multiplicity."));
+            return;
+        }
+
+
+        Query query = myRef.orderByChild("name").equalTo(ingredientName);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean ingredientFound = false;
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                    String name = childSnapshot.child("name").getValue(String.class);
+                    double currMultiplicity = childSnapshot.child("multiplicity").getValue(Double.class);
+
+                    if (name.equals(ingredientName)) {
+                        String key = childSnapshot.getKey();
+                        DatabaseReference multiplicityRef = myRef.child(key).child("multiplicity");
+                        multiplicityRef
+                                .setValue(additionalMultiplicity + currMultiplicity)
+                                .addOnSuccessListener(e -> listener.onMultiplicityUpdateSuccess(
+                                        new GreenPlateStatus(true,
+                                                String.format("Successful update %s.",
+                                                        ingredientName))))
+                                .addOnFailureListener(e -> listener.onMultiplicityUpdateFailure(
+                                        new GreenPlateStatus(false, e.getMessage())));
+                        ingredientFound = true;
+                        break;
+                    }
+                }
+                if (!ingredientFound) {
+                    listener.onMultiplicityUpdateFailure(
+                            new GreenPlateStatus(false,
+                                    "Can't find the ingredient to update"));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listener.onMultiplicityUpdateFailure(
+                        new GreenPlateStatus(false, "Issue with DB Query"));
+            }
+        });
+    }
+
+
     public void removeIngredient(String removedName, OnIngredientRemoveListener listener) {
 
         Query query = myRef.orderByChild("name").equalTo(removedName);
