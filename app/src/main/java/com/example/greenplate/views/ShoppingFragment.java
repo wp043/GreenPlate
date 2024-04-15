@@ -56,6 +56,7 @@ public class ShoppingFragment extends Fragment {
     private IngredientViewModel ingredientVM;
     private Button addButton;
     private Button buyButton;
+    private Button editButton;
     private RecyclerView rvShopping;
     private CheckBox showRecipeCheckBox;
 
@@ -100,6 +101,7 @@ public class ShoppingFragment extends Fragment {
         rvShopping = (RecyclerView) view.findViewById(R.id.rvIngredients);
         addButton = view.findViewById(R.id.addButton);
         buyButton = view.findViewById(R.id.buyButton);
+        editButton=view.findViewById(R.id.editButton);
         showRecipeCheckBox = view.findViewById(R.id.show_recipe_shoppinglist);
 
         showRecipeCheckBox.setOnCheckedChangeListener((buttonView, isChecked) ->
@@ -109,6 +111,7 @@ public class ShoppingFragment extends Fragment {
         retrieveAndDisplayIngredients(rvShopping, showRecipeCheckBox.isChecked());
         setupAddButton();
         setupBuyButton();
+        setupEditButton();
     }
 
     private void retrieveAndDisplayIngredients(RecyclerView rvRecipes, boolean showRecipe) {
@@ -268,6 +271,64 @@ public class ShoppingFragment extends Fragment {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+    private void setupEditButton() {
+        editButton.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            LayoutInflater inflater = requireActivity().getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.dialog_shoppinglist_ingredient, null);
+
+            ShoppingListAdapter oldAdapter = (ShoppingListAdapter) rvShopping.getAdapter();
+            if (oldAdapter.getSelectedPosition() < 0
+                    || oldAdapter.getSelectedPosition() >= oldAdapter.getShoppingList().size()) {
+                Toast.makeText(requireContext(),
+                        "Please select an item to update!",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+            Ingredient selectedIngredient = oldAdapter.getShoppingList()
+                    .get(oldAdapter.getSelectedPosition());
+
+
+
+            EditText nameEditText = dialogView.findViewById(R.id.shopping_ingredient_name);
+            EditText quantityEditText = dialogView.findViewById(R.id.shopping_ingredient_quantity);
+
+
+            nameEditText.setText(selectedIngredient.getName());
+            nameEditText.setEnabled(false);
+
+
+            builder.setView(dialogView)
+                    .setPositiveButton("Edit", (dialog, id) -> {
+                        try {
+                            String name = nameEditText.getText().toString();
+                            double quantity =
+                                    Double.parseDouble(quantityEditText.getText().toString());
+                            Ingredient newIngredient = new Ingredient(name, 0., quantity, null);
+
+                            shoppingListVM.updateIngredient(newIngredient, (success, message) -> {
+                                if (!success) {
+                                    Toast.makeText(requireContext(),
+                                            "Failed. Name, Calorie, "
+                                                    + "expiration date must match "
+                                                    + "the ingredient to be edited.",
+                                            Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                refreshRecycleView();
+                            });
+                        } catch (Exception e) {
+                            Toast.makeText(requireContext(),
+                                    "Failed. All fields must be filled in.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }).setNegativeButton("Cancel", (dialog, id) -> { });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        });
+    }
+
 
 
     private void refreshRecycleView() {
