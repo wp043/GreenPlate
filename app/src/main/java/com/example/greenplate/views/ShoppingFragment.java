@@ -3,7 +3,6 @@ package com.example.greenplate.views;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,31 +18,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
-import com.example.greenplate.models.ExpirationWarningIngredientDecorator;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
-import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.models.UsageIngredientDecorator;
 import com.example.greenplate.viewmodels.IngredientViewModel;
 import com.example.greenplate.viewmodels.RecipeViewModel;
 import com.example.greenplate.viewmodels.ShoppingListViewModel;
-import com.example.greenplate.viewmodels.adapters.IngredientsAdapter;
 import com.example.greenplate.viewmodels.adapters.ShoppingListAdapter;
-import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
 import com.example.greenplate.viewmodels.helpers.DateUtils;
 import com.example.greenplate.viewmodels.listeners.OnIngredientUpdatedListener;
 import com.example.greenplate.viewmodels.managers.CookbookManager;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
-
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,10 +80,11 @@ public class ShoppingFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_shopping, container, false);
     }
+
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         shoppingListVM = new ShoppingListViewModel();
@@ -101,11 +93,11 @@ public class ShoppingFragment extends Fragment {
         rvShopping = (RecyclerView) view.findViewById(R.id.rvIngredients);
         addButton = view.findViewById(R.id.addButton);
         buyButton = view.findViewById(R.id.buyButton);
-        editButton=view.findViewById(R.id.editButton);
+        editButton = view.findViewById(R.id.editButton);
         showRecipeCheckBox = view.findViewById(R.id.show_recipe_shoppinglist);
 
-        showRecipeCheckBox.setOnCheckedChangeListener((buttonView, isChecked) ->
-                retrieveAndDisplayIngredients(rvShopping, isChecked));
+        showRecipeCheckBox.setOnCheckedChangeListener(
+                (buttonView, isChecked) -> retrieveAndDisplayIngredients(rvShopping, isChecked));
 
         // Retrieve and display the list of ingredients
         retrieveAndDisplayIngredients(rvShopping, showRecipeCheckBox.isChecked());
@@ -151,8 +143,7 @@ public class ShoppingFragment extends Fragment {
             // Expiration date window
             builder.setView(dialogView).setPositiveButton("Add", (dialog, id) -> {
                 // Get user input
-                EditText nameEditText =
-                        dialogView.findViewById(R.id.shopping_ingredient_name);
+                EditText nameEditText = dialogView.findViewById(R.id.shopping_ingredient_name);
                 EditText quantityEditText =
                         dialogView.findViewById(R.id.shopping_ingredient_quantity);
 
@@ -165,12 +156,14 @@ public class ShoppingFragment extends Fragment {
                             Toast.makeText(requireContext(),
                                     String.format(Locale.US,
                                             "%s is already inside the shopping list.",
-                                            dupItem.getName()), Toast.LENGTH_SHORT).show();
+                                            dupItem.getName()),
+                                    Toast.LENGTH_SHORT).show();
                             return;
                         }
                         shoppingListVM.addIngredient(newIngredient, (success, message) -> {
                             if (!success) {
-                                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(requireContext(),
+                                        message, Toast.LENGTH_SHORT).show();
                                 return;
                             }
                             refreshRecycleView();
@@ -181,7 +174,8 @@ public class ShoppingFragment extends Fragment {
                             "Failed. All fields must be filled in.",
                             Toast.LENGTH_SHORT).show();
                 }
-            }).setNegativeButton("Cancel", (dialog, id) -> { });
+            }).setNegativeButton("Cancel", (dialog, id) -> {
+            });
             AlertDialog dialog = builder.create();
             dialog.show();
         });
@@ -228,10 +222,10 @@ public class ShoppingFragment extends Fragment {
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
             DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-                (view, year1, month1, dayOfMonth) -> {
-                    String date = (month1 + 1) + "/" + dayOfMonth + "/" + year1;
-                    expirationEditText.setText(date);
-                }, year, month, day);
+                    (view, year1, month1, dayOfMonth) -> {
+                        String date = (month1 + 1) + "/" + dayOfMonth + "/" + year1;
+                        expirationEditText.setText(date);
+                    }, year, month, day);
             datePickerDialog.show();
         });
 
@@ -272,7 +266,6 @@ public class ShoppingFragment extends Fragment {
         dialog.show();
     }
 
-
     private void setupEditButton() {
         editButton.setOnClickListener(v -> {
             ShoppingListAdapter adapter = (ShoppingListAdapter) rvShopping.getAdapter();
@@ -291,7 +284,9 @@ public class ShoppingFragment extends Fragment {
 
         });
     }
-    private void setupEditButtonHelper(Ingredient ingredient, OnIngredientUpdatedListener listener) {
+
+    private void setupEditButtonHelper(Ingredient ingredient,
+                                       OnIngredientUpdatedListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_shoppinglist_ingredient, null);
@@ -299,17 +294,14 @@ public class ShoppingFragment extends Fragment {
         EditText nameEditText = dialogView.findViewById(R.id.shopping_ingredient_name);
         EditText quantityEditText = dialogView.findViewById(R.id.shopping_ingredient_quantity);
 
-
         nameEditText.setText(ingredient.getName());
         nameEditText.setEnabled(false);
-
 
         builder.setView(dialogView)
                 .setPositiveButton("Edit", (dialog, id) -> {
                     try {
                         String name = nameEditText.getText().toString();
-                        double quantity =
-                                Double.parseDouble(quantityEditText.getText().toString());
+                        double quantity = Double.parseDouble(quantityEditText.getText().toString());
                         Ingredient newIngredient = new Ingredient(name, 0., quantity, null);
 
                         shoppingListVM.updateIngredient(newIngredient, (success, message) -> {
@@ -328,13 +320,12 @@ public class ShoppingFragment extends Fragment {
                                 "Failed. All fields must be filled in.",
                                 Toast.LENGTH_SHORT).show();
                     }
-                }).setNegativeButton("Cancel", (dialog, id) -> { });
+                }).setNegativeButton("Cancel", (dialog, id) -> {
+                });
         AlertDialog dialog = builder.create();
         dialog.show();
 
     }
-
-
 
     private void refreshRecycleView() {
         shoppingListVM.getIngredients(items -> {
@@ -342,8 +333,7 @@ public class ShoppingFragment extends Fragment {
                     .stream()
                     .filter(e -> !(e instanceof Ingredient))
                     .collect(Collectors.toList())
-                    .stream().
-                    map(e -> (Ingredient) e)
+                    .stream().map(e -> (Ingredient) e)
                     .collect(Collectors.toList());
 
             rvShopping.setAdapter(new ShoppingListAdapter(ingredients));
