@@ -18,7 +18,7 @@
         android:id="@+id/textView11"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ingredients:"
+        android:text="Missing Ingredients:"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -28,26 +28,5 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/textView13"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Instructions:"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/display_instructions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textSize="18sp" />
-
-<!--    <Button-->
-<!--        android:id="@+id/button_cook"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Cook" />-->
 
 </LinearLayout>
