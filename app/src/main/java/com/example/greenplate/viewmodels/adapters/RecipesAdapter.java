@@ -69,7 +69,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
         TextView numInstructionsTextView = holder.numInstructionsTextView;
 
         nameTextView.setText(recipe.getName());
-        numIngredientsTextView.setText("Ingredients: " + recipe.getIngredients().size());
+        numIngredientsTextView.setText("Ingredients: " +
+                recipe.getIngredients().stream().mapToDouble(e -> e.getMultiplicity()).sum());
         numInstructionsTextView.setText("Instructions: " + recipe.getInstructions().size());
         String availabilityText;
         if (availability.equals("Yes")) {
