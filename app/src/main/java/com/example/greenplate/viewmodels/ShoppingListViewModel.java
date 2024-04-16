@@ -96,8 +96,8 @@ public class ShoppingListViewModel extends ViewModel {
         });
     }
 
-    public void updateMultiplicity(String ingredientName, double updatedMultiplicity) {
-        shoppingListManager.updateIngredientMultiplicity(ingredientName, updatedMultiplicity, new OnMultiplicityUpdateListener() {
+    public void updateMultiplicity(String name, double updatedMultiplicity) {
+        shoppingListManager.updateIngredientMultiplicity(name,updatedMultiplicity, new OnMultiplicityUpdateListener() {
             @Override
             public void onMultiplicityUpdateSuccess(GreenPlateStatus status) {
                 Log.d("Success", status.getMessage());

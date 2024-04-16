@@ -153,9 +153,7 @@ public class ShoppingFragment extends Fragment {
                     Ingredient newIngredient = new Ingredient(name, 0., quantity, null);
                     shoppingListVM.isItemDuplicate(name, (isDup, dupItem) -> {
                         if (isDup) {
-
-                            shoppingListVM.updateMultiplicity(name, quantity);
-
+                            shoppingListVM.updateMultiplicity(name, dupItem.getMultiplicity()+quantity);
                             Toast.makeText(requireContext(),
                                     String.format(Locale.US,
                                             "%s is already inside the shopping list. "
