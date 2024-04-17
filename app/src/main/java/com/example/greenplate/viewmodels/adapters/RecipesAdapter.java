@@ -22,7 +22,9 @@ import com.example.greenplate.viewmodels.ShoppingListViewModel;
 import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
 import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
 import com.example.greenplate.viewmodels.managers.ShoppingListManager;
+import com.example.greenplate.viewmodels.observable.MealCalorieData;
 import com.example.greenplate.viewmodels.observers.CaloriesLeftDisplay;
+import com.example.greenplate.viewmodels.observers.MealBreakdownDisplay;
 
 import java.util.List;
 import java.util.Map;
@@ -131,8 +133,20 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                         // Subtract ingredients from the pantry
 
                         // After cooking
-                        CaloriesLeftDisplay chart = new CaloriesLeftDisplay();
-                        chart.onChartUpdate();
+//                        CaloriesLeftDisplay chart = new CaloriesLeftDisplay();
+//                        chart.onChartUpdate();
+
+                        // Observer Pattern to update input meal and Chart displays
+                        MealCalorieData mealCalorieData = new MealCalorieData();
+
+                        CaloriesLeftDisplay caloriesLeftChart = new CaloriesLeftDisplay(mealCalorieData);
+                        MealBreakdownDisplay mealBreakdownChart = new MealBreakdownDisplay(mealCalorieData);
+
+                        // TO-DO: 
+                        // Update the MealCalorieData with current recipe name and
+                        // calculate the current recipe calories
+                        mealCalorieData.setMealCalorieData("test", 1);
+
                         selectedPosition = RecyclerView.NO_POSITION;
                     }
                 });
