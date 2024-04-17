@@ -142,10 +142,10 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                         CaloriesLeftDisplay caloriesLeftChart = new CaloriesLeftDisplay(mealCalorieData);
                         MealBreakdownDisplay mealBreakdownChart = new MealBreakdownDisplay(mealCalorieData);
 
-                        // TO-DO: 
+                        // TO-DO:
                         // Update the MealCalorieData with current recipe name and
                         // calculate the current recipe calories
-                        mealCalorieData.setMealCalorieData("test", 1);
+                        mealCalorieData.setMealCalorieData(recipe.getName(), calculateCookedRecipeCalories());
 
                         selectedPosition = RecyclerView.NO_POSITION;
                     }
@@ -242,6 +242,14 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
         } else {
             holder.nameTextView.setTextColor(Color.BLACK);
         }
+
+        // Helper Method for calculating the calories of the cooked meal based on the recipe
+        public int calculateCookedRecipeCalories() {
+            // Find the matches of the ingredients in the Recipe with the Pantry database ingredients
+            // Loop through the Pantry ingredients and sum up all of the calories of the pantry ingredient calories
+            // Return the Sum
+        }
+
     }
 
     // Returns the total count of items in the list
