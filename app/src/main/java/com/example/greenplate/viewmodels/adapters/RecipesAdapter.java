@@ -18,7 +18,6 @@ import com.example.greenplate.R;
 import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
-import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.ShoppingListViewModel;
 import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
 import com.example.greenplate.viewmodels.listeners.OnIngredientRemoveListener;
@@ -149,7 +148,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                                     if (requiredAmount <= 0) {
                                         break;
                                     }
-                                    double newMult = Math.max(0, i.getMultiplicity() - requiredAmount);
+                                    double newMult = Math.max(0, i.getMultiplicity()
+                                            - requiredAmount);
                                     requiredAmount -= Math.min(requiredAmount, i.getMultiplicity());
 
                                     if (newMult == 0) {
@@ -180,48 +180,6 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                                                 });
                                     }
                                 }
-
-//                                for (RetrievableItem item : items) {
-//                                    if (item instanceof Ingredient) {
-//                                        Ingredient pantryIngredient = (Ingredient) item;
-//                                        if (pantryIngredient.getName().equals(requiredIngredient.
-//                                                getName())) {
-//                                            double newMultiplicity =
-//                                                    pantryIngredient.getMultiplicity()
-//                                                            - requiredIngredient.getMultiplicity();
-//
-//                                            if (newMultiplicity <= 0) {
-//                                                // Remove ingredient from pantry
-//                                                pantryManager.removeIngredient(pantryIngredient,
-//                                                        new OnIngredientRemoveListener() {
-//                                                        @Override
-//                                                        public void onIngredientRemoveSuccess(
-//                                                                GreenPlateStatus status) {
-//                                                        }
-//                                                        @Override
-//                                                        public void onIngredientRemoveFailure(
-//                                                                GreenPlateStatus status) {
-//                                                        }
-//                                                    });
-//                                            } else {
-//                                                pantryManager.updateIngredientMultiplicity(
-//                                                        pantryIngredient, newMultiplicity,
-//                                                        new OnMultiplicityUpdateListener() {
-//                                                        @Override
-//                                                        public void onMultiplicityUpdateSuccess(
-//                                                                GreenPlateStatus status) {
-//                                                        }
-//
-//                                                        @Override
-//                                                        public void onMultiplicityUpdateFailure(
-//                                                                GreenPlateStatus status) {
-//                                                        }
-//                                                    });
-//                                            }
-//                                            break;
-//                                        }
-//                                    }
-//                                }
                             }
                         });
                     }
