@@ -159,6 +159,9 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                                                     @Override
                                                     public void onIngredientRemoveSuccess(
                                                             GreenPlateStatus status) {
+                                                        Toast.makeText(fragment.getContext(),
+                                                                "Cooked Successfully",
+                                                                Toast.LENGTH_SHORT).show();
                                                     }
                                                     @Override
                                                     public void onIngredientRemoveFailure(
@@ -172,6 +175,9 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                                                     @Override
                                                     public void onMultiplicityUpdateSuccess(
                                                             GreenPlateStatus status) {
+                                                        Toast.makeText(fragment.getContext(),
+                                                                "Cooked Successfully",
+                                                                Toast.LENGTH_SHORT).show();
                                                     }
 
                                                     @Override
