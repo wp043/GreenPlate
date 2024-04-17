@@ -23,6 +23,7 @@ import com.example.greenplate.viewmodels.ShoppingListViewModel;
 import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
 import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
 import com.example.greenplate.viewmodels.managers.ShoppingListManager;
+import com.example.greenplate.viewmodels.observers.ChartUpdateObserver;
 
 import java.util.List;
 import java.util.Locale;
@@ -130,13 +131,11 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                         // Implement your "Cook" action here
                         // Update the meal database
                         // Subtract ingredients from the pantry
-                        // Any other related actions
 
-                        // After cooking, reset the selected position so the recipe can be reselected
+                        // After cooking
+                        ChartUpdateObserver chart = new ChartUpdateObserver();
+                        chart.onChartUpdate();
                         selectedPosition = RecyclerView.NO_POSITION;
-                        // Optionally, update the UI or notify other parts of the app that cooking has occurred
-                        // notifyDataSetChanged(); // If you want to refresh the whole list
-                        // notifyItemChanged(position); // If you just want to refresh the cooked item
                     }
                 });
 
