@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:padding="16dp">
+            android:padding="5dp">
 
             <CheckBox
                 android:id="@+id/show_recipe_checkBox"

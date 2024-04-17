@@ -8,6 +8,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ import com.example.greenplate.viewmodels.ShoppingListViewModel;
 import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
 import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
 import com.example.greenplate.viewmodels.managers.ShoppingListManager;
+import com.example.greenplate.viewmodels.observers.ChartUpdateObserver;
 
 import java.util.List;
 import java.util.Locale;
@@ -108,6 +110,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                 TextView ingredientsEditText = dialogView.findViewById(R.id.display_missing_ingredients);
                 TextView instructionsEditText = dialogView.findViewById(R.id.display_instructions);
 
+
                 nameEditText.setText(recipe.getName());
                 String ingredientsText = "";
                 for (Ingredient ingredient: recipe.getIngredients()) {
@@ -122,6 +125,20 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                 }
                 instructionsEditText.setText(instructionsText);
 
+                builder.setNeutralButton("Cook", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Implement your "Cook" action here
+                        // Update the meal database
+                        // Subtract ingredients from the pantry
+
+                        // After cooking
+                        ChartUpdateObserver chart = new ChartUpdateObserver();
+                        chart.onChartUpdate();
+                        selectedPosition = RecyclerView.NO_POSITION;
+                    }
+                });
+
                 builder.setView(dialogView)
                     .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -130,8 +147,10 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                             selectedPosition = RecyclerView.NO_POSITION;
                         }
                     });
+
                 AlertDialog dialog = builder.create();
                 dialog.show();
+
 
             } else {
                 // holder.nameTextView.setTextColor(Color.rgb(220, 20, 60));
