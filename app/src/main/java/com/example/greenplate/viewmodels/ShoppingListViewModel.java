@@ -14,9 +14,6 @@ import com.example.greenplate.viewmodels.listeners.OnIngredientUpdatedListener;
 import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
 import com.example.greenplate.viewmodels.managers.ShoppingListManager;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class ShoppingListViewModel extends ViewModel {
     private ShoppingListManager shoppingListManager;
 
@@ -97,16 +94,17 @@ public class ShoppingListViewModel extends ViewModel {
     }
 
     public void updateMultiplicity(String name, double updatedMultiplicity) {
-        shoppingListManager.updateIngredientMultiplicity(name,updatedMultiplicity, new OnMultiplicityUpdateListener() {
-            @Override
-            public void onMultiplicityUpdateSuccess(GreenPlateStatus status) {
-                Log.d("Success", status.getMessage());
-            }
+        shoppingListManager.updateIngredientMultiplicity(name, updatedMultiplicity,
+                new OnMultiplicityUpdateListener() {
+                @Override
+                public void onMultiplicityUpdateSuccess(GreenPlateStatus status) {
+                    Log.d("Success", status.getMessage());
+                }
 
-            @Override
-            public void onMultiplicityUpdateFailure(GreenPlateStatus status) {
-                Log.d("Failure", status.getMessage());
-            }
-        });
+                @Override
+                public void onMultiplicityUpdateFailure(GreenPlateStatus status) {
+                    Log.d("Failure", status.getMessage());
+                }
+            });
     }
 }

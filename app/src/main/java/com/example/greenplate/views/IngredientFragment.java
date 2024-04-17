@@ -28,8 +28,6 @@ import com.example.greenplate.viewmodels.adapters.IngredientsAdapter;
 import com.example.greenplate.viewmodels.helpers.DateUtils;
 import com.example.greenplate.viewmodels.managers.CookbookManager;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -146,7 +144,8 @@ public class IngredientFragment extends Fragment {
                     String name = nameEditText.getText().toString();
                     double quantity = Double.parseDouble(quantityEditText.getText().toString());
                     double calories = Double.parseDouble(caloriesEditText.getText().toString());
-                    Date expirationDate = DateUtils.str2Date(expirationEditText.getText().toString());
+                    Date expirationDate = DateUtils.str2Date(expirationEditText.getText().
+                            toString());
                     Ingredient newIngredient = new Ingredient(name,
                             calories, quantity, expirationDate);
 
@@ -222,7 +221,8 @@ public class IngredientFragment extends Fragment {
                                     Double.parseDouble(quantityEditText.getText().toString());
                             double calories =
                                     Double.parseDouble(caloriesEditText.getText().toString());
-                            Date expirationDate = DateUtils.str2Date(expirationEditText.getText().toString());
+                            Date expirationDate = DateUtils.str2Date(expirationEditText.getText().
+                                    toString());
 
                             Ingredient newIngredient = new Ingredient(name, calories, quantity,
                                     expirationDate);
