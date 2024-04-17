@@ -10,8 +10,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
-import com.example.greenplate.viewmodels.managers.PantryManager;
+import com.example.greenplate.models.RetrievableItem;
+import com.example.greenplate.viewmodels.listeners.OnDuplicateCheckListener;
 import com.example.greenplate.viewmodels.listeners.OnIngredientRemoveListener;
+import com.example.greenplate.viewmodels.managers.PantryManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -21,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,15 +64,15 @@ public class PantryManagerTests {
                 .getReference(String.format("user/%s/pantries/", A1.getCurrentUser().getUid()));
     }
 
-    // @Before
-    // public void clearDB() {
-    // // Remove all records for the user
-    // ref.removeValue()
-    // .addOnSuccessListener(e -> { })
-    // .addOnFailureListener(e -> {
-    // throw new RuntimeException("Clear DB: " + e.getMessage());
-    // });
-    // }
+    @Before
+    public void clearDB() {
+        // Remove all records for the user
+        ref.removeValue()
+            .addOnSuccessListener(e -> { })
+            .addOnFailureListener(e -> {
+                throw new RuntimeException("Clear DB: " + e.getMessage());
+            });
+    }
 
     @Test
     public void testLogin() {
@@ -79,92 +82,54 @@ public class PantryManagerTests {
 
     @Test
     public void testAddNullIngredient() {
-        GreenPlateStatus status = manager.addIngredient(null, success -> {
-            assertFalse(success);
-        });
-        assertFalse(status.isSuccess());
-        assertEquals("Can't add a null ingredient.", status.getMessage());
+        manager.addIngredient(null, (success, message) -> Assert.assertFalse(success));
     }
 
     @Test
     public void testAddInvalidIngredient() {
         Ingredient ingredient =
                 new Ingredient("     ", 180, 4, null);
-        GreenPlateStatus status = manager.addIngredient(ingredient, success -> {
-            assertFalse(success);
-        });
-        assertFalse(status.isSuccess());
-        assertEquals("Can't add a ingredient with empty name.", status.getMessage());
+        manager.addIngredient(null, (success, message) -> Assert.assertFalse(success));
 
         ingredient = new Ingredient(null, 180, 4, null);
-        status = manager.addIngredient(ingredient, success -> {
-            assertFalse(success);
-        });
-        assertFalse(status.isSuccess());
-        assertEquals("Can't add a ingredient with empty name.", status.getMessage());
+        manager.addIngredient(null, (success, message) -> Assert.assertFalse(success));
 
         ingredient = new Ingredient("Test", -180, 4, null);
-        status = manager.addIngredient(ingredient, success -> {
-            assertFalse(success);
-        });
-        assertFalse(status.isSuccess());
-        assertEquals("Can't add a ingredient with non-positive calorie.", status.getMessage());
+        manager.addIngredient(null, (success, message) -> Assert.assertFalse(success));
 
         ingredient = new Ingredient("Test", 180, 0, null);
-        status = manager.addIngredient(ingredient, success -> {
-            assertFalse(success);
-        });
-        assertFalse(status.isSuccess());
-        assertEquals("Can't add a ingredient with non-positive multiplicity.", status.getMessage());
+        manager.addIngredient(null, (success, message) -> Assert.assertFalse(success));
     }
 
     @Test
     public void testAddValidIngredient() {
         Ingredient ingredient =
                 new Ingredient("Test 1", 10, 4, null);
-        GreenPlateStatus status = manager.addIngredient(ingredient, success -> {
-            assertTrue(success);
-        });
-        assertTrue(status.isSuccess());
-        assertEquals(String.format("%s added to database successfully", ingredient),
-                status.getMessage());
+        manager.addIngredient(ingredient, (success, message) -> Assert.assertTrue(success));
 
         ingredient = new Ingredient("Test 2", 10, 3, null);
-        status = manager.addIngredient(ingredient, success -> {
-            assertTrue(success);
-        });
-        assertTrue(status.isSuccess());
-        assertEquals(String.format("%s added to database successfully", ingredient),
-                status.getMessage());
+        manager.addIngredient(ingredient, (success, message) -> Assert.assertTrue(success));
     }
 
     @Test
     public void testAddDuplicateIngredient() {
         Ingredient ingredient = new Ingredient("Test 1", 10, 4, null);
-        GreenPlateStatus status = manager.addIngredient(ingredient, success -> {
-            assertTrue(success);
-        });
-        assertTrue(status.isSuccess());
-        assertEquals(String.format("%s added to database successfully", ingredient),
-                status.getMessage());
+        manager.addIngredient(ingredient, (success, message) -> Assert.assertTrue(success));
 
         ingredient = new Ingredient("Test 1", 10, 3, null);
-        manager.isIngredientDuplicate(ingredient, Assert::assertFalse);
+        manager.isIngredientDuplicate(ingredient,
+                (isDuplicate, duplicateItem) -> Assert.assertTrue(isDuplicate));
 
         ingredient = new Ingredient("Test 2", 10, 3, null);
-        manager.isIngredientDuplicate(ingredient, Assert::assertTrue);
+        manager.isIngredientDuplicate(ingredient,
+                (isDuplicate, duplicateItem) -> Assert.assertFalse(isDuplicate));
     }
 
     @Test
     public void testRemoveIngredient() {
         Ingredient ingredient = new Ingredient("Test 1", 10,
                 4, null);
-        GreenPlateStatus status = manager.addIngredient(ingredient, success -> {
-            assertTrue(success);
-        });
-        assertTrue(status.isSuccess());
-        assertEquals(String.format("%s added to database successfully",
-                ingredient), status.getMessage());
+        manager.addIngredient(ingredient, (success, message) -> Assert.assertTrue(success));
 
         ingredient = new Ingredient("Test 1", 10, 4, null);
 

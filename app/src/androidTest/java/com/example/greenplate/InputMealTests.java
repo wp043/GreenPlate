@@ -16,12 +16,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -32,7 +28,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 @RunWith(AndroidJUnit4.class)
 public class InputMealTests {
@@ -46,18 +41,7 @@ public class InputMealTests {
     public static void setUp() {
         final CountDownLatch latch = new CountDownLatch(1);
         A1.signInWithEmailAndPassword(TEST_EMAIL, TEST_PASSWORD)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> signInTask) {
-                        if (signInTask.isSuccessful()) {
-                            // Sign in successful
-                            latch.countDown(); // Release the latch
-                        } else {
-                            // Handle sign in failure
-                            latch.countDown(); // Release the latch even in failure case
-                        }
-                    }
-                });
+                .addOnCompleteListener(signInTask -> latch.countDown());
         try {
             latch.await(); // Wait until the latch is released
         } catch (InterruptedException e) {
@@ -67,7 +51,8 @@ public class InputMealTests {
         Date date = new Date();
         String currDate = dateFormat.format(date);
         ref = FirebaseDatabase.getInstance()
-                .getReference(String.format("user/%s/meals/%s/", A1.getCurrentUser().getUid(), currDate));
+                .getReference(String.format("user/%s/meals/%s/",
+                        A1.getCurrentUser().getUid(), currDate));
     }
 
     @Before

@@ -2,6 +2,7 @@ package com.example.greenplate.viewmodels;
 
 import android.content.Context;
 
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,14 +10,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
-import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.adapters.RecipesAdapter;
+import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
 import com.example.greenplate.viewmodels.listeners.OnDataRetrievedCallback;
 import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
 import com.example.greenplate.viewmodels.managers.CookbookManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class RecipeViewModel extends ViewModel {
     private CookbookManager cookbookManager;
@@ -26,7 +29,7 @@ public class RecipeViewModel extends ViewModel {
         cookbookManager = new CookbookManager();
     }
 
-    public void addDefaultRecipes(Context context, RecyclerView rvRecipes) {
+    public void addDefaultRecipes(RecyclerView rvRecipes, Fragment fragment) {
         // Add test recipe 1
         List<Ingredient> ingredients1 = new ArrayList<>();
         ingredients1.add(new Ingredient("Bun", 100, 2, null));
@@ -39,7 +42,7 @@ public class RecipeViewModel extends ViewModel {
         Recipe recipe1 = new Recipe("Cheeseburger", ingredients1, instructions1);
         addRecipe(recipe1, success -> {
             // Update RecyclerView
-            retrieveAndDisplayIngredients(context, rvRecipes);
+            retrieveAndDisplayIngredients(rvRecipes, fragment);
         });
 
         // Add test recipe 2
@@ -52,36 +55,40 @@ public class RecipeViewModel extends ViewModel {
         Recipe recipe2 = new Recipe("Hot dog", ingredients2, instructions2);
         addRecipe(recipe2, success -> {
             // Update RecyclerView
-            retrieveAndDisplayIngredients(context, rvRecipes);
+            retrieveAndDisplayIngredients(rvRecipes, fragment);
         });
         defaultRecipesInitialized = true;
     }
 
     public void addRecipe(Recipe recipe, OnRecipeAddedListener listener) {
+        if (recipe == null) {
+            listener.onRecipeAdded(false);
+            return;
+        }
+        if (recipe.getName() == null) {
+            listener.onRecipeAdded(false);
+            return;
+        }
         if (recipe.getIngredients().isEmpty()) {
             listener.onRecipeAdded(false);
-            return; // No ingredients, so we do not proceed further.
+            return;
         }
 
-        // Further validation for each ingredient can be added here as needed.
         for (Ingredient ingredient : recipe.getIngredients()) {
             if (ingredient.getName() == null || ingredient.getName().trim().isEmpty()
                     || ingredient.getMultiplicity() <= 0 || ingredient.getCalories() < 0) {
                 listener.onRecipeAdded(false);
-                return; // Invalid ingredient details, so we do not proceed further.
+                return;
             }
         }
 
-        cookbookManager.isRecipeDuplicate(recipe, isDuplicate -> {
+        cookbookManager.isRecipeDuplicate(recipe, (isDuplicate, duplicateName) -> {
             if (isDuplicate) {
-                // Notify via listener that recipe is a duplicate
                 listener.onRecipeAdded(false);
             } else {
-                // Proceed to add the recipe since it's not a duplicate
                 cookbookManager.addRecipe(recipe, new OnRecipeAddedListener() {
                     @Override
                     public void onRecipeAdded(boolean success) {
-                        // Forward the result from CookbookManager
                         listener.onRecipeAdded(success);
                     }
                 });
@@ -89,8 +96,9 @@ public class RecipeViewModel extends ViewModel {
         });
     }
 
-    public GreenPlateStatus validateRecipeData(String recipeName, List<String> instructions,
-                                               List<Ingredient> ingredients) {
+
+    public GreenPlateStatus validateRecipeData(String recipeName, List<String>
+            instructions, List<Ingredient> ingredients) {
         if (recipeName.trim().isEmpty()) {
             return new GreenPlateStatus(false, "Recipe name cannot be empty");
         }
@@ -112,64 +120,112 @@ public class RecipeViewModel extends ViewModel {
 
         return new GreenPlateStatus(true, null);
     }
+
     /**
      * get all recipes in the cookbook
-     * @param callback callback that retreives the recipes from the cookbook manager
+     *
+     * @param callback Callback to retrieve recipes from the cookbookManager
+
      */
     public void getRecipes(OnDataRetrievedCallback callback) {
         cookbookManager.retrieve(callback);
     }
 
+    public void retrieveAndDisplayIngredients(RecyclerView rvRecipes, Fragment fragment) {
+        this.getRecipes(itemsRecipe -> {
+            List<Recipe> recipes = itemsRecipe.stream().map(e -> (Recipe) e)
+                    .collect(Collectors.toList());
 
-    public void retrieveAndDisplayIngredients(Context context, RecyclerView rvRecipes) {
-        this.getRecipes(items -> {
-            List<Recipe> recipes = new ArrayList<>();
-            if (items != null) {
-                for (RetrievableItem item : items) {
-                    if (item instanceof Recipe) {
-                        Recipe recipe = (Recipe) item;
-                        recipes.add(recipe);
-                    }
-                }
-            }
-
-            // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
-            RecipesAdapter adapter = new RecipesAdapter(recipes);
-            rvRecipes.setAdapter(adapter);
-            rvRecipes.setLayoutManager(new LinearLayoutManager(context));
+            List<String> availability = new ArrayList<>();
+            AvailabilityReportGenerator.getInstance().getMissingElementsForShopping(report -> {
+                recipes.forEach(recipe -> availability.add(
+                        report.containsKey(recipe.getName()) ? "No" : "Yes"));
+                RecipesAdapter adapter = new RecipesAdapter(recipes, availability, fragment);
+                rvRecipes.setAdapter(adapter);
+                rvRecipes.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
+            });
         });
     }
 
-    public void retrieveAndDisplayFiltered(Context context, RecyclerView rvRecipes, String search) {
-        this.getRecipes(items -> {
-            List<Recipe> recipes = new ArrayList<>();
-            if (items != null) {
-                for (RetrievableItem item : items) {
-                    if (item instanceof Recipe) {
-                        Recipe recipe = (Recipe) item;
-                        recipes.add(recipe);
+
+    public void retrieveAndDisplayFiltered(
+            RecyclerView rvRecipes, String search, Fragment fragment) {
+        this.getRecipes(itemsRecipe -> {
+            List<Recipe> recipes = itemsRecipe.stream().map(e -> (Recipe) e)
+                    .collect(Collectors.toList());
+
+            List<String> availability = new ArrayList<>();
+            AvailabilityReportGenerator.getInstance().getMissingElementsForShopping(report -> {
+                recipes.forEach(recipe -> availability.add(
+                        report.containsKey(recipe.getName()) ? "No" : "Yes"));
+
+                ArrayList<Recipe> filteredList = new ArrayList<>();
+                List<String> filteredAvailability = new ArrayList<>();
+                if (search.isEmpty()) {
+                    filteredList = new ArrayList<>(recipes);
+                    filteredAvailability = new ArrayList<>(availability);
+                } else {
+                    for (int i = 0; i < recipes.size(); i++) {
+                        Recipe recipeItem = recipes.get(i);
+                        if (recipeItem.getName().toLowerCase().contains(search.toLowerCase())) {
+                            filteredList.add(recipeItem);
+                            filteredAvailability.add(availability.get(i));
+                        }
                     }
                 }
-            }
-            // Filter from search
-            ArrayList<Recipe> filteredList = new ArrayList<>();
-            if (search.isEmpty()) {
-                // If the search query is empty, show the original list
-                filteredList = new ArrayList<>(recipes);
-            } else {
-                filteredList = new ArrayList<>();
-                for (Recipe recipeItem : recipes) {
-                    if (recipeItem.getName().toLowerCase().contains(search.toLowerCase())) {
-                        filteredList.add(recipeItem);
-                    }
-                }
-            }
-            filteredList.sort((r1, r2) -> r1.getName().compareToIgnoreCase(r2.getName()));
-            // Use RecyclerView adapter to put list of recipes into RecyclerView (scrollable list)
-            RecipesAdapter adapter = new RecipesAdapter(filteredList);
-            rvRecipes.setAdapter(adapter);
-            rvRecipes.setLayoutManager(new LinearLayoutManager(context));
+                // filteredList.sort((r1, r2) -> r1.getName().compareToIgnoreCase(r2.getName()));
+                // Use RecyclerView adapter to put list of recipes into RecyclerView
+                RecipesAdapter adapter = new RecipesAdapter(
+                        filteredList, filteredAvailability, fragment);
+                rvRecipes.setAdapter(adapter);
+                rvRecipes.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
+            });
+        });
+    }
+
+    private void retrieveAndDisplaySorted(Context context, RecyclerView rvRecipes,
+                                          Fragment fragment, RecipeSortStrategy sorter) {
+        this.getRecipes(itemsRecipe -> {
+            List<Recipe> recipes = itemsRecipe.stream().map(e -> (Recipe) e)
+                    .collect(Collectors.toList());
+
+            List<String> availability = new ArrayList<>();
+            AvailabilityReportGenerator.getInstance().getMissingElementsForShopping(report -> {
+                recipes.forEach(recipe -> availability.add(
+                        report.containsKey(recipe.getName()) ? "No" : "Yes"));
+
+                List<RecipeAvailability> combinedList = IntStream.range(0, recipes.size())
+                        .mapToObj(i -> new RecipeAvailability(recipes.get(i), availability.get(i)))
+                        .collect(Collectors.toList());
+
+                combinedList = sorter.sort(combinedList);
+                List<Recipe> sortedRecipes = combinedList.stream()
+                        .map(RecipeAvailability::getRecipe).collect(Collectors.toList());
+                List<String> sortedAvailability = combinedList.stream()
+                        .map(RecipeAvailability::getAvailability).collect(Collectors.toList());
+
+                RecipesAdapter adapter = new RecipesAdapter(sortedRecipes,
+                        sortedAvailability, fragment);
+                rvRecipes.setAdapter(adapter);
+                rvRecipes.setLayoutManager(new LinearLayoutManager(context));
+            });
+        });
+    }
+
+    public void retrieveAndDisplaySortedByName(
+            Context context, RecyclerView rvRecipes, Fragment fragment) {
+        retrieveAndDisplaySorted(context, rvRecipes, fragment, new SortByNameStrategy());
+    }
+
+    public void retrieveAndDisplaySortedByIngredients(
+            Context context, RecyclerView rvRecipes, Fragment fragment) {
+        retrieveAndDisplaySorted(context, rvRecipes, fragment, new SortByIngredientCountStrategy());
+    }
+    public void updateRecipeAvailability(RecyclerView rvRecipes, Fragment fragment) {
+        AvailabilityReportGenerator.getInstance().getMissingElementsForShopping(report -> {
+            retrieveAndDisplayIngredients(rvRecipes, fragment);
         });
     }
 
 }
+

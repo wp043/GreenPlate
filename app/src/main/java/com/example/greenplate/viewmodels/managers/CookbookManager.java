@@ -11,7 +11,6 @@ import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.listeners.OnDataRetrievedCallback;
 import com.example.greenplate.viewmodels.listeners.OnDuplicateCheckListener;
 import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -21,9 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CookbookManager implements Manager {
     private FirebaseDatabase database;
@@ -69,7 +66,10 @@ public class CookbookManager implements Manager {
                                     .getValue(String.class);
                             double quantity = ingredientSnapshot.child("quantity")
                                     .getValue(Double.class);
-                            ingredients.add(new Ingredient(ingredientName));
+                            double calories = ingredientSnapshot.child("quantity")
+                                    .getValue(Double.class);
+                            ingredients.add(new Ingredient(ingredientName, calories,
+                                    quantity, null));
                         }
 
                         // Query instructions of recipe from database
@@ -101,13 +101,13 @@ public class CookbookManager implements Manager {
     /**
      * Add a recipe to the database.
      * @param recipe - the recipe to add
+     * @param listener - the listener to check when to add the recipe
      * @return the status of the operation
      */
     public GreenPlateStatus addRecipe(Recipe recipe, OnRecipeAddedListener listener) {
         try {
             DatabaseReference recipeRef = myRef.child("Cookbook").child(recipe.getName());
 
-            // Add ingredients of recipe to database
             DatabaseReference ingredientsRef = recipeRef.child("ingredients");
             for (Ingredient ingredient: recipe.getIngredients()) {
                 String ingredientKey = ingredientsRef.push().getKey();
@@ -117,7 +117,9 @@ public class CookbookManager implements Manager {
                 ingredientsRef.child(ingredientKey).child("name")
                         .setValue(ingredient.getName());
                 ingredientsRef.child(ingredientKey).child("quantity")
-                        .setValue((double) ingredient.getMultiplicity());
+                        .setValue(ingredient.getMultiplicity());
+                ingredientsRef.child(ingredientKey).child("calories")
+                        .setValue(ingredient.getCalories());
             }
 
             DatabaseReference instructionsRef = recipeRef.child("instructions");
@@ -136,7 +138,7 @@ public class CookbookManager implements Manager {
         }
         listener.onRecipeAdded(true);
         return new GreenPlateStatus(true,
-                String.format("%s added to database successfully", recipe));
+                String.format("%s recipe added to database successfully", recipe));
     }
 
     /**
@@ -147,13 +149,15 @@ public class CookbookManager implements Manager {
     public void isRecipeDuplicate(Recipe recipe, OnDuplicateCheckListener listener) {
         retrieve(items -> {
             boolean isDuplicate = false;
+            RetrievableItem duplicate = null;
             for (RetrievableItem item : items) {
-                if (item.equals(recipe)) {
+                if (item.getName().equals(recipe.getName())) {
                     isDuplicate = true;
+                    duplicate = item;
                     break;
                 }
             }
-            listener.onDuplicateCheckCompleted(isDuplicate);
+            listener.onDuplicateCheckCompleted(isDuplicate, duplicate);
         });
     }
 }

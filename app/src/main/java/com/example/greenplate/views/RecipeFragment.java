@@ -41,6 +41,8 @@ public class RecipeFragment extends Fragment {
     private ArrayList<Recipe> copyRecipes;
 
     private RecipesAdapter adapter;
+    private RecipeFragment fragment;
+
 
 
 
@@ -80,17 +82,16 @@ public class RecipeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe, container, false);
 
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_recipe, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        fragment = this;
 
         recipeViewModel = new RecipeViewModel();
-
-        RecyclerView rvRecipes = (RecyclerView) view.findViewById(R.id.rvRecipes);
+        RecyclerView rvRecipes = view.findViewById(R.id.rvRecipes);
 
         SearchView recipeListSearchView = (SearchView) view.findViewById(R.id.recipeListSearchView);
         recipeListSearchView.clearFocus();
@@ -102,21 +103,47 @@ public class RecipeFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                recipeViewModel.retrieveAndDisplayFiltered(getContext(), rvRecipes, newText);
+                recipeViewModel.retrieveAndDisplayFiltered(rvRecipes, newText, fragment);
                 return true;
             }
         });
 
-        recipeViewModel.addDefaultRecipes(getContext(), rvRecipes);
-        recipeViewModel.retrieveAndDisplayIngredients(getContext(), rvRecipes);
-
+        // recipeViewModel.addDefaultRecipes(rvRecipes, fragment);
+        recipeViewModel.retrieveAndDisplayIngredients(rvRecipes, fragment);
         Button addRecipeButton = view.findViewById(R.id.btnEnterNewRecipe);
         addRecipeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), EnterNewRecipeActivity.class);
                 startActivity(intent);
+                getActivity().finish();
+            }
+        });
+
+        Button sortByNameButton = view.findViewById(R.id.btnSortName);
+        sortByNameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recipeViewModel.retrieveAndDisplaySortedByName(getContext(), rvRecipes, fragment);
+            }
+        });
+
+        Button sortByIngredientButton = view.findViewById(R.id.btnSortIngredient);
+        sortByIngredientButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recipeViewModel.retrieveAndDisplaySortedByIngredients(
+                        getContext(), rvRecipes, fragment);
             }
         });
     }
+
+    public RecyclerView getRvRecipes() {
+        return getView().findViewById(R.id.rvRecipes);
+    }
+
+    public RecipeFragment getFragment() {
+        return fragment;
+    }
+
 }

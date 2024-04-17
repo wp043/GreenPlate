@@ -1,10 +1,15 @@
 package com.example.greenplate.models;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.util.Date;
+import com.example.greenplate.viewmodels.helpers.DateUtils;
 
-public class Ingredient extends RetrievableItem {
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+public class Ingredient extends RetrievableItem implements Displayable {
     private Date expirationDate;
 
 
@@ -18,6 +23,15 @@ public class Ingredient extends RetrievableItem {
     public Ingredient(String name, double calories, double multiplicity, Date expirationDate) {
         super(name, calories, multiplicity);
         this.expirationDate = expirationDate != null ? expirationDate : new Date(Long.MAX_VALUE);
+    }
+
+    public Ingredient(String name, double multiplicity) {
+        super(name, multiplicity);
+    }
+
+    public Ingredient(Ingredient toCopy) {
+        super(toCopy);
+        this.expirationDate = toCopy.expirationDate;
     }
 
     /**
@@ -36,19 +50,12 @@ public class Ingredient extends RetrievableItem {
         return expirationDate;
     }
 
-    /**
-     * Setter for expiration Date.
-     * @param expirationDate the expiration date to set to
-     */
-    public void setExpirationDate(Date expirationDate) {
-        this.expirationDate = expirationDate;
-    }
-
     @Override
     public int hashCode() {
         return super.hashCode() + (expirationDate == null ? 0 : expirationDate.hashCode());
     }
 
+    @NonNull
     @Override
     public String toString() {
         return super.toString() + ", expire date: " + expirationDate.toString();
@@ -60,6 +67,32 @@ public class Ingredient extends RetrievableItem {
             return false;
         }
         Ingredient that = (Ingredient) obj;
-        return that.expirationDate.equals(this.expirationDate);
+
+        return isSameDate(this.expirationDate, that.expirationDate);
+    }
+
+    private static boolean isSameDate(Date date1, Date date2) {
+        if (date1 == null && date2 == null) {
+            return true;
+        } else if (date1 == null || date2 == null) {
+            return false;
+        }
+
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(date1);
+        int year1 = cal1.get(Calendar.YEAR);
+        int month1 = cal1.get(Calendar.MONTH);
+        int day1 = cal1.get(Calendar.DAY_OF_MONTH);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(date2);
+
+        return year1 == cal2.get(Calendar.YEAR)
+                && month1 == cal2.get(Calendar.MONTH)
+                && day1 == cal2.get(Calendar.DAY_OF_MONTH);
+    }
+
+    @Override
+    public String displayInfo() {
+        return String.format(Locale.US, "count: %.2f", this.getMultiplicity());
     }
 }

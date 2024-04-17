@@ -1,30 +1,29 @@
 package com.example.greenplate.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.greenplate.R;
 import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
 import com.example.greenplate.viewmodels.RecipeViewModel;
 import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
-import com.example.greenplate.viewmodels.managers.CookbookManager;
-
-import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 public class EnterNewRecipeActivity extends AppCompatActivity {
 
@@ -58,7 +57,7 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         cancelRecipeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Just finish the current activity to return to the previous screen
+                returnToRecipeScreen();
                 finish();
             }
         });
@@ -80,7 +79,6 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         EditText ingredientName = ingredientView.findViewById(R.id.ingredientName);
         EditText ingredientQuantity = ingredientView.findViewById(R.id.ingredientQuantity);
 
-        // Optionally set up a button to remove this ingredient field
         Button removeButton = new Button(this);
         removeButton.setText("-");
         removeButton.setOnClickListener(v -> ingredientsContainer.removeView(ingredientView));
@@ -91,7 +89,6 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
 
         ingredientsContainer.addView(ingredientView);
 
-        // Enable the submit button if it's not already enabled
         if (!submitRecipe.isEnabled()) {
             submitRecipe.setEnabled(true);
         }
@@ -104,7 +101,6 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
 
         EditText instruction = instructionView.findViewById(R.id.recipe_instruction);
 
-        // Optionally set up a button to remove this ingredient field
         Button removeButton = new Button(this);
         removeButton.setText("-");
         removeButton.setOnClickListener(v -> instructionsContainer.removeView(instructionView));
@@ -116,8 +112,13 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         instructionsContainer.addView(instructionView);
     }
 
+    /** @noinspection checkstyle:TodoComment*/
     private void submitRecipe() {
         String recipeNameStr = recipeNameEditText.getText().toString().trim();
+        if (recipeNameEditText == null) {
+            showToast("Cannot have null");
+            return;
+        }
 
         List<Ingredient> ingredients = collectIngredients();
         if (ingredients == null) {
@@ -126,8 +127,6 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         }
         List<String> instructions = collectInstructions();
 
-
-        // Validate each ingredient
         GreenPlateStatus status = recipeViewModel.validateRecipeData(
                 recipeNameStr, instructions, ingredients);
         if (!status.isSuccess()) {
@@ -135,12 +134,14 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
             return;
         }
 
-        Recipe recipe = new Recipe(recipeNameStr, ingredients, new ArrayList<>());
+        Recipe recipe = new Recipe(recipeNameStr, ingredients, instructions);
+
         recipeViewModel.addRecipe(recipe, new OnRecipeAddedListener() {
             @Override
             public void onRecipeAdded(boolean success) {
                 if (success) {
                     showToast("Recipe added successfully!");
+                    returnToRecipeScreen();
                     finish();
                 } else {
                     showToast("Failed to add recipe.");
@@ -151,6 +152,7 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
 
     private List<Ingredient> collectIngredients() {
         List<Ingredient> ingredients = new ArrayList<>();
+        Set<String> ingredientNames = new HashSet<>();
         for (int i = 0; i < ingredientsContainer.getChildCount(); i++) {
             View ingredientView = ingredientsContainer.getChildAt(i);
             EditText ingredientNameEditText = ingredientView.findViewById(R.id.ingredientName);
@@ -168,8 +170,15 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
                     double ingredientQuantity = Double.parseDouble(quantityStr);
                     double ingredientCalorie = Double.parseDouble(caloriesStr);
                     if (ingredientQuantity > 0) {
-                        ingredients.add(new Ingredient(ingredientName, ingredientCalorie,
-                                ingredientQuantity, null));
+                        if (ingredientNames.contains(ingredientName)) {
+                            showToast("Duplicate ingredient: " + ingredientName
+                                    + ". Please remove the duplicate.");
+                            return null;
+                        } else {
+                            ingredients.add(new Ingredient(ingredientName, ingredientCalorie,
+                                    ingredientQuantity, null));
+                            ingredientNames.add(ingredientName);
+                        }
                     }
                 } catch (NumberFormatException e) {
                     Log.e("EnterNewRecipeActivity", "Invalid number format", e);
@@ -186,11 +195,11 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
         LinearLayout instructionsContainer = findViewById(R.id.instructions_container);
         for (int i = 0; i < instructionsContainer.getChildCount(); i++) {
             View view = instructionsContainer.getChildAt(i);
-            if (view instanceof EditText) {
-                String instruction = ((EditText) view).getText().toString().trim();
-                if (!instruction.isEmpty()) {
-                    instructions.add(instruction);
-                }
+            EditText instructionEditText = view.findViewById(R.id.recipe_instruction);
+
+            String inst = instructionEditText.getText().toString().trim();
+            if (!inst.isEmpty()) {
+                instructions.add(inst);
             }
         }
         return instructions;
@@ -198,5 +207,11 @@ public class EnterNewRecipeActivity extends AppCompatActivity {
 
     private void showToast(String message) {
         Toast.makeText(EnterNewRecipeActivity.this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void returnToRecipeScreen() {
+        Intent intent = new Intent(EnterNewRecipeActivity.this, NavBarActivity.class);
+        intent.putExtra("Fragment", "Recipes");
+        startActivity(intent);
     }
 }
