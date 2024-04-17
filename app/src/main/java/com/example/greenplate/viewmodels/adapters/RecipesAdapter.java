@@ -108,7 +108,6 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                 TextView nameEditText = dialogView.findViewById(R.id.display_recipe_name);
                 TextView ingredientsEditText = dialogView.findViewById(R.id.display_missing_ingredients);
                 TextView instructionsEditText = dialogView.findViewById(R.id.display_instructions);
-//                Button cookButton = dialogView.findViewById(R.id.button_cook);
 
 
                 nameEditText.setText(recipe.getName());
@@ -153,21 +152,6 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                 AlertDialog dialog = builder.create();
                 dialog.show();
 
-//                cookButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        // Perform the necessary actions to "cook" the recipe
-//                        // For example, update the meal database and subtract ingredients from the pantry
-//                        // You may need to create a new method in your ViewModel or activity to handle this logic
-//
-//                        Toast.makeText(fragment.getContext(), "Cooked " + recipe.getName(), Toast.LENGTH_SHORT).show();
-//
-//                        // Close the dialog after cooking
-//                        dialog.dismiss();
-//
-//                        // Optionally, you can update the UI or notify other parts of the app that cooking has occurred
-//                    }
-//                });
 
             } else {
                 // holder.nameTextView.setTextColor(Color.rgb(220, 20, 60));
