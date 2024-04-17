@@ -30,7 +30,7 @@ public class ShoppingListManager implements Manager {
     private FirebaseUser currentUser;
 
     /**
-     * Constructor for PantryManager.
+     * Constructor for ShoppingListManager.
      */
     public ShoppingListManager() {
         try {
