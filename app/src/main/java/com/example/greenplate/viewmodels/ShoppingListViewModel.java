@@ -95,4 +95,18 @@ public class ShoppingListViewModel extends ViewModel {
             listener.onDuplicateCheckCompleted(isDup, dupItem);
         });
     }
+
+    public void updateMultiplicity(String name, double updatedMultiplicity) {
+        shoppingListManager.updateIngredientMultiplicity(name,updatedMultiplicity, new OnMultiplicityUpdateListener() {
+            @Override
+            public void onMultiplicityUpdateSuccess(GreenPlateStatus status) {
+                Log.d("Success", status.getMessage());
+            }
+
+            @Override
+            public void onMultiplicityUpdateFailure(GreenPlateStatus status) {
+                Log.d("Failure", status.getMessage());
+            }
+        });
+    }
 }
