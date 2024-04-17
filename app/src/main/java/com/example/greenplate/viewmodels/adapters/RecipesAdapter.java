@@ -24,6 +24,7 @@ import com.example.greenplate.viewmodels.listeners.OnIngredientRemoveListener;
 import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
 import com.example.greenplate.viewmodels.managers.PantryManager;
 import com.example.greenplate.viewmodels.managers.ShoppingListManager;
+import com.example.greenplate.viewmodels.observers.CaloriesLeftDisplay;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -133,6 +134,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                     public void onClick(DialogInterface dialog, int which) {
                         PantryManager pantryManager = new PantryManager();
 
+<<<<<<< HEAD
                         pantryManager.retrieve(items -> {
                             for (Ingredient requiredIngredient : recipe.getIngredients()) {
                                 List<Ingredient> ingredientsInPantry = items.stream()
@@ -182,6 +184,12 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                                 }
                             }
                         });
+=======
+                        // After cooking
+                        CaloriesLeftDisplay chart = new CaloriesLeftDisplay();
+                        chart.onChartUpdate();
+                        selectedPosition = RecyclerView.NO_POSITION;
+>>>>>>> 6d5857376dd38c1e0774c091a649f3c81996a898
                     }
                 });
 
