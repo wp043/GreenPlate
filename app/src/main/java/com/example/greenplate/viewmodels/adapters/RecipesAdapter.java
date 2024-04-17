@@ -8,7 +8,6 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,10 +22,9 @@ import com.example.greenplate.viewmodels.ShoppingListViewModel;
 import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
 import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
 import com.example.greenplate.viewmodels.managers.ShoppingListManager;
-import com.example.greenplate.viewmodels.observers.ChartUpdateObserver;
+import com.example.greenplate.viewmodels.observers.CaloriesLeftDisplay;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHolder> {
@@ -133,7 +131,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                         // Subtract ingredients from the pantry
 
                         // After cooking
-                        ChartUpdateObserver chart = new ChartUpdateObserver();
+                        CaloriesLeftDisplay chart = new CaloriesLeftDisplay();
                         chart.onChartUpdate();
                         selectedPosition = RecyclerView.NO_POSITION;
                     }
