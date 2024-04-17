@@ -8,7 +8,6 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,15 +18,19 @@ import com.example.greenplate.R;
 import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
+import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.viewmodels.ShoppingListViewModel;
 import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
+import com.example.greenplate.viewmodels.listeners.OnIngredientRemoveListener;
 import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
+import com.example.greenplate.viewmodels.managers.PantryManager;
 import com.example.greenplate.viewmodels.managers.ShoppingListManager;
-import com.example.greenplate.viewmodels.observers.ChartUpdateObserver;
 
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHolder> {
     private List<Recipe> recipeList;
@@ -70,8 +73,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
         TextView numInstructionsTextView = holder.numInstructionsTextView;
 
         nameTextView.setText(recipe.getName());
-        numIngredientsTextView.setText("Ingredients: " +
-                recipe.getIngredients().stream().mapToDouble(e -> e.getMultiplicity()).sum());
+        numIngredientsTextView.setText("Ingredients: "
+                + recipe.getIngredients().stream().mapToDouble(e -> e.getMultiplicity()).sum());
         numInstructionsTextView.setText("Instructions: " + recipe.getInstructions().size());
         String availabilityText;
         if (availability.equals("Yes")) {
@@ -107,7 +110,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                 LayoutInflater inflater = fragment.requireActivity().getLayoutInflater();
                 View dialogView = inflater.inflate(R.layout.dialog_recipe, null);
                 TextView nameEditText = dialogView.findViewById(R.id.display_recipe_name);
-                TextView ingredientsEditText = dialogView.findViewById(R.id.display_missing_ingredients);
+                TextView ingredientsEditText = dialogView.findViewById(R.id.
+                        display_missing_ingredients);
                 TextView instructionsEditText = dialogView.findViewById(R.id.display_instructions);
 
 
@@ -128,14 +132,98 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                 builder.setNeutralButton("Cook", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Implement your "Cook" action here
-                        // Update the meal database
-                        // Subtract ingredients from the pantry
+                        PantryManager pantryManager = new PantryManager();
 
-                        // After cooking
-                        ChartUpdateObserver chart = new ChartUpdateObserver();
-                        chart.onChartUpdate();
-                        selectedPosition = RecyclerView.NO_POSITION;
+                        pantryManager.retrieve(items -> {
+                            for (Ingredient requiredIngredient : recipe.getIngredients()) {
+                                List<Ingredient> ingredientsInPantry = items.stream()
+                                        .map(e -> (Ingredient) e).collect(Collectors.toList());
+                                List<Ingredient> matched = ingredientsInPantry.stream().filter(e ->
+                                        e.getName().equals(requiredIngredient.getName())
+                                        && e.getExpirationDate().after(new Date()))
+                                        .collect(Collectors.toList());
+                                matched.sort(Comparator.comparing(Ingredient::getExpirationDate));
+
+                                double requiredAmount = requiredIngredient.getMultiplicity();
+                                for (Ingredient i : matched) {
+                                    if (requiredAmount <= 0) {
+                                        break;
+                                    }
+                                    double newMult = Math.max(0, i.getMultiplicity() - requiredAmount);
+                                    requiredAmount -= Math.min(requiredAmount, i.getMultiplicity());
+
+                                    if (newMult == 0) {
+                                        pantryManager.removeIngredient(i,
+                                                new OnIngredientRemoveListener() {
+                                                    @Override
+                                                    public void onIngredientRemoveSuccess(
+                                                            GreenPlateStatus status) {
+                                                    }
+                                                    @Override
+                                                    public void onIngredientRemoveFailure(
+                                                            GreenPlateStatus status) {
+                                                    }
+                                                });
+                                    } else {
+                                        pantryManager.updateIngredientMultiplicity(
+                                                i, newMult,
+                                                new OnMultiplicityUpdateListener() {
+                                                    @Override
+                                                    public void onMultiplicityUpdateSuccess(
+                                                            GreenPlateStatus status) {
+                                                    }
+
+                                                    @Override
+                                                    public void onMultiplicityUpdateFailure(
+                                                            GreenPlateStatus status) {
+                                                    }
+                                                });
+                                    }
+                                }
+
+//                                for (RetrievableItem item : items) {
+//                                    if (item instanceof Ingredient) {
+//                                        Ingredient pantryIngredient = (Ingredient) item;
+//                                        if (pantryIngredient.getName().equals(requiredIngredient.
+//                                                getName())) {
+//                                            double newMultiplicity =
+//                                                    pantryIngredient.getMultiplicity()
+//                                                            - requiredIngredient.getMultiplicity();
+//
+//                                            if (newMultiplicity <= 0) {
+//                                                // Remove ingredient from pantry
+//                                                pantryManager.removeIngredient(pantryIngredient,
+//                                                        new OnIngredientRemoveListener() {
+//                                                        @Override
+//                                                        public void onIngredientRemoveSuccess(
+//                                                                GreenPlateStatus status) {
+//                                                        }
+//                                                        @Override
+//                                                        public void onIngredientRemoveFailure(
+//                                                                GreenPlateStatus status) {
+//                                                        }
+//                                                    });
+//                                            } else {
+//                                                pantryManager.updateIngredientMultiplicity(
+//                                                        pantryIngredient, newMultiplicity,
+//                                                        new OnMultiplicityUpdateListener() {
+//                                                        @Override
+//                                                        public void onMultiplicityUpdateSuccess(
+//                                                                GreenPlateStatus status) {
+//                                                        }
+//
+//                                                        @Override
+//                                                        public void onMultiplicityUpdateFailure(
+//                                                                GreenPlateStatus status) {
+//                                                        }
+//                                                    });
+//                                            }
+//                                            break;
+//                                        }
+//                                    }
+//                                }
+                            }
+                        });
                     }
                 });
 
@@ -163,59 +251,70 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                 LayoutInflater inflater = fragment.requireActivity().getLayoutInflater();
                 View dialogView = inflater.inflate(R.layout.dialog_recipe_missing, null);
                 TextView nameEditText = dialogView.findViewById(R.id.display_recipe_name);
-                TextView missingIngredientsEditText = dialogView.findViewById(R.id.display_missing_ingredients);
+                TextView missingIngredientsEditText = dialogView.findViewById(R.id.
+                        display_missing_ingredients);
 
                 nameEditText.setText(recipe.getName());
 
                 availabilityReportGenerator.getMissingElementsForShopping(availabilityReport -> {
                     String missingIngredientsText = "";
-                    for (Map.Entry<Ingredient, Double> entry: availabilityReport.get(recipe.getName()).entrySet()) {
-                        missingIngredientsText += entry.getValue() + "\t" + entry.getKey().getName() + "\n";
+                    for (Map.Entry<Ingredient, Double> entry: availabilityReport.get(
+                            recipe.getName()).entrySet()) {
+                        missingIngredientsText += entry.getValue() + "\t"
+                                + entry.getKey().getName() + "\n";
                     }
                     missingIngredientsEditText.setText(missingIngredientsText);
 
-                    builder.setView(dialogView).setPositiveButton("Add to shopping list", (dialog, id) -> {
-                        ShoppingListViewModel shoppingListVM = new ShoppingListViewModel();
+                    builder.setView(dialogView).setPositiveButton("Add to shopping list",
+                                    (dialog, id) -> {
+                            ShoppingListViewModel shoppingListVM = new ShoppingListViewModel();
 
-                        for (Map.Entry<Ingredient, Double> entry: availabilityReport.get(recipe.getName()).entrySet()) {
-                            try {
-                                String name = entry.getKey().getName();
-                                double quantity = entry.getValue();
-                                Ingredient newIngredient = new Ingredient(name, 0., quantity, null);
-                                shoppingListVM.isItemDuplicate(name, (isDup, dupItem) -> {
-                                    if (isDup) {
-                                        ShoppingListManager shoppingListManager = new ShoppingListManager();
-                                        shoppingListManager.addIngredientMultiplicity(name, quantity, new OnMultiplicityUpdateListener() {
-                                            @Override
-                                            public void onMultiplicityUpdateSuccess(GreenPlateStatus status) {
+                            for (Map.Entry<Ingredient, Double> entry: availabilityReport.get(
+                                    recipe.getName()).entrySet()) {
+                                try {
+                                    String name = entry.getKey().getName();
+                                    double quantity = entry.getValue();
+                                    Ingredient newIngredient = new Ingredient(name, 0.,
+                                            quantity, null);
+                                    shoppingListVM.isItemDuplicate(name, (isDup, dupItem) -> {
+                                        if (isDup) {
+                                            ShoppingListManager shoppingListManager = new
+                                                    ShoppingListManager();
+                                            shoppingListManager.addIngredientMultiplicity(name,
+                                                    quantity, new OnMultiplicityUpdateListener() {
+                                                        @Override
+                                                        public void onMultiplicityUpdateSuccess(
+                                                                GreenPlateStatus status) {
 
-                                            }
+                                                        }
+                                                        @Override
+                                                        public void onMultiplicityUpdateFailure(
+                                                                GreenPlateStatus status) {
 
-                                            @Override
-                                            public void onMultiplicityUpdateFailure(GreenPlateStatus status) {
-
+                                                        }
+                                                    });
+                                            return;
+                                        }
+                                        shoppingListVM.addIngredient(newIngredient, (success,
+                                                                                     message) -> {
+                                            if (!success) {
+                                                Toast.makeText(holder.itemView.getContext(),
+                                                        message, Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(holder.itemView.getContext(),
+                                                        "Successfully added "
+                                                                + "missing ingredients",
+                                                        Toast.LENGTH_SHORT).show();
                                             }
                                         });
-                                        return;
-                                    }
-                                    shoppingListVM.addIngredient(newIngredient, (success, message) -> {
-                                        if (!success) {
-                                            Toast.makeText(holder.itemView.getContext(),
-                                                    message, Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            Toast.makeText(holder.itemView.getContext(),
-                                                    "Successfully added missing ingredients",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
                                     });
-                                });
-                            } catch (Exception e) {
-                                Toast.makeText(holder.itemView.getContext(),
-                                        "Failed to add ingredients.",
-                                        Toast.LENGTH_SHORT).show();
+                                } catch (Exception e) {
+                                    Toast.makeText(holder.itemView.getContext(),
+                                            "Failed to add ingredients.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
-                    })
+                        })
                         .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // Exit

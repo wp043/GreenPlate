@@ -3,7 +3,6 @@ package com.example.greenplate.models;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.greenplate.viewmodels.helpers.DateUtils;
 
 import java.util.Calendar;
 import java.util.Date;
