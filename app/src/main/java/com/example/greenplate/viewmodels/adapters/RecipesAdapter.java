@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
@@ -41,7 +40,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
     private int selectedPosition = RecyclerView.NO_POSITION;
     private AvailabilityReportGenerator availabilityReportGenerator;
 
-    public RecipesAdapter(List<Recipe> recipes, List<String> availability, RecipeFragment fragment) {
+    public RecipesAdapter(List<Recipe> recipes, List<String> availability,
+                          RecipeFragment fragment) {
         recipeList = recipes;
         availabilityList = availability;
         this.fragment = fragment;
@@ -145,8 +145,10 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                     // Observer Pattern to update input meal and Chart displays
                     MealCalorieData mealCalorieData = new MealCalorieData();
 
-                    CaloriesLeftDisplay caloriesLeftDisplay = new CaloriesLeftDisplay(mealCalorieData);
-                    MealBreakdownDisplay mealBreakdownDisplay = new MealBreakdownDisplay(mealCalorieData);
+                    CaloriesLeftDisplay caloriesLeftDisplay
+                            = new CaloriesLeftDisplay(mealCalorieData);
+                    MealBreakdownDisplay mealBreakdownDisplay
+                            = new MealBreakdownDisplay(mealCalorieData);
 
 
                     mealCalorieData.setMealCalorieData(recipe.getName(), totalCalories);
@@ -175,11 +177,6 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
-    public interface UpdateIngredientsCallback {
-        void onComplete(int totalCalories);
-        void onError(Exception e);
-    }
     private void updateIngredientAfterCooking(Recipe recipe, UpdateIngredientsCallback callback) {
         PantryManager pantryManager = new PantryManager();
         final int[] calculatedCookedRecipeCalories = {0};
@@ -190,35 +187,42 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                     List<Ingredient> ingredientsInPantry = items.stream()
                             .map(e -> (Ingredient) e).collect(Collectors.toList());
                     List<Ingredient> matched = ingredientsInPantry.stream().filter(e ->
-                                    e.getName().equals(requiredIngredient.getName()) &&
-                                            e.getExpirationDate().after(new Date()))
+                                    e.getName().equals(requiredIngredient.getName())
+                                            && e.getExpirationDate().after(new Date()))
                             .sorted(Comparator.comparing(Ingredient::getExpirationDate))
                             .collect(Collectors.toList());
 
                     for (Ingredient i : matched) {
                         double requiredAmount = requiredIngredient.getMultiplicity();
-                        if (requiredAmount <= 0) break;
+                        if (requiredAmount <= 0) {
+                            break;
+                        }
 
                         double takenAmount = Math.min(requiredAmount, i.getMultiplicity());
                         double newMult = i.getMultiplicity() - takenAmount;
-                        calculatedCookedRecipeCalories[0] += (int)(takenAmount * i.getCalories());
+                        calculatedCookedRecipeCalories[0] += (int) (takenAmount * i.getCalories());
                         requiredAmount -= takenAmount;
 
                         pantryManager.updateIngredientMultiplicity(
                                 i, newMult,
                                 new OnMultiplicityUpdateListener() {
                                     @Override
-                                    public void onMultiplicityUpdateSuccess(GreenPlateStatus status) {
+                                    public void onMultiplicityUpdateSuccess(
+                                            GreenPlateStatus status) {
                                         // Handle successful update
                                     }
 
                                     @Override
-                                    public void onMultiplicityUpdateFailure(GreenPlateStatus status) {
-                                        callback.onError(new Exception("Failed to update ingredient multiplicity"));
+                                    public void onMultiplicityUpdateFailure(
+                                            GreenPlateStatus status) {
+                                        callback.onError(new Exception(
+                                                "Failed to update ingredient multiplicity"));
                                     }
                                 });
 
-                        if (requiredAmount <= 0) break;
+                        if (requiredAmount <= 0) {
+                            break;
+                        }
                     }
                 }
                 // Trigger the completion callback after all processing
@@ -326,5 +330,9 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
             numIngredientsTextView = (TextView) itemView.findViewById(R.id.num_ingredients);
             numInstructionsTextView = (TextView) itemView.findViewById(R.id.num_instructions);
         }
+    }
+    public interface UpdateIngredientsCallback {
+        void onComplete(int totalCalories);
+        void onError(Exception e);
     }
 }

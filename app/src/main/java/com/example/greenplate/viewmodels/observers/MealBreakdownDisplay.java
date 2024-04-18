@@ -22,6 +22,7 @@ public class MealBreakdownDisplay implements OnChartUpdateListenerObserver {
     }
 
     public void display() {
-        System.out.println("Inputting cooked meal " + cookedMealName + " with calories of " + cookedMealCalories + ".");
+        System.out.println("Inputting cooked meal " + cookedMealName
+                + " with calories of " + cookedMealCalories + ".");
     }
 }

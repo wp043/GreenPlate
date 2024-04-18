@@ -104,7 +104,8 @@ public class MissingIngredientTests {
             Assert.assertTrue(success);
         });
 
-        AvailabilityReportGenerator availabilityReportGenerator = AvailabilityReportGenerator.getInstance();
+        AvailabilityReportGenerator availabilityReportGenerator =
+                AvailabilityReportGenerator.getInstance();
         availabilityReportGenerator.getMissingElementsForShopping(report -> {
             Map<Ingredient, Double> missing = report.get("Cheeseburger");
             assertEquals(2, missing.size());
@@ -135,7 +136,8 @@ public class MissingIngredientTests {
             Assert.assertTrue(success);
         });
 
-        AvailabilityReportGenerator availabilityReportGenerator = AvailabilityReportGenerator.getInstance();
+        AvailabilityReportGenerator availabilityReportGenerator
+                = AvailabilityReportGenerator.getInstance();
         availabilityReportGenerator.getMissingElementsForShopping(report -> {
             Map<Ingredient, Double> missing = report.get("Cheeseburger");
             assertEquals(1.0, missing.get("Bun"));
@@ -171,7 +173,8 @@ public class MissingIngredientTests {
             Assert.assertTrue(success);
         });
 
-        AvailabilityReportGenerator availabilityReportGenerator = AvailabilityReportGenerator.getInstance();
+        AvailabilityReportGenerator availabilityReportGenerator
+                = AvailabilityReportGenerator.getInstance();
         availabilityReportGenerator.getMissingElementsForShopping(report -> {
             Map<Ingredient, Double> missing = report.get("Cheeseburger");
             assertNull(missing);
@@ -196,7 +199,8 @@ public class MissingIngredientTests {
             assertTrue("Recipe added successfully!", success);
         });
 
-        AvailabilityReportGenerator availabilityReportGenerator = AvailabilityReportGenerator.getInstance();
+        AvailabilityReportGenerator availabilityReportGenerator
+                = AvailabilityReportGenerator.getInstance();
         availabilityReportGenerator.getMissingElementsForShopping(report -> {
             Map<Ingredient, Double> missing = report.get("Cheeseburger");
             assertEquals(3, missing.size());
@@ -233,7 +237,8 @@ public class MissingIngredientTests {
             Assert.assertTrue(success);
         });
 
-        AvailabilityReportGenerator availabilityReportGenerator = AvailabilityReportGenerator.getInstance();
+        AvailabilityReportGenerator availabilityReportGenerator
+                = AvailabilityReportGenerator.getInstance();
         availabilityReportGenerator.getMissingElementsForShopping(report -> {
             Map<Ingredient, Double> missing = report.get("Cheeseburger");
             assertEquals(1, missing.size());
@@ -265,7 +270,8 @@ public class MissingIngredientTests {
             Assert.assertTrue(success);
         });
 
-        AvailabilityReportGenerator availabilityReportGenerator = AvailabilityReportGenerator.getInstance();
+        AvailabilityReportGenerator availabilityReportGenerator
+                = AvailabilityReportGenerator.getInstance();
         availabilityReportGenerator.getMissingElementsForShopping(report -> {
             Map<Ingredient, Double> missing = report.get("Cheeseburger");
             assertEquals(3, missing.size());
@@ -296,7 +302,8 @@ public class MissingIngredientTests {
             Assert.assertTrue(success);
         });
 
-        AvailabilityReportGenerator availabilityReportGenerator = AvailabilityReportGenerator.getInstance();
+        AvailabilityReportGenerator availabilityReportGenerator
+                = AvailabilityReportGenerator.getInstance();
         availabilityReportGenerator.getMissingElementsForShopping(report -> {
             Map<Ingredient, Double> missing = report.get("Cheeseburger");
             assertEquals(3, missing.size());
