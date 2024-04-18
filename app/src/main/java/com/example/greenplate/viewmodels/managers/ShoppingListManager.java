@@ -227,7 +227,8 @@ public class ShoppingListManager implements Manager {
                 boolean ingredientFound = false;
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     String name = childSnapshot.child("name").getValue(String.class);
-                    double currMultiplicity = childSnapshot.child("multiplicity").getValue(Double.class);
+                    double currMultiplicity = childSnapshot.child("multiplicity").
+                            getValue(Double.class);
 
                     if (name.equals(ingredientName)) {
                         String key = childSnapshot.getKey();

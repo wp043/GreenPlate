@@ -2,9 +2,7 @@ package com.example.greenplate.models;
 
 import com.example.greenplate.viewmodels.helpers.DateUtils;
 
-import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 public class CalorieExpIngredientDecorator extends BaseIngredientDecorator {
     public CalorieExpIngredientDecorator(Ingredient ingredient) {
