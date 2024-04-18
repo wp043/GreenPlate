@@ -4,13 +4,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.greenplate.R;
@@ -22,7 +22,10 @@ import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
 import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
 import com.example.greenplate.viewmodels.managers.PantryManager;
 import com.example.greenplate.viewmodels.managers.ShoppingListManager;
+import com.example.greenplate.viewmodels.observable.MealCalorieData;
 import com.example.greenplate.viewmodels.observers.CaloriesLeftDisplay;
+import com.example.greenplate.viewmodels.observers.MealBreakdownDisplay;
+import com.example.greenplate.views.RecipeFragment;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -33,11 +36,12 @@ import java.util.stream.Collectors;
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHolder> {
     private List<Recipe> recipeList;
     private List<String> availabilityList;
-    private Fragment fragment;
+    private RecipeFragment fragment;
     private int selectedPosition = RecyclerView.NO_POSITION;
     private AvailabilityReportGenerator availabilityReportGenerator;
 
-    public RecipesAdapter(List<Recipe> recipes, List<String> availability, Fragment fragment) {
+    public RecipesAdapter(List<Recipe> recipes, List<String> availability,
+                          RecipeFragment fragment) {
         recipeList = recipes;
         availabilityList = availability;
         this.fragment = fragment;
@@ -89,7 +93,6 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                 }
             }
         });
-
         if (holder.getAdapterPosition() != selectedPosition) {
             holder.nameTextView.setTextColor(Color.BLACK);
             return;
@@ -135,10 +138,33 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
 
         //COOK
         builder.setNeutralButton("Cook", (dialog, which) -> {
-            updateIngredientAfterCooking(recipe);
-            CaloriesLeftDisplay chart = new CaloriesLeftDisplay();
-            chart.onChartUpdate();
-            selectedPosition = RecyclerView.NO_POSITION;
+            updateIngredientAfterCooking(recipe, new UpdateIngredientsCallback() {
+                @Override
+                public void onComplete(int totalCalories) {
+                    Log.d("PRINT", "Recipe calories: " + totalCalories);
+                    // Observer Pattern to update input meal and Chart displays
+                    MealCalorieData mealCalorieData = new MealCalorieData();
+
+                    CaloriesLeftDisplay caloriesLeftDisplay
+                            = new CaloriesLeftDisplay(mealCalorieData);
+                    MealBreakdownDisplay mealBreakdownDisplay
+                            = new MealBreakdownDisplay(mealCalorieData);
+
+
+                    mealCalorieData.setMealCalorieData(recipe.getName(), totalCalories);
+                    // Refresh UI and data
+                    if (fragment.isAdded()) {
+                        fragment.getActivity().runOnUiThread(() -> fragment.refreshContent());
+                    }
+
+                    selectedPosition = RecyclerView.NO_POSITION;
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    //
+                }
+            });
         });
 
         builder.setView(dialogView)
@@ -151,47 +177,64 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
-    private void updateIngredientAfterCooking(Recipe recipe) {
+    private void updateIngredientAfterCooking(Recipe recipe, UpdateIngredientsCallback callback) {
         PantryManager pantryManager = new PantryManager();
+        final int[] calculatedCookedRecipeCalories = {0};
+
         pantryManager.retrieve(items -> {
-            for (Ingredient requiredIngredient : recipe.getIngredients()) {
-                List<Ingredient> ingredientsInPantry = items.stream()
-                        .map(e -> (Ingredient) e).collect(Collectors.toList());
-                List<Ingredient> matched = ingredientsInPantry.stream().filter(e ->
-                                e.getName().equals(requiredIngredient.getName())
-                                        && e.getExpirationDate().after(new Date()))
-                        .collect(Collectors.toList());
-                matched.sort(Comparator.comparing(Ingredient::getExpirationDate));
+            try {
+                for (Ingredient requiredIngredient : recipe.getIngredients()) {
+                    List<Ingredient> ingredientsInPantry = items.stream()
+                            .map(e -> (Ingredient) e).collect(Collectors.toList());
+                    List<Ingredient> matched = ingredientsInPantry.stream().filter(e ->
+                                    e.getName().equals(requiredIngredient.getName())
+                                            && e.getExpirationDate().after(new Date()))
+                            .sorted(Comparator.comparing(Ingredient::getExpirationDate))
+                            .collect(Collectors.toList());
 
-                double requiredAmount = requiredIngredient.getMultiplicity();
-                for (Ingredient i : matched) {
-                    if (requiredAmount <= 0) {
-                        break;
+                    for (Ingredient i : matched) {
+                        double requiredAmount = requiredIngredient.getMultiplicity();
+                        if (requiredAmount <= 0) {
+                            break;
+                        }
+
+                        double takenAmount = Math.min(requiredAmount, i.getMultiplicity());
+                        double newMult = i.getMultiplicity() - takenAmount;
+                        calculatedCookedRecipeCalories[0] += (int) (takenAmount * i.getCalories());
+                        requiredAmount -= takenAmount;
+
+                        pantryManager.updateIngredientMultiplicity(
+                                i, newMult,
+                                new OnMultiplicityUpdateListener() {
+                                    @Override
+                                    public void onMultiplicityUpdateSuccess(
+                                            GreenPlateStatus status) {
+                                        Toast.makeText(fragment.getContext(),
+                                                "Cooked Successfully",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    @Override
+                                    public void onMultiplicityUpdateFailure(
+                                            GreenPlateStatus status) {
+                                        callback.onError(new Exception(
+                                                "Failed to update ingredient multiplicity"));
+                                    }
+                                });
+
+                        if (requiredAmount <= 0) {
+                            break;
+                        }
                     }
-                    double newMult = Math.max(0, i.getMultiplicity() - requiredAmount);
-                    requiredAmount -= Math.min(requiredAmount, i.getMultiplicity());
-
-
-                    pantryManager.updateIngredientMultiplicity(
-                            i, newMult,
-                            new OnMultiplicityUpdateListener() {
-                                @Override
-                                public void onMultiplicityUpdateSuccess(
-                                        GreenPlateStatus status) {
-                                    Toast.makeText(fragment.getContext(),
-                                            "Cooked Successfully",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-
-                                @Override
-                                public void onMultiplicityUpdateFailure(
-                                        GreenPlateStatus status) { }
-                            });
                 }
+                // Trigger the completion callback after all processing
+                callback.onComplete(calculatedCookedRecipeCalories[0]);
+            } catch (Exception e) {
+                callback.onError(e);
             }
         });
     }
+
 
     private void missingIngredient(RecipesAdapter.ViewHolder holder, Recipe recipe) {
         AlertDialog.Builder builder = new AlertDialog.Builder(fragment.getContext());
@@ -289,5 +332,9 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
             numIngredientsTextView = (TextView) itemView.findViewById(R.id.num_ingredients);
             numInstructionsTextView = (TextView) itemView.findViewById(R.id.num_instructions);
         }
+    }
+    public interface UpdateIngredientsCallback {
+        void onComplete(int totalCalories);
+        void onError(Exception e);
     }
 }

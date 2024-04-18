@@ -146,4 +146,9 @@ public class RecipeFragment extends Fragment {
     public RecipeFragment getFragment() {
         return fragment;
     }
+
+    public void refreshContent() {
+        RecyclerView rvRecipes = getRvRecipes();
+        recipeViewModel.retrieveAndDisplayIngredients(rvRecipes, this);
+    }
 }
