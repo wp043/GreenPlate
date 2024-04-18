@@ -209,7 +209,9 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                                     @Override
                                     public void onMultiplicityUpdateSuccess(
                                             GreenPlateStatus status) {
-                                        // Handle successful update
+                                        Toast.makeText(fragment.getContext(),
+                                                "Cooked Successfully",
+                                                Toast.LENGTH_SHORT).show();
                                     }
 
                                     @Override
