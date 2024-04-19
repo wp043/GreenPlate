@@ -17,14 +17,14 @@ public class CaloriesLeftDisplay implements OnChartUpdateListenerObserver {
 
     @Override
     public void onChartUpdate(String cookedMealName, int cookedMealCalories) {
-        // Update the appropriate database values for Calorie Goal Chart
-        this.cookedMealName = cookedMealName;
+        // Update the appropriate values for the Calorie Goal Chart
+//        this.cookedMealName = cookedMealName;
         this.cookedMealCalories = cookedMealCalories;
         display();
     }
 
     public void display() {
-        System.out.println("Inputting cooked meal " + cookedMealName
+        System.out.println("Inputting cooked meal"
                 + " with calories of " + cookedMealCalories + ".");
     }
 }

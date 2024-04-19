@@ -15,7 +15,7 @@ public class MealBreakdownDisplay implements OnChartUpdateListenerObserver {
 
     @Override
     public void onChartUpdate(String cookedMealName, int cookedMealCalories) {
-        // Update the appropriate database values for Meal Breakdown Chart
+        // Update the appropriate values for Meal Breakdown Chart
         this.cookedMealName = cookedMealName;
         this.cookedMealCalories = cookedMealCalories;
         display();

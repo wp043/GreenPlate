@@ -150,8 +150,10 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                     MealBreakdownDisplay mealBreakdownDisplay
                             = new MealBreakdownDisplay(mealCalorieData);
 
-
+                    // Calls Observer Pattern to update displays with new data
                     mealCalorieData.setMealCalorieData(recipe.getName(), totalCalories);
+                    // Update the database with new values
+
                     // Refresh UI and data
                     if (fragment.isAdded()) {
                         fragment.getActivity().runOnUiThread(() -> fragment.refreshContent());
