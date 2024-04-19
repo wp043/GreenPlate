@@ -16,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.greenplate.R;
 import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
+import com.example.greenplate.models.Meal;
 import com.example.greenplate.models.Recipe;
+import com.example.greenplate.viewmodels.InputMealViewModel;
 import com.example.greenplate.viewmodels.ShoppingListViewModel;
 import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
 import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
@@ -142,6 +144,11 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                 @Override
                 public void onComplete(int totalCalories) {
                     Log.d("PRINT", "Recipe calories: " + totalCalories);
+                    // Update the database with new values
+                    Meal currMeal = new Meal(recipe.getName(),
+                            totalCalories);
+                    InputMealViewModel inputMealVM = new InputMealViewModel();
+                    GreenPlateStatus status = inputMealVM.addMealToDatabase(currMeal);
                     // Observer Pattern to update input meal and Chart displays
                     MealCalorieData mealCalorieData = new MealCalorieData();
 
@@ -152,9 +159,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
 
                     // Calls Observer Pattern to update displays with new data
                     mealCalorieData.setMealCalorieData(recipe.getName(), totalCalories);
-                    // Update the database with new values
-
-                    // Refresh UI and data
+                    // Refresh UI and data for Recipe Screen
                     if (fragment.isAdded()) {
                         fragment.getActivity().runOnUiThread(() -> fragment.refreshContent());
                     }

@@ -1,5 +1,9 @@
 package com.example.greenplate.viewmodels.observers;
 
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
+
+import com.example.greenplate.viewmodels.MealBreakdownViewModel;
 import com.example.greenplate.viewmodels.listeners.OnChartUpdateListenerObserver;
 import com.example.greenplate.viewmodels.observable.MealCalorieData;
 
@@ -24,5 +28,8 @@ public class MealBreakdownDisplay implements OnChartUpdateListenerObserver {
     public void display() {
         System.out.println("Inputting cooked meal " + cookedMealName
                 + " with calories of " + cookedMealCalories + ".");
+        MealBreakdownViewModel viewModel = new ViewModelProvider((ViewModelStoreOwner) this)
+                .get(MealBreakdownViewModel.class);
+        viewModel.fetchMealsForToday();
     }
 }
