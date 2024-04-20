@@ -16,17 +16,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.greenplate.R;
 import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
-import com.example.greenplate.models.Meal;
 import com.example.greenplate.models.Recipe;
-import com.example.greenplate.viewmodels.InputMealViewModel;
 import com.example.greenplate.viewmodels.ShoppingListViewModel;
 import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
 import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
 import com.example.greenplate.viewmodels.managers.PantryManager;
 import com.example.greenplate.viewmodels.managers.ShoppingListManager;
 import com.example.greenplate.viewmodels.observable.MealCalorieData;
-import com.example.greenplate.viewmodels.observers.CaloriesLeftDisplay;
-import com.example.greenplate.viewmodels.observers.MealBreakdownDisplay;
+import com.example.greenplate.viewmodels.observers.CookUpdateToastMessageDisplay;
+import com.example.greenplate.viewmodels.observers.CookUpdateMealAndChartDatabaseDisplay;
 import com.example.greenplate.views.RecipeFragment;
 
 import java.util.Comparator;
@@ -144,25 +142,22 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                 @Override
                 public void onComplete(int totalCalories) {
                     Log.d("PRINT", "Recipe calories: " + totalCalories);
-                    // Update the database with new values
-                    Meal currMeal = new Meal(recipe.getName(),
-                            totalCalories);
-                    InputMealViewModel inputMealVM = new InputMealViewModel();
-                    GreenPlateStatus status = inputMealVM.addMealToDatabase(currMeal);
                     // Observer Pattern to update input meal and Chart displays
                     MealCalorieData mealCalorieData = new MealCalorieData();
 
-                    CaloriesLeftDisplay caloriesLeftDisplay
-                            = new CaloriesLeftDisplay(mealCalorieData);
-                    MealBreakdownDisplay mealBreakdownDisplay
-                            = new MealBreakdownDisplay(mealCalorieData);
-
+                    CookUpdateToastMessageDisplay cookUpdateToastMessageDisplay
+                            = new CookUpdateToastMessageDisplay(mealCalorieData, fragment);
+                    CookUpdateMealAndChartDatabaseDisplay cookUpdateMealAndChartDatabaseDisplay
+                            = new CookUpdateMealAndChartDatabaseDisplay(mealCalorieData);
                     // Calls Observer Pattern to update displays with new data
-                    mealCalorieData.setMealCalorieData(recipe.getName(), totalCalories);
+                    mealCalorieData.setMealCalorieData(recipe.getName(), totalCalories); // Issue
+                    System.out.println("Before reload");
                     // Refresh UI and data for Recipe Screen
                     if (fragment.isAdded()) {
                         fragment.getActivity().runOnUiThread(() -> fragment.refreshContent());
+                        System.out.println("Reloading");
                     }
+                    System.out.println("After reload");
 
                     selectedPosition = RecyclerView.NO_POSITION;
                 }

@@ -1,12 +1,12 @@
 package com.example.greenplate.viewmodels.observable;
 
-import com.example.greenplate.viewmodels.listeners.OnChartUpdateListenerObserver;
+import com.example.greenplate.viewmodels.listeners.OnCookUpdateListenerObserver;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MealCalorieData {
-    private List<OnChartUpdateListenerObserver> observers;
+    private List<OnCookUpdateListenerObserver> observers;
     // Properties and parameters
     private String cookedMealName;
     private int cookedMealCalories;
@@ -15,17 +15,17 @@ public class MealCalorieData {
         observers = new ArrayList<>();
     }
 
-    public void registerObserver(OnChartUpdateListenerObserver observer) {
+    public void registerObserver(OnCookUpdateListenerObserver observer) {
         observers.add(observer);
     }
 
-    public void removeObserver(OnChartUpdateListenerObserver observer) {
+    public void removeObserver(OnCookUpdateListenerObserver observer) {
         observers.remove(observer);
     }
 
     public void notifyObservers() {
-        for (OnChartUpdateListenerObserver observer : observers) {
-            observer.onChartUpdate(cookedMealName, cookedMealCalories); // Add observer parameters
+        for (OnCookUpdateListenerObserver observer : observers) {
+            observer.onCookUpdate(cookedMealName, cookedMealCalories); // Add observer parameters
         }
     }
 
