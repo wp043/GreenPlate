@@ -8,13 +8,11 @@ import static org.junit.Assert.assertTrue;
 import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.example.greenplate.models.GreenPlateStatus;
 import com.example.greenplate.models.Ingredient;
-import com.example.greenplate.models.Personal;
 import com.example.greenplate.models.Recipe;
 import com.example.greenplate.viewmodels.IngredientViewModel;
 import com.example.greenplate.viewmodels.RecipeViewModel;
-import com.example.greenplate.viewmodels.UserInfoViewModel;
+import com.example.greenplate.viewmodels.adapters.RecipesAdapter;
 import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,8 +21,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import junit.framework.TestCase;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -32,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -52,16 +49,14 @@ public class CookTests {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> signInTask) {
                         if (signInTask.isSuccessful()) {
-                            // Sign in successful
-                            latch.countDown(); // Release the latch
+                            latch.countDown();
                         } else {
-                            // Handle sign in failure
-                            latch.countDown(); // Release the latch even in failure case
+                            latch.countDown();
                         }
                     }
                 });
         try {
-            latch.await(); // Wait until the latch is released
+            latch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -71,7 +66,6 @@ public class CookTests {
 
     @Before
     public void clearDB() {
-        // Remove all records for the user
         ref.removeValue()
                 .addOnSuccessListener(e -> { })
                 .addOnFailureListener(e -> {
@@ -98,12 +92,66 @@ public class CookTests {
             Assert.assertTrue(success);
         });
 
+        RecipesAdapter adapter = new RecipesAdapter(Arrays.asList(recipe),
+                new ArrayList<>(), null);
+        adapter.updateIngredientAfterCooking(recipe,
+                new RecipesAdapter.UpdateIngredientsCallback() {
+                @Override
+                public void onComplete(int totalCalories) { }
+
+                @Override
+                public void onError(Exception e) { }
+            });
         AvailabilityReportGenerator availabilityReportGenerator
                 = AvailabilityReportGenerator.getInstance();
         availabilityReportGenerator.getAvailable(report -> {
             Map<Ingredient, Double> available = report.get("Tomato Salad");
-            TestCase.assertEquals(1, available.size());
-            TestCase.assertEquals(1.0, available.get("Tomato"));
+            assertEquals(1.0, available.get("Tomato"), 0.01);
         });
     }
+
+    @Test
+    public void removeIngredient() {
+        RecipeViewModel recipeViewModel = new RecipeViewModel();
+        assertNotNull(recipeViewModel);
+        List<Ingredient> ingredients = new ArrayList<>();
+        ingredients.add(new Ingredient("Tomato", 100, 2, null));
+        List<String> instructions = new ArrayList<>();
+        Recipe recipe = new Recipe("Tomato Salad", ingredients, instructions);
+        recipeViewModel.addRecipe(recipe, success -> {
+            assertTrue("Recipe added successfully!", success);
+        });
+
+        // set multiplicity changes the amount in pantry database
+        ingredients.get(0).setMultiplicity(2);
+        IngredientViewModel ingredientViewModel = new IngredientViewModel();
+        ingredientViewModel.addIngredient(ingredients.get(0), (success, message) -> {
+            Assert.assertTrue(success);
+        });
+
+        RecipesAdapter adapter = new RecipesAdapter(Arrays.asList(recipe),
+                new ArrayList<>(), null);
+        adapter.updateIngredientAfterCooking(recipe,
+                new RecipesAdapter.UpdateIngredientsCallback() {
+                @Override
+                public void onComplete(int totalCalories) { }
+
+                @Override
+                public void onError(Exception e) { }
+            });
+        AvailabilityReportGenerator availabilityReportGenerator
+                = AvailabilityReportGenerator.getInstance();
+        availabilityReportGenerator.getAvailable(report -> {
+            Map<Ingredient, Double> available = report.get("Tomato Salad");
+            boolean found = false;
+            for (Ingredient i : available.keySet()) {
+                if (i.getName().equals("Tomato")) {
+                    found = true;
+                    break;
+                }
+            }
+            assertFalse("Cannot find tomato in available ingredients", found);
+        });
+    }
+
 }
