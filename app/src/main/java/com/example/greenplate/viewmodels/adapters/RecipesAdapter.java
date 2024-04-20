@@ -177,7 +177,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-    private void updateIngredientAfterCooking(Recipe recipe, UpdateIngredientsCallback callback) {
+    public void updateIngredientAfterCooking(Recipe recipe, UpdateIngredientsCallback callback) {
         PantryManager pantryManager = new PantryManager();
         final int[] calculatedCookedRecipeCalories = {0};
 
