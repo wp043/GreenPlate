@@ -68,6 +68,37 @@ public class AvailabilityReportGenerator {
         });
     }
 
+    public void getAvailable(OnReportGeneratedCallback callback) {
+        Map<String, Map<Ingredient, Double>> availabilityReport = new HashMap<>();
+        cookbookManager.retrieve(itemsRecipe -> {
+            List<Recipe> recipes = itemsRecipe
+                    .stream().map(e -> ((Recipe) e)).collect(Collectors.toList());
+
+            pantryManager.retrieve(itemsIngredient -> {
+                List<Ingredient> currentIngredientsInPantry = itemsIngredient
+                        .stream().map(e -> ((Ingredient) e)).collect(Collectors.toList());
+                for (Recipe recipe : recipes) {
+                    Map<Ingredient, Double> hasIngredient = new HashMap<>();
+                    for (Ingredient requiredIngredient : recipe.getIngredients()) {
+                        double requiredNum = requiredIngredient.getMultiplicity();
+                        double numInPantry = currentIngredientsInPantry.stream()
+                                .filter(e -> e.getName().equals(requiredIngredient.getName())
+                                        && e.getExpirationDate().after(new Date()))
+                                .mapToDouble(e -> e.getMultiplicity()).sum();
+                        if (numInPantry >= requiredNum) {
+                            hasIngredient.put(new Ingredient(requiredIngredient),
+                                    numInPantry - requiredNum);
+                        }
+                    }
+                    if (hasIngredient.keySet().size() != 0) {
+                        availabilityReport.put(recipe.getName(), hasIngredient);
+                    }
+                }
+                callback.onReportGenerated(availabilityReport);
+            });
+        });
+    }
+
     public static void logReport(Map<String, Map<Ingredient, Double>> availabilityReport) {
         StringBuilder sb = new StringBuilder("Report:\n");
         for (Map.Entry<String, Map<Ingredient, Double>> reportEntry
