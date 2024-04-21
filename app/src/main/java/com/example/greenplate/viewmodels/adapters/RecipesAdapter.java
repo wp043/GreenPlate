@@ -23,8 +23,8 @@ import com.example.greenplate.viewmodels.listeners.OnMultiplicityUpdateListener;
 import com.example.greenplate.viewmodels.managers.PantryManager;
 import com.example.greenplate.viewmodels.managers.ShoppingListManager;
 import com.example.greenplate.viewmodels.observable.MealCalorieData;
-import com.example.greenplate.viewmodels.observers.CaloriesLeftDisplay;
-import com.example.greenplate.viewmodels.observers.MealBreakdownDisplay;
+import com.example.greenplate.viewmodels.observers.CookUpdateToastMessageDisplay;
+import com.example.greenplate.viewmodels.observers.CookUpdateMealAndChartDatabaseDisplay;
 import com.example.greenplate.views.RecipeFragment;
 
 import java.util.Comparator;
@@ -145,17 +145,19 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                     // Observer Pattern to update input meal and Chart displays
                     MealCalorieData mealCalorieData = new MealCalorieData();
 
-                    CaloriesLeftDisplay caloriesLeftDisplay
-                            = new CaloriesLeftDisplay(mealCalorieData);
-                    MealBreakdownDisplay mealBreakdownDisplay
-                            = new MealBreakdownDisplay(mealCalorieData);
-
-
-                    mealCalorieData.setMealCalorieData(recipe.getName(), totalCalories);
-                    // Refresh UI and data
+                    CookUpdateToastMessageDisplay cookUpdateToastMessageDisplay
+                            = new CookUpdateToastMessageDisplay(mealCalorieData, fragment);
+                    CookUpdateMealAndChartDatabaseDisplay cookUpdateMealAndChartDatabaseDisplay
+                            = new CookUpdateMealAndChartDatabaseDisplay(mealCalorieData);
+                    // Calls Observer Pattern to update displays with new data
+                    mealCalorieData.setMealCalorieData(recipe.getName(), totalCalories); // Issue
+                    System.out.println("Before reload");
+                    // Refresh UI and data for Recipe Screen
                     if (fragment.isAdded()) {
                         fragment.getActivity().runOnUiThread(() -> fragment.refreshContent());
+                        System.out.println("Reloading");
                     }
+                    System.out.println("After reload");
 
                     selectedPosition = RecyclerView.NO_POSITION;
                 }
