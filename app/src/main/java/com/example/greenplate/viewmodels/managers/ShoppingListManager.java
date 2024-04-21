@@ -81,10 +81,9 @@ public class ShoppingListManager implements Manager {
      * Add an ingredient to the database.
      * 
      * @param ingredient - the ingredient to add
-     * @param listener - listener
+     * @param listener   - listener
      */
-    public void addIngredient(Ingredient ingredient, OnIngredientUpdatedListener
-            listener) {
+    public void addIngredient(Ingredient ingredient, OnIngredientUpdatedListener listener) {
         if (ingredient == null) {
             listener.onIngredientUpdated(false, "Can't add a null ingredient.");
             return;
@@ -133,7 +132,6 @@ public class ShoppingListManager implements Manager {
             listener.onDuplicateCheckCompleted(isDuplicate, duplicate);
         });
     }
-
 
     public void updateIngredientMultiplicity(String ingredientName, double updatedMultiplicity,
             OnMultiplicityUpdateListener listener) {
@@ -203,9 +201,8 @@ public class ShoppingListManager implements Manager {
         });
     }
 
-
     public void addIngredientMultiplicity(String ingredientName, double additionalMultiplicity,
-                                             OnMultiplicityUpdateListener listener) {
+            OnMultiplicityUpdateListener listener) {
         if (ingredientName == null) {
             listener.onMultiplicityUpdateFailure(
                     new GreenPlateStatus(false, "Can't update null ingredient."));
@@ -219,7 +216,6 @@ public class ShoppingListManager implements Manager {
             return;
         }
 
-
         Query query = myRef.orderByChild("name").equalTo(ingredientName);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -227,8 +223,7 @@ public class ShoppingListManager implements Manager {
                 boolean ingredientFound = false;
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     String name = childSnapshot.child("name").getValue(String.class);
-                    double currMultiplicity = childSnapshot.child("multiplicity").
-                            getValue(Double.class);
+                    double currMultiplicity = childSnapshot.child("multiplicity").getValue(Double.class);
 
                     if (name.equals(ingredientName)) {
                         String key = childSnapshot.getKey();
@@ -259,7 +254,6 @@ public class ShoppingListManager implements Manager {
             }
         });
     }
-
 
     public void removeIngredient(String removedName, OnIngredientRemoveListener listener) {
 
