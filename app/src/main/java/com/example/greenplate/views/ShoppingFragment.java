@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.greenplate.R;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.Recipe;
+import com.example.greenplate.models.RetrievableItem;
 import com.example.greenplate.models.UsageIngredientDecorator;
 import com.example.greenplate.viewmodels.IngredientViewModel;
 import com.example.greenplate.viewmodels.RecipeViewModel;
@@ -28,6 +29,7 @@ import com.example.greenplate.viewmodels.adapters.ShoppingListAdapter;
 import com.example.greenplate.viewmodels.helpers.DateUtils;
 import com.example.greenplate.viewmodels.listeners.OnIngredientUpdatedListener;
 import com.example.greenplate.viewmodels.managers.CookbookManager;
+import com.example.greenplate.viewmodels.managers.PantryManager;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -244,29 +246,45 @@ public class ShoppingFragment extends Fragment {
         quantityEditText.setText(String.valueOf(ingredient.getMultiplicity()));
         quantityEditText.setEnabled(false);
 
-        builder.setView(dialogView).setPositiveButton("Add", (dialog, id) -> {
-            try {
-                String name = nameEditText.getText().toString();
-                double quantity = Double.parseDouble(quantityEditText.getText().toString());
-                double calories = Double.parseDouble(caloriesEditText.getText().toString());
-                Date expirationDate = DateUtils.str2Date(expirationEditText.getText().toString());
-                Ingredient newIngredient = new Ingredient(name, calories, quantity, expirationDate);
-                ingredientVM.addIngredientFromShoppingList(newIngredient, (success, message) -> {
-                    if (!success) {
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    shoppingListVM.removeIngredient(ingredient);
-                    refreshRecycleView();
-                });
-            } catch (Exception e) {
-                Toast.makeText(requireContext(),
-                        "Failed. All fields must be filled in.", Toast.LENGTH_SHORT).show();
+        PantryManager pantryManager = new PantryManager();
+        pantryManager.retrieve(items -> {
+            double calories = -1;
+            for (RetrievableItem item: items) {
+                if (((Ingredient) item).getName().equals(ingredient.getName())) {
+                    calories = item.getCalories();
+                }
             }
+            if (calories >= 0) {
+                caloriesEditText.setText(String.valueOf(calories));
+                caloriesEditText.setEnabled(false);
+            }
+
+            builder.setView(dialogView).setPositiveButton("Add", (dialog, id) -> {
+                try {
+                    String name = nameEditText.getText().toString();
+                    double quantity = Double.parseDouble(quantityEditText.getText().toString());
+                    double calorie = Double.parseDouble(caloriesEditText.getText().toString());
+                    Date expirationDate = DateUtils.str2Date(expirationEditText.getText().toString());
+                    Ingredient newIngredient = new Ingredient(name, calorie, quantity, expirationDate);
+                    ingredientVM.addIngredientFromShoppingList(newIngredient, (success, message) -> {
+                        if (!success) {
+                            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        shoppingListVM.removeIngredient(ingredient);
+                        refreshRecycleView();
+                    });
+                } catch (Exception e) {
+                    Toast.makeText(requireContext(),
+                            "Failed. All fields must be filled in.", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
         });
 
-        AlertDialog dialog = builder.create();
-        dialog.show();
+
     }
 
     private void setupEditButton() {
