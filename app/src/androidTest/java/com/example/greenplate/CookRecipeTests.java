@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 @RunWith(AndroidJUnit4.class)
-public class CookTests {
+public class CookRecipeTests {
 
     private static final String TEST_EMAIL = "test_account@test.com";
     private static final String TEST_PASSWORD = "password";
@@ -153,5 +153,6 @@ public class CookTests {
             assertFalse("Cannot find tomato in available ingredients", found);
         });
     }
+
 
 }
