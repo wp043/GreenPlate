@@ -285,10 +285,12 @@ public class ShoppingFragment extends Fragment {
                     String name = nameEditText.getText().toString();
                     double quantity = Double.parseDouble(quantityEditText.getText().toString());
                     double calorie = Double.parseDouble(caloriesEditText.getText().toString());
-                    Date expirationDate = DateUtils.str2Date(expirationEditText.getText().toString());
-                    Ingredient newIngredient = new Ingredient(name, calorie, quantity, expirationDate);
-                    ingredientVM.addIngredientFromShoppingList(newIngredient, (success, message) -> {
-                        if (!success) {
+                    Date expirationDate = DateUtils.str2Date(expirationEditText.getText()
+                            .toString());
+                    Ingredient newIngredient = new Ingredient(name, calorie, quantity,
+                            expirationDate);
+                    ingredientVM.addIngredientFromShoppingList(newIngredient, (suc, message) -> {
+                        if (!suc) {
                             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
                             return;
                         }
