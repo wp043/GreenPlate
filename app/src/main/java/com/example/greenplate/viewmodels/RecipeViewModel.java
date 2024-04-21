@@ -2,7 +2,6 @@ package com.example.greenplate.viewmodels;
 
 import android.content.Context;
 
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +14,7 @@ import com.example.greenplate.viewmodels.helpers.AvailabilityReportGenerator;
 import com.example.greenplate.viewmodels.listeners.OnDataRetrievedCallback;
 import com.example.greenplate.viewmodels.listeners.OnRecipeAddedListener;
 import com.example.greenplate.viewmodels.managers.CookbookManager;
+import com.example.greenplate.views.RecipeFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class RecipeViewModel extends ViewModel {
         cookbookManager = new CookbookManager();
     }
 
-    public void addDefaultRecipes(RecyclerView rvRecipes, Fragment fragment) {
+    public void addDefaultRecipes(RecyclerView rvRecipes, RecipeFragment fragment) {
         // Add test recipe 1
         List<Ingredient> ingredients1 = new ArrayList<>();
         ingredients1.add(new Ingredient("Bun", 100, 2, null));
@@ -129,7 +129,7 @@ public class RecipeViewModel extends ViewModel {
         cookbookManager.retrieve(callback);
     }
 
-    public void retrieveAndDisplayIngredients(RecyclerView rvRecipes, Fragment fragment) {
+    public void retrieveAndDisplayIngredients(RecyclerView rvRecipes, RecipeFragment fragment) {
         this.getRecipes(itemsRecipe -> {
             List<Recipe> recipes = itemsRecipe.stream().map(e -> (Recipe) e)
                     .collect(Collectors.toList());
@@ -147,7 +147,7 @@ public class RecipeViewModel extends ViewModel {
 
 
     public void retrieveAndDisplayFiltered(
-            RecyclerView rvRecipes, String search, Fragment fragment) {
+            RecyclerView rvRecipes, String search, RecipeFragment fragment) {
         this.getRecipes(itemsRecipe -> {
             List<Recipe> recipes = itemsRecipe.stream().map(e -> (Recipe) e)
                     .collect(Collectors.toList());
@@ -182,7 +182,7 @@ public class RecipeViewModel extends ViewModel {
     }
 
     private void retrieveAndDisplaySorted(Context context, RecyclerView rvRecipes,
-                                          Fragment fragment, RecipeSortStrategy sorter) {
+                                          RecipeFragment fragment, RecipeSortStrategy sorter) {
         this.getRecipes(itemsRecipe -> {
             List<Recipe> recipes = itemsRecipe.stream().map(e -> (Recipe) e)
                     .collect(Collectors.toList());
@@ -211,15 +211,15 @@ public class RecipeViewModel extends ViewModel {
     }
 
     public void retrieveAndDisplaySortedByName(
-            Context context, RecyclerView rvRecipes, Fragment fragment) {
+            Context context, RecyclerView rvRecipes, RecipeFragment fragment) {
         retrieveAndDisplaySorted(context, rvRecipes, fragment, new SortByNameStrategy());
     }
 
     public void retrieveAndDisplaySortedByIngredients(
-            Context context, RecyclerView rvRecipes, Fragment fragment) {
+            Context context, RecyclerView rvRecipes, RecipeFragment fragment) {
         retrieveAndDisplaySorted(context, rvRecipes, fragment, new SortByIngredientCountStrategy());
     }
-    public void updateRecipeAvailability(RecyclerView rvRecipes, Fragment fragment) {
+    public void updateRecipeAvailability(RecyclerView rvRecipes, RecipeFragment fragment) {
         AvailabilityReportGenerator.getInstance().getMissingElementsForShopping(report -> {
             retrieveAndDisplayIngredients(rvRecipes, fragment);
         });

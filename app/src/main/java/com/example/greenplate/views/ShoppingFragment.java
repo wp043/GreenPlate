@@ -106,6 +106,26 @@ public class ShoppingFragment extends Fragment {
         setupAddButton();
         setupBuyButton();
         setupEditButton();
+        addDefaultIngredients();
+    }
+
+    private void addDefaultIngredients() {
+        Ingredient ingredient1 = new Ingredient("egg", 10);
+        Ingredient ingredient2 = new Ingredient("apple", 2);
+
+        shoppingListVM.addIngredient(ingredient1, (success, message) -> {
+            if (success) {
+                shoppingListVM.addIngredient(ingredient2, (success2, message2) -> {
+                    if (success2) {
+                        retrieveAndDisplayIngredients(rvShopping, showRecipeCheckBox.isChecked());
+                    } else {
+                        Toast.makeText(requireContext(), message2, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void retrieveAndDisplayIngredients(RecyclerView rvRecipes, boolean showRecipe) {
@@ -126,8 +146,8 @@ public class ShoppingFragment extends Fragment {
                     .map(e -> (Ingredient) e).collect(Collectors.toList());
 
             if (allRecipes != null) {
-                ingredients.replaceAll(ingredient ->
-                        new UsageIngredientDecorator(ingredient, allRecipes));
+                ingredients.replaceAll(
+                        ingredient -> new UsageIngredientDecorator(ingredient, allRecipes));
             }
 
             ShoppingListAdapter adapter = new ShoppingListAdapter(ingredients);
@@ -146,8 +166,8 @@ public class ShoppingFragment extends Fragment {
             builder.setView(dialogView).setPositiveButton("Add", (dialog, id) -> {
                 // Get user input
                 EditText nameEditText = dialogView.findViewById(R.id.shopping_ingredient_name);
-                EditText quantityEditText =
-                        dialogView.findViewById(R.id.shopping_ingredient_quantity);
+                EditText quantityEditText = dialogView.findViewById(
+                        R.id.shopping_ingredient_quantity);
 
                 try {
                     String name = nameEditText.getText().toString();
@@ -155,7 +175,8 @@ public class ShoppingFragment extends Fragment {
                     Ingredient newIngredient = new Ingredient(name, 0., quantity, null);
                     shoppingListVM.isItemDuplicate(name, (isDup, dupItem) -> {
                         if (isDup) {
-                            shoppingListVM.updateMultiplicity(name, dupItem.getMultiplicity()+quantity);
+                            shoppingListVM.updateMultiplicity(name,
+                                    dupItem.getMultiplicity() + quantity);
                             Toast.makeText(requireContext(),
                                     String.format(Locale.US,
                                             "%s is already inside the shopping list. "
@@ -307,7 +328,7 @@ public class ShoppingFragment extends Fragment {
     }
 
     private void setupEditButtonHelper(Ingredient ingredient,
-                                       OnIngredientUpdatedListener listener) {
+            OnIngredientUpdatedListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_shoppinglist_ingredient, null);
