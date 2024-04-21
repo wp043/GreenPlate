@@ -144,7 +144,8 @@ public class ShoppingFragment extends Fragment {
                     .map(e -> (Ingredient) e).collect(Collectors.toList());
 
             if (allRecipes != null) {
-                ingredients.replaceAll(ingredient -> new UsageIngredientDecorator(ingredient, allRecipes));
+                ingredients.replaceAll(
+                        ingredient -> new UsageIngredientDecorator(ingredient, allRecipes));
             }
 
             ShoppingListAdapter adapter = new ShoppingListAdapter(ingredients);
@@ -163,7 +164,8 @@ public class ShoppingFragment extends Fragment {
             builder.setView(dialogView).setPositiveButton("Add", (dialog, id) -> {
                 // Get user input
                 EditText nameEditText = dialogView.findViewById(R.id.shopping_ingredient_name);
-                EditText quantityEditText = dialogView.findViewById(R.id.shopping_ingredient_quantity);
+                EditText quantityEditText = dialogView.findViewById(
+                        R.id.shopping_ingredient_quantity);
 
                 try {
                     String name = nameEditText.getText().toString();
