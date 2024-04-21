@@ -43,3 +43,46 @@ We’ve defined a RecipeSortStrategy interface with a single method sort, which 
 ![alt text](./images/strategy2.png)
 
 ![alt text](./images/strategy3.png)
+
+## Design Diagrams
+Use Case Diagram
+
+![alt text](./images/usecasediagram.png)
+
+Domain Model
+
+![alt text](./images/domainmodel.png)
+
+System Sequence Diagram
+
+![alt text](./images/ssd.png)
+
+Sequence Diagram
+
+![alt text](./images/sd.png)
+
+Domain Class Diagram
+
+![alt text](./images/dcd.png)
+
+
+# User Interface (UI) 
+We offer a comprehensive platform featuring various screens designed to enhance the user experience. Our login screen provides secure access, leading to the main dashboard where users can seamlessly navigate to different sections. The personal information screen allows users to view and modify essential details like age, height, weight, and gender. By simply clicking on the edit option, users can update any of this information effortlessly.
+
+Within the application, users can input their meals on a dedicated screen, specifying the meal's name and calorie content. This feature enables users to track their daily calorie intake conveniently. Additionally, the shopping list screen empowers users to list the ingredients they need to purchase. They can edit these items and mark them as bought with a simple click, facilitating efficient grocery management. Once purchased, these ingredients automatically appear in the ingredient screen for easy reference.
+
+In the recipe screen, users can access their collection of recipes and assess whether they possess the necessary ingredients to prepare each dish. They have the flexibility to sort recipes by name or quantity, streamlining the search process. Finally, the ingredient screen provides users with a comprehensive overview of their current ingredient inventory. Detailed information such as the number of ingredients, calorie content, and expiration dates is readily available, enabling users to plan their meals effectively.
+
+![alt text](./images/ui1.png)
+
+![alt text](./images/ui2.png)
+
+# Functionality Demo
+
+# Conclusion
+
+
+# Contribution
+Contributors to app's development: Qianyu Zheng, Derek Huang, Steven Zhang, Wendy Pan, Hanyun Huang, Mingxuan Nie
+
+Contributors to the website: Qianyu Zheng, Derek Huang, Steven Zhang, Wendy Pan, Hanyun Huang, Mingxuan Nie (aka everyone! yay!)
