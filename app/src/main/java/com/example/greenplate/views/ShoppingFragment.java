@@ -104,7 +104,28 @@ public class ShoppingFragment extends Fragment {
         setupAddButton();
         setupBuyButton();
         setupEditButton();
+        addDefaultIngredients();
     }
+
+    private void addDefaultIngredients() {
+        Ingredient ingredient1 = new Ingredient("egg", 10);
+        Ingredient ingredient2 = new Ingredient("apple",  2);
+
+        shoppingListVM.addIngredient(ingredient1, (success, message) -> {
+            if (success) {
+                shoppingListVM.addIngredient(ingredient2, (success2, message2) -> {
+                    if (success2) {
+                        retrieveAndDisplayIngredients(rvShopping, showRecipeCheckBox.isChecked());
+                    } else {
+                        Toast.makeText(requireContext(), message2, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void retrieveAndDisplayIngredients(RecyclerView rvRecipes, boolean showRecipe) {
         if (!showRecipe) {
