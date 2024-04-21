@@ -31,7 +31,7 @@ public class CookUpdateToastMessageDisplay implements OnCookUpdateListenerObserv
     public void display() {
         Toast.makeText(fragment.getContext(),
                 "Added cooked meal " + cookedMealName
-                        + " with " + cookedMealCalories + " to Input Meal Screen!",
+                        + " with " + cookedMealCalories + " calories to Input Meal Screen!",
                 Toast.LENGTH_SHORT).show();
 
         System.out.println("Displaying toast message.");
