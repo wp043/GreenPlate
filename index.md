@@ -73,8 +73,12 @@ Within the application, users can input their meals on a dedicated screen, speci
 In the recipe screen, users can access their collection of recipes and assess whether they possess the necessary ingredients to prepare each dish. They have the flexibility to sort recipes by name or quantity, streamlining the search process. Finally, the ingredient screen provides users with a comprehensive overview of their current ingredient inventory. Detailed information such as the number of ingredients, calorie content, and expiration dates is readily available, enabling users to plan their meals effectively.
 
 ![alt text](./images/ui1.png)
-
 ![alt text](./images/ui2.png)
+![alt text](./images/ui3.png)
+
+![alt text](./images/ui4.png)
+![alt text](./images/ui5.png)
+![alt text](./images/ui6.png)
 
 # Functionality Demo
 Here is the link to our [demo video](https://www.youtube.com/watch?v=y_HEnMrHClE)!
