@@ -65,7 +65,6 @@ Domain Class Diagram
 
 ![alt text](./images/dcd.png)
 
-
 # User Interface (UI) 
 We offer a comprehensive platform featuring various screens designed to enhance the user experience. Our login screen provides secure access, leading to the main dashboard where users can seamlessly navigate to different sections. The personal information screen allows users to view and modify essential details like age, height, weight, and gender. By simply clicking on the edit option, users can update any of this information effortlessly.
 
@@ -80,7 +79,15 @@ In the recipe screen, users can access their collection of recipes and assess wh
 # Functionality Demo
 
 # Conclusion
+Wrap up with a reflective overview of the project outcomes, detailing your contributions, the challenges encountered, and the knowledge gained throughout the development process. Every team member has contributed to UI setup, functionality implementations, unit testing, and database integration.
 
+Working within the agile framework of sprints was both rigorous and rewarding. Each sprint brought its lessons. We learned the value of early collaboration, as evidenced by improved project management and streamlined teamwork in later sprints.
+
+Our successful implementation of several design patterns exemplifies our technical growth and our collective ability to adhere to sophisticated design principles. Regular code reviews fostered a culture of quality and accountability, and our evolution as a team is as significant an outcome as the app itself.
+
+The journey with GreenPlate transcended coding; it was a comprehensive learning experience. Our methodology evolved from establishing foundational elements to enhancing functionalities, ensuring that users can manage their food resources efficiently, thus fostering sustainable habits. We also gained a deeper understanding of collaborative dynamics and the significance of anticipatory planning.
+
+In conclusion, GreenPlate stands as a testament to our dedication and collective ingenuity. As we look back, we are filled with pride for what we've accomplished and gratitude for the lessons learned.
 
 # Contribution
 Contributors to app's development: Qianyu Zheng, Derek Huang, Steven Zhang, Wendy Pan, Hanyun Huang, Mingxuan Nie
