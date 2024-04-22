@@ -22,7 +22,7 @@ public class DateUtils {
     public static String date2Str(Date date) {
         Calendar currentCalendar = Calendar.getInstance();
         currentCalendar.setTime(new Date());
-        currentCalendar.add(Calendar.DAY_OF_YEAR, 5);
+        currentCalendar.add(Calendar.YEAR, 20);
         if (date == null || date.after(currentCalendar.getTime())) {
             return "forever away";
         }
