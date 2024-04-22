@@ -1,7 +1,7 @@
 title: GreenPlate
 description: >- # this means to ignore newlines until "baseurl:"
   CS2340 Project Group 5
-baseurl: /CS2340A_Team5 # the subpath of your site, e.g. /blog
+baseurl: /CS2340A_Team5/index.md # the subpath of your site, e.g. /blog
 github_username: wp043
 
 # Build settings
