@@ -193,9 +193,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                                             && e.getExpirationDate().after(new Date()))
                             .sorted(Comparator.comparing(Ingredient::getExpirationDate))
                             .collect(Collectors.toList());
-
+                    double requiredAmount = requiredIngredient.getMultiplicity();
                     for (Ingredient i : matched) {
-                        double requiredAmount = requiredIngredient.getMultiplicity();
                         if (requiredAmount <= 0) {
                             break;
                         }
