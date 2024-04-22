@@ -31,3 +31,10 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# Github Page
+_site
+.sass-cache
+.jekyll-cache
+.jekyll-metadata
+vendor
